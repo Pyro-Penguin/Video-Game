@@ -29,6 +29,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
     def test_generation_nine_reference_core_known_fixtures(self):
         self.assertEqual(pokemon_gen9_base(100, 100, 100, 100), 86)
         self.assertEqual(pokemon_gen9_base(50, 100, 100, 100), 46)
+        self.assertEqual(pokemon_gen9_base(1, 100, 100, 100), 6)
         self.assertEqual(pokemon_gen9_base(100, 100, 200, 100), 170)
 
     def test_reference_rejects_nonpositive_inputs(self):
