@@ -1,0 +1,38 @@
+name: Python Experiments
+
+on:
+  push:
+    paths:
+      - "experiments/**"
+      - ".github/workflows/python-experiments.yml"
+  pull_request:
+    paths:
+      - "experiments/**"
+      - ".github/workflows/python-experiments.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  damage-rng:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run automated tests
+        working-directory: experiments/damage_rng
+        run: python -m unittest -v
+      - name: Generate report smoke test
+        working-directory: experiments/damage_rng
+        run: |
+          python damage_rng.py --trials 1000 --seed 20261030 --output /tmp/damage-rng-report.json
+          python -c "import json; p=json.load(open('/tmp/damage-rng-report.json')); assert len(p['models']) == 6; print('JSON report smoke test passed')"
