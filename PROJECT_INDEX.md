@@ -44,5 +44,6 @@ After these, use the task-specific references below.
 - `docs/creatures/` — creature concepts and stat records.
 - `docs/inspiration/` — visual, audio, and gameplay references.
 - `experiments/` — isolated executable mechanics investigations.
-- `.github/workflows/` — automated validation for Python experiments.
+- `tools/` — standard-library documentation validator and its tests.
+- `.github/workflows/` — automated validation for Python experiments and project documentation.
 - A Unity `Assets/`, `Packages/`, and `ProjectSettings/` structure will be added only after an engine project is deliberately created.
