@@ -1,56 +1,52 @@
 # Open Questions
 
-Questions are grouped by what they block. None of the items below should be treated as decided.
+Questions are grouped by what they block. Items marked as confirmed direction are not necessarily complete implementation rules.
 
-## Priority 1 — Battle Format (Blocks a Coherent Battle Prototype)
-1. Does "3v3" count the player character, or three monsters in addition to the player?
-2. Does each side bring five monsters and select three, with the player separate?
-3. How many monsters are active simultaneously?
-4. Is there one reserve, or can all selected monsters rotate?
-5. Is the player a field combatant, a commander outside the field, or both?
-6. Does player-character defeat immediately end the match?
-7. Can the player be targeted directly? Are there protection, interception, or guard rules?
-8. What actions does the player take, and how many actions does each active monster take?
-9. Are all actions selected before simultaneous resolution?
-10. What happens if a selected target is defeated before an action resolves?
-11. How are speed, priority, ties, and dependent actions resolved?
-12. When and how does a reserve enter play?
+## Priority 1 — Damage Equation (Current Focus)
+1. What is the exact base damage equation, including level treatment and constants?
+2. Which move categories exist, and which attacker/defender stats do they use?
+3. How are effective Attack and Defense constructed from base stats, stages, class/nature, status, abilities, and equipment?
+4. Are screens included in effective Defense or applied as separate damage modifiers?
+5. What is the exact order of power changes, STAB, type effectiveness, critical hits, weather/field, status, screens, abilities, equipment, relationship effects, and RNG?
+6. Which modifiers are additive versus multiplicative?
+7. Where exactly does integer truncation occur?
+8. What is the minimum non-immune damage, and how is immunity handled?
+9. Which RNG distribution is selected, and is it rolled per action, target, or hit?
+10. How are multi-hit damage, recoil, drain, shields, and interruption handled?
 
-See [Battle Format Decision Framework](battle/BATTLE_FORMAT_DECISION.md).
+See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md).
 
-## Priority 2 — Battle Clock and Competitive Rules
-1. Does the 45-second move timer run inside the 7-minute player clock or independently?
-2. Does the player clock pause during animations, opponent selection, and forced replacement?
-3. What happens when a player clock expires?
-4. What happens when the 20-minute match clock expires?
-5. Are the 64-second preview and all three clocks mandatory in the first prototype?
-6. Does Species Clause use stable species IDs across forms?
-7. Does Item Clause apply to held item identity, item category, or consumable charges?
-8. What exactly is visible in Open Team Lists, and when is it revealed?
+## Priority 2 — Battle Resolution
+1. What is the complete tie-break hierarchy after priority and Speed?
+2. Which abilities can win Speed ties, and do they override or modify the normal tie hierarchy?
+3. Is type effectiveness a valid tie-break only when two tied entities target each other, or under another precisely defined condition?
+4. What is the authoritative online fallback for exact ties? Client tap timestamps are not suitable as a trusted server rule.
+5. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
+6. What are the exact rules for simultaneous player defeat?
+7. Which encounter rules make player-character defeat mandatory versus optional?
+8. Does victory checking after replacement behave correctly when both sides have knockouts or no reserve?
 
-## Priority 3 — Stats and Damage
-1. What are the six core stats and their exact definitions?
-2. Do player and monster stats use the same calculation pipeline?
-3. What is the role of base stats, individual variation, nature/class, level, equipment, and transformations?
-4. Is the previously discussed 70-point allocation with a 30-point per-stat cap still intended?
-5. What does Level 100 auto-normalization preserve or remove?
-6. What is the complete base damage equation?
-7. Where does RNG apply, and at which exact points does integer truncation occur?
-8. What are the finalized STAB and type-effectiveness values?
-9. How are immunity, minimum damage, critical hits, screens, weather, terrain, and status handled?
+## Priority 3 — Encounter Composition
+1. What is the maximum simultaneous monster count in compressed random encounters?
+2. How are encounters with more monsters than the active field introduced: waves, reserves, or simultaneous deployment?
+3. Which single-player formats allow companion characters, and how are they controlled?
+4. Are single-player reserves available in every encounter format or only selected formats?
 
-See [Stat System Research Plan](STAT_SYSTEM_RESEARCH_PLAN.md), [Damage Model](battle/DAMAGE_MODEL.md), and [Damage RNG Experiment](../experiments/damage_rng/README.md).
+## Priority 4 — Stats and Progression
+1. How does the 70-point allocation and 30-point cap work in story mode?
+2. Are points freely allocated, earned, resettable, or tied to equipment/class?
+3. What does competitive normalization preserve or remove?
+4. How do relationship buffs/debuffs map to OCEAN-derived relationship dimensions, and what is their cap?
+5. Are relationship effects applied to the player, companions, monsters, or only bonded units?
 
-## Priority 4 — Types, Villages, and Progression
-1. Which of the 12 named affinities are actual battle types?
-2. Are Light, Shadow, and Prismatic part of the same chart or special affinities?
-3. Which seven types/villages form the initial structure?
-4. What are the complete type multipliers, including resistances and immunities?
-5. Does each village have exactly three clans?
-6. How does origin identity coexist with later type/move flexibility?
-7. Are weather-like clan abilities global, local, or user-side effects?
+## Priority 5 — Types and Competitive Rules
+1. Which affinities are actual battle types?
+2. Which seven types/villages form the initial structure?
+3. What are all type multipliers and immunities?
+4. What are the exact Species Clause, Item Clause, and Open Team List rules?
+5. What are timer precedence, pause behavior, and timeout outcomes?
 
-## Priority 5 — Story and Feature Scope
+## Priority 6 — Story and Feature Scope
 1. What is the protagonist's role in the AI-related coup?
 2. What agency do the Light and Shadow mythical creatures have?
 3. Is the Portal Gauntlet the primary capture mechanic?
@@ -60,13 +56,13 @@ See [Stat System Research Plan](STAT_SYSTEM_RESEARCH_PLAN.md), [Damage Model](ba
 
 ## Project Integration (Deferred)
 1. What Unity editor version will be used?
-2. Where is the actual Unity project folder, and does it contain `Assets/`, `Packages/`, and `ProjectSettings/`?
+2. Where is the actual Unity project root, and does it contain Assets/, Packages/, and ProjectSettings/?
 3. Which existing archive, if any, is the canonical starting point?
 4. Are there scripts or assets that must be preserved?
 
 ## Deferred Until the Battle Core Is Stable
 - Full campaign/world structure and village-specific progression.
-- Online multiplayer, matchmaking, and server authority.
+- Online matchmaking, server authority, and anti-cheat implementation.
 - Save format and long-term progression persistence.
 - Final art pipeline and production asset creation.
 - Localization, analytics, monetization, and live operations.
