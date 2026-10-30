@@ -32,7 +32,8 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 ## Highest-Priority Next Work
 1. Review and accept or amend the collaboration protocol and Stage 1/Stage 2 governance changes.
-2. Continue the damage-equation investigation from [DAMAGE_EQUATION_DECISION_BRIEF.md](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md): establish representative or synthetic stat/power ranges, then build a comparison experiment across the candidate equation families. Keep assumptions labeled and do not select a formula or RNG model without human approval.
+2. Review the synthetic comparison report from [Damage Equation Comparison Experiment](experiments/damage_equation/README.md) after its CI run completes. Evaluate sensitivity across both synthetic scales, especially direct ratio versus offset ratio and direct-level versus derived-stat level treatment.
+3. Use the measured tradeoffs to narrow the design choices, then request human approval for any actual damage equation, stat scale, or RNG decision. Do not select a formula or RNG model automatically.
 3. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
 
 Do not begin Unity implementation or select a final RNG model without explicit approval.
