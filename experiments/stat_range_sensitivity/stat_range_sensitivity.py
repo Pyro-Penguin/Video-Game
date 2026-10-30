@@ -163,6 +163,26 @@ def rank_flip_audit(matchups: list[dict]) -> dict:
     return {"matchup_count": len(flips), "matchups_with_rank_changes": sum(bool(x["rank_changed_candidates"]) for x in flips), "details": flips}
 
 
+def pairwise_rank_flip_audit(matchups: list[dict]) -> dict:
+    details = []
+    for attacker in ATTACKERS:
+        for defender in DEFENDERS:
+            for vitality in VITALITIES:
+                subset = [r for r in matchups if r["attacker"] == attacker and r["defender"] == defender and r["vitality"] == vitality]
+                for i, left in enumerate(subset):
+                    for right in subset[i + 1:]:
+                        raw_relation = (left["raw_ttk"] > right["raw_ttk"]) - (left["raw_ttk"] < right["raw_ttk"])
+                        floor_relation = (left["floored_ttk"] > right["floored_ttk"]) - (left["floored_ttk"] < right["floored_ttk"])
+                        if raw_relation != floor_relation:
+                            details.append({
+                                "attacker": attacker, "defender": defender, "vitality": vitality,
+                                "left_candidate": left["candidate"], "left_c": left["offset_c"],
+                                "right_candidate": right["candidate"], "right_c": right["offset_c"],
+                                "raw_relation": raw_relation, "floored_relation": floor_relation,
+                            })
+    return {"pairwise_comparisons": 75 * 55, "rank_flips_or_tie_changes": len(details), "details": details}
+
+
 def offset_rank_audit(matchups: list[dict]) -> dict:
     rows = []
     for attacker in ATTACKERS:
@@ -250,6 +270,7 @@ def run_experiment() -> dict:
         "gates": calibration_and_gates(),
         "all_vs_all": matchups,
         "raw_vs_floored_rank_audit": rank_flip_audit(matchups),
+        "pairwise_rank_flip_audit": pairwise_rank_flip_audit(matchups),
         "candidate_b_offset_rank_audit": offset_rank_audit(matchups),
         "combined_perturbations": combined,
         "level_sweep": level_sweep(),
