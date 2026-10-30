@@ -1,24 +1,31 @@
 # Decision Log
 
-Record durable decisions here. Use **Confirmed**, **Provisional**, or **Unresolved**. A proposal is not a decision until explicitly accepted.
+Use exactly four decision statuses: **Confirmed**, **Provisional**, **Unresolved**, and **Superseded**. Confirmed records may still have unresolved details; state their scope and limits explicitly. Proposals are not decisions until the human accepts them.
 
-| ID | Topic | Status | Current record |
-|---|---|---|---|
-| D-001 | Initial prototype focus | Confirmed | Validate coherent battle rules and a local battle before broad content production. |
-| D-002 | Local control | Confirmed | One user controls both sides for the initial prototype. |
-| D-003 | Competitive battle structure | Confirmed direction | Online target: bring five monsters, select three; field player character + two active monsters, with one selected monster as reserve. |
-| D-004 | Turn model | Confirmed direction | One action per active entity; all actions selected before resolution; priority tiers then Speed determine order. Exact tie-break and interruption rules remain open. |
-| D-005 | Single-player formats | Confirmed direction | Support multiple encounter compositions, including player + 1/2 monsters and companion-character formats; max multi-encounter size remains open. |
-| D-006 | Knockout and replacement | Confirmed direction | Defeated monsters leave battle; queued action is lost if actor/target is defeated before resolution; replacements enter at end of turn if reserve remains. |
-| D-007 | Monster defeat and victory | Confirmed direction | Losing monsters alone does not cause defeat; player character must also be defeated, with encounter-specific player-defeat rules. Exact victory timing remains provisional. |
-| D-008 | Battle stats | Confirmed direction | Shared core stat formula for players and monsters; current names include Vitality, Attack, Defense, Special Attack, Special Defense, Speed. |
-| D-009 | Relationship stat | Confirmed direction | Single-player-only relationship value may provide small buffs/debuffs; exact mapping from OCEAN relationship dimensions to combat effects is unresolved. |
-| D-010 | Stat allocation | Provisional | 70-point allocation and 30-point per-stat cap remain under consideration; single-player progression integration unresolved. |
-| D-011 | Elemental system | Confirmed direction | Elemental types are included; type chart remains open. |
-| D-012 | Victory check timing | Provisional | Check victory after end-of-turn replacement for now; test edge cases before confirming. |
-| D-013 | Engine baseline | Unresolved | Unity on macOS; exact editor version and project root not yet verified. |
+## Decision Register
 
-## Change Policy
-- Add a new row when a decision is made; do not erase historical rationale.
-- If a decision is superseded, mark it superseded and link the replacement ID.
-- Update the relevant specification and decision log when a rule changes.
+| ID | Topic | Status | Date | Decision and scope | Rationale / authority | Dependencies | Supersession |
+|---|---|---|---|---|---|---|---|
+| D-001 | Initial prototype focus | Confirmed | Not recorded | Validate coherent battle rules and a local battle before broad content production. Does not authorize engine-project creation. | Prior explicit project direction; historical rationale not recorded. | Coherent battle rules. | None |
+| D-002 | Local control | Confirmed | Not recorded | One user controls both sides for the initial prototype. | Prior explicit project direction. | Local battle prototype. | None |
+| D-003 | Competitive battle structure | Confirmed | Not recorded | Online target: bring five monsters, select three; field player character plus two active monsters, with one selected monster as reserve. Timing and edge cases remain open. | Prior explicit project direction. | Battle resolution and player role. | None |
+| D-004 | Turn model | Confirmed | Not recorded | One action per active entity; all actions selected before resolution; priority tiers then Speed determine order. Tie-break, interruption, redirection, and invalidation details remain open. | Prior explicit project direction. | Battle structure and action definitions. | None |
+| D-005 | Single-player formats | Confirmed | Not recorded | Support multiple encounter compositions, including player plus one/two monsters and companion-character formats. Maximum encounter size and exact availability remain open. | Prior explicit project direction. | Encounter composition and companion control. | None |
+| D-006 | Knockout and replacement | Confirmed | Not recorded | Defeated monsters leave battle; queued action is lost if actor or target is defeated before resolution; replacements enter at end of turn if reserve remains. Exceptions and sequencing details remain open. | Prior explicit project direction. | Turn phases and victory timing. | None |
+| D-007 | Monster defeat and victory | Confirmed | Not recorded | Losing monsters alone does not cause defeat; player character must also be defeated, with encounter-specific rules. Victory timing and simultaneous defeat remain open. | Prior explicit project direction. | Encounter rules and replacement timing. | None |
+| D-008 | Battle stats | Confirmed | Not recorded | Players and monsters share core stats: Vitality, Attack, Defense, Special Attack, Special Defense, Speed. Exact formulas and normalization remain open. | Prior explicit project direction. | Damage equation and normalization. | None |
+| D-009 | Relationship stat | Confirmed | Not recorded | Relationship effects are single-player only; OCEAN-derived dimensions may influence combat. Exact mapping and magnitude remain open; no competitive effect. | Prior explicit project direction. | Relationship design and damage modifiers. | None |
+| D-010 | Stat allocation | Provisional | Not recorded | 70-point allocation and 30-point per-stat cap remain under consideration; story progression integration is unresolved. | Working proposal, not finalized balance. | Stat formula and normalization. | None |
+| D-011 | Elemental system | Confirmed | Not recorded | Elemental types are included; type inventory, chart, multipliers, and immunities remain open. | Prior explicit project direction. | Type/village design and damage equation. | None |
+| D-012 | Victory check timing | Provisional | Not recorded | Check victory after end-of-turn replacement as a working candidate; test edge cases before confirming. | Provisional sequencing proposal. | Knockout and replacement rules. | None |
+| D-013 | Engine baseline | Unresolved | Not recorded | Unity on macOS is intended, but editor version and project root are unverified. No Unity project exists in the repository. | Current repository state. | Explicit engine setup decision. | None |
+| D-014 | Canonical project priority order | Confirmed | 2026-10-30 | PROJECT_STATUS.md is the single canonical project-wide priority list. Damage-equation design resolution is Priority 1 and precedes expansion of turn queues/state loops; battle structure/resolution follows. OPEN_QUESTIONS.md groups questions in that order and does not set a competing hierarchy. This does not approve a final formula or RNG model. | Explicit human direction on 2026-10-30 resolving the conflict between the two documents. | Damage model, stat definitions, battle resolution. | None |
+
+## Metadata and Change Policy
+
+- Every new decision must have a unique ID, status, ISO date, scoped record, rationale/source, dependencies where applicable, and supersession links where applicable.
+- Do not invent historical dates or rationales. “Not recorded” means the repository did not establish them.
+- Add a new row when a decision changes; preserve the prior record and mark it **Superseded**, linking the replacement ID.
+- Keep decision status separate from work-verification state.
+- Update relevant specifications and Open Questions when a decision changes.
+- Follow [COLLABORATION_PROTOCOL.md](../COLLABORATION_PROTOCOL.md) for authority and process.
