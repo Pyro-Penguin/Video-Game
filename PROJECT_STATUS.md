@@ -21,13 +21,16 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
 
 ## Current Design Priorities
-1. Resolve roster size, active field size, player role, reserve, and defeat conditions.
-2. Define action economy and simultaneous resolution semantics.
-3. Clarify timer interaction and competitive clauses.
-4. Define the stat calculation pipeline and Level 100 normalization.
-5. Define the full damage formula separately from RNG.
+1. Resolve side composition: what 3v3 counts, registered/selected roster, player role, active field, and reserve.
+2. Define turn phases, action economy, targeting, priority/speed/ties, invalidated actions, and knockout timing.
+3. Define replacement and victory conditions, including simultaneous defeat cases.
+4. Define stat ownership and Level 100 normalization.
+5. Define the full damage formula, modifier order, and rounding separately from RNG.
 6. Reconcile the type inventory and seven-village structure.
 7. Audit Light/Shadow stat drafts before using them as balance inputs.
+8. Define competitive clauses and timer policy after core turn resolution is coherent.
+
+See [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) for the decision-by-decision register.
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
