@@ -38,7 +38,7 @@ The damage-equation-first ordering is a project sequencing decision, not a claim
 - Battle simulation or damage engine for the game.
 - Creature capture, progression, world traversal, puzzle, or story systems.
 - Online PvP, matchmaking, or server authority.
-- Automated documentation-governance validator (deferred Stage 2).
+- Lightweight documentation-governance validator and malformed-document tests committed; CI execution pending.
 
 ## Engineering Direction
 When engine work begins:
