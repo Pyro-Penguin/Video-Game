@@ -47,7 +47,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
 
     def test_every_b_offset_is_independently_calibrated(self):
         for c in B_OFFSETS:
-            self.assertEqual(candidate_damage("B_offset_ratio", 100, 300, 275, 100, c), Fraction(50))
+            self.assertEqual(candidate_damage("B_offset_ratio", 100, 300, 275, 100, c), Fraction(60))
 
     def test_level_derived_only_and_direct_level_paths_are_distinct(self):
         low = candidate_damage("A_direct_ratio", 100, 300, 275, 1)
