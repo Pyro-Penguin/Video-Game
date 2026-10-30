@@ -21,6 +21,8 @@ Use exactly four decision statuses: **Confirmed**, **Provisional**, **Unresolved
 | D-013 | Engine baseline | Unresolved | Not recorded | Unity on macOS is intended, but editor version and project root are unverified. No Unity project exists in the repository. | Current repository state. | Explicit engine setup decision. | None |
 | D-014 | Canonical project priority order | Confirmed | 2026-10-30 | PROJECT_STATUS.md is the single canonical project-wide priority list. Damage-equation design resolution is Priority 1 and precedes expansion of turn queues/state loops; battle structure/resolution follows. OPEN_QUESTIONS.md groups questions in that order and does not set a competing hierarchy. This does not approve a final formula or RNG model. | Explicit human direction on 2026-10-30 resolving the conflict between the two documents. | Damage model, stat definitions, battle resolution. | None |
 
+| D-015 | Handoff verification freshness | Confirmed | 2026-10-30 | Before committing a handoff, re-check the latest relevant CI run and confirm that it tested the exact current commit. Refresh handoff verification claims, run IDs, and artifact counts; do not carry forward stale or unverified claims. This governs reporting process only and does not alter game rules. | Process correction from review of the damage experiment handoff, intended to prevent stale verification state from being mistaken for current evidence. | Work-verification states; HANDOFF.md. | None |
+
 ## Metadata and Change Policy
 
 - Every new decision must have a unique ID, status, ISO date, scoped record, rationale/source, dependencies where applicable, and supersession links where applicable.
