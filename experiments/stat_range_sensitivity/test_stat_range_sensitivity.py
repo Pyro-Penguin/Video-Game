@@ -20,6 +20,12 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
             for c in offsets:
                 self.assertEqual(candidate_damage(name, 100, 300, 275, 100, c), Fraction(60))
 
+    def test_specialization_gate_uses_exact_two_to_one_ratio(self):
+        from stat_range_sensitivity import calibration_and_gates
+        gates = calibration_and_gates()["candidate_b_offset_gate_results"]
+        self.assertAlmostEqual(gates["100"]["two_to_one_damage_ratio"], 1.75)
+        self.assertTrue(gates["100"]["specialization_gate_pass"])
+
     def test_generation_nine_reference_core_known_fixtures(self):
         self.assertEqual(pokemon_gen9_base(100, 100, 100, 100), 86)
         self.assertEqual(pokemon_gen9_base(50, 100, 100, 100), 46)
