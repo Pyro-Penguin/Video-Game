@@ -45,6 +45,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
     def test_combined_perturbations_cover_all_four_groups(self):
         rows = combined_perturbations()
         self.assertEqual({r["group"] for r in rows}, {
+            "single_attack", "single_defense", "single_vitality",
             "attack_defense", "attack_vitality",
             "defense_vitality", "attack_defense_vitality",
         })
