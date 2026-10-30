@@ -12,7 +12,7 @@ This brief expands the Priority 1 investigation in [PROJECT_STATUS.md](../../PRO
 
 - Shared core stats are intended for player characters and monsters: Vitality, Attack, Defense, Special Attack, Special Defense, and Speed.
 - Physical and special attacks are expected to select corresponding offensive and defensive stats, but exact categories and exceptions remain open.
-- Competitive battles are intended to normalize combatants to Level 100; the story mode still needs meaningful level progression.
+- **Provisional human preference:** competitive battles normalize combatants to Level 100; Level 50 remains the historical calibration anchor. Story-mode progression and direct level dependence remain under test.
 - Equipment, class/nature tradeoffs, stat stages, abilities, status, type effectiveness, and single-player relationship effects may influence damage.
 - Relationship effects are single-player only and must not leak into the competitive calculation.
 - The six-stat set and stat normalization formula are still working assumptions, not finalized rules.
@@ -56,14 +56,14 @@ B = K \cdot P \cdot \frac{A+c}{D+c}
 - **Risks:** c is another balance constant; behavior depends on the stat scale; can make small stat differences feel muted.
 - **Questions:** Should c be global, level-scaled, or derived from the stat budget? What is the intended ratio at equal stats?
 
-### Candidate C — Level-scaled cartridge-style structure
+### Candidate C — Simplified direct-level structure (legacy comparison candidate)
 
 \[
 B = \left(\frac{\left(\frac{2L}{5}+2\right)PA}{50D}\right)+2
 \]
 
-- **Advantages:** explicit level contribution; recognizable baseline for a creature-battler; easy to compare against familiar genre behavior.
-- **Risks:** the level term may double-count progression if A and D already scale strongly with level; constants and rounding conventions are not automatically appropriate for this game's stat ranges.
+- **Advantages:** explicit level contribution; useful for isolating the effect of a direct level term.
+- **Risks:** this simplified candidate is not a faithful Pokémon cartridge implementation. Its level term may double-count progression if derived stats already scale strongly; constants and rounding conventions are not automatically appropriate for this game's stat ranges. The separate Generation IX reference harness is the mechanical comparison.
 - **Questions:** Should level directly affect damage if derived stats already encode level? Does competitive Level 100 normalization make the level term redundant online?
 
 ### Candidate D — Bounded offense share
@@ -174,8 +174,8 @@ The experiment uses exact rational arithmetic. KO counts use raw damage without 
 The team's feedback supports these working preferences, but they are not accepted game rules:
 
 - The proposed Attack 200–400, Defense 200–350, and Vitality 250–500 bands are acceptable as synthetic test envelopes only.
-- Competitive combat should use one fixed normalization level. The team is split between Level 50 (lower displayed values and current calibration anchor) and Level 100 (narrative endgame convention); keep the choice open.
-- For story progression, one reviewer prefers level → derived stats → damage for the first pass; another recommends direct level scaling. Keep both treatments testable rather than silently choosing one.
+- Competitive normalization preference is Level 100; Level 50 is retained only as the historical calibration anchor. This remains provisional until the expanded experiment is reviewed.
+- For story progression, level → derived stats/Vitality → damage is the provisional preference, but direct level scaling must remain in the experiment because the principle has not been confirmed.
 - Suggested neutral pacing is 3–6 hits, with 2HKO for strongly favorable / heavily invested attacks and 5–7+ for a defensive wall against resisted attacks. Type effectiveness is not yet modeled, so the latter cannot be tested in this experiment.
 - The preference is moderate offensive specialization rather than fully linear extremes or heavy compression. Candidate B and a softened-A variant merit further investigation; A and D remain useful bounds. No candidate is selected.
 
