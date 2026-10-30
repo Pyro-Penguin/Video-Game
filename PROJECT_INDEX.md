@@ -9,6 +9,7 @@ Canonical navigation for the Video Game project repository.
 - [Design Pillars](docs/DESIGN_PILLARS.md) — provisional design principles.
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md) — battle format, timers, clauses, and conflicts.
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md) — separate roster, active field, player, and reserve decisions.
+- [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) — actionable blocking, important, and deferred rules decisions.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
 - [Damage RNG Experiment](experiments/damage_rng/README.md) — executable Python experiment and tests.
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md) — stat ownership, normalization questions, and next experiment.
