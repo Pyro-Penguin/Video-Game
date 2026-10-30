@@ -49,6 +49,24 @@ jobs:
           python damage_rng.py --trials 1000 --seed 20261030 --output /tmp/damage-rng-report.json
           python -c "import json; p=json.load(open('/tmp/damage-rng-report.json')); assert len(p['models']) == 6; print('JSON report smoke test passed')"
 
+  stat-range-sensitivity:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Run stat-range sensitivity tests
+        working-directory: experiments/stat_range_sensitivity
+        run: python -m unittest -v
+      - name: Generate and validate sensitivity report
+        working-directory: experiments/stat_range_sensitivity
+        run: |
+          python stat_range_sensitivity.py --output /tmp/stat-range-report.json
+          python -c "import json; p=json.load(open('/tmp/stat-range-report.json')); assert p['sample_count'] == len(p['results']); assert p['sensitivity_sample_count'] == len(p['sensitivity']); assert p['level_sample_count'] == len(p['level_effect']); print('Stat-range report smoke test passed')"
+
   documentation:
     runs-on: ubuntu-latest
     steps:
