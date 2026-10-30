@@ -139,6 +139,46 @@ Do not use guessed stat ranges as if they were project data. If ranges are neede
 - Confirm the treatment of zero/invalid inputs.
 - Confirm the deterministic modifier and rounding boundaries.
 
+## Team proposal review: endgame stat bands and level treatment
+
+The team supplied the following proposed Level-100-equivalent bands:
+
+| Attribute | Team proposal | Review status |
+|---|---:|---|
+| Attack / Special Attack | 200–400+ | Synthetic test band only |
+| Defense / Special Defense | 200–350+ | Synthetic test band only |
+| Vitality / HP | 250–500+ | Synthetic test points only |
+| Speed | 100–400+ | Not evaluated in the damage experiment |
+
+The proposal is useful as a sensitivity-test envelope, but it is not yet a stat specification. In particular, a larger numerical range does not itself create better percentage granularity; calculation precision and rounding policy determine that. HP cannot be assessed independently of damage, and Speed requires a separate turn-order analysis.
+
+### Level-treatment recommendation (not a decision)
+
+Keep direct level out of the base equation for the first design pass. Let level affect derived stats and Vitality through the progression model. If mixed-level encounters later lack sufficient separation, evaluate a separate, explicit level-difference modifier rather than coupling level to every damage calculation.
+
+For normalized competitive combat at Level 100, a direct level term is constant across combatants and can be absorbed into calibration. This does not establish how story-mode level progression should work.
+
+### Experiment added
+
+[Proposed Endgame Stat-Range Sensitivity Experiment](../../experiments/stat_range_sensitivity/README.md) converts the proposal into bounded synthetic fixtures and reports:
+- Five Attack/Defense archetypes.
+- Four candidate equations across Levels 1, 25, 50, and 100.
+- Move powers 40, 80, 100, 120, and 160.
+- Raw hits-to-knockout against Vitality test points 250, 350, and 500.
+- Attack and Defense sensitivity to requested +5%, +10%, and +20% changes.
+
+The experiment uses exact rational arithmetic. KO counts use raw damage without integer flooring and are comparative indicators only. Speed, modifiers, RNG, equipment, type, stat progression, and final damage application are out of scope. The proposed ranges, archetypes, and move powers remain synthetic.
+
+### Review questions
+
+1. Are these proposed bands useful as provisional test targets, including the explicit bounded endpoints used in the first sweep?
+2. Should Level 100 be the competitive normalization level while story progression changes derived stats only?
+3. What should a representative neutral matchup survive: approximately how many successful attacks at ordinary move power?
+4. Should offensive specialization create a substantial damage advantage, or should the equation compress extreme Attack/Defense ratios?
+5. Should Speed be evaluated next as a linear turn-order stat, or should we first complete the damage/TTK envelope?
+
+Do not select a candidate automatically from the lowest or highest KO count. The intended tactical pacing and desired counterplay must determine acceptable outcomes.
+
 ## Recommended next action
 
-Create a synthetic-input comparison experiment only after choosing a representative stat scale or explicitly defining a multi-scale sensitivity sweep. Use its output to compare the four equation families; do not automatically select the highest-performing or most familiar formula. Bring the measured tradeoffs to the human for the actual design decision.
+Review the generated sensitivity report and answer the review questions above. Keep all current formula, stat-scale, level-treatment, modifier-order, and RNG decisions open until explicitly accepted by the human.
