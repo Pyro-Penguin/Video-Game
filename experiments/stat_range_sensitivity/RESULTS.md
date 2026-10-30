@@ -1,109 +1,130 @@
-# Stat-Range Sensitivity — Review Results
+# Expanded Damage Sensitivity — Results
 
-**Evidence status:** The flooring-enhanced experiment passed all seven jobs in GitHub Actions run [41090778744](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41090778744). The CI artifact `stat-range-sensitivity-report` was downloaded and inspected. It contains 1,200 damage/KO rows, 120 one-stat sensitivity rows, and 80 level-effect rows; all 1,200 rows contain integer-floor damage and KO fields. Integer flooring changes the KO count in 247 of 1,200 rows. This remains an isolated sensitivity model, not the final damage pipeline.
+**Evidence:** Expanded code/report passed all seven CI jobs in [run 41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607). Artifact `expanded-damage-sensitivity-report` was downloaded and inspected. Follow-up documentation passed all seven jobs in [run 41094929165](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094929165).
 
-**Design status:** Synthetic investigation only. No equation, stat band, level policy, or TTK target is selected.
+**Design status:** Synthetic evidence only. No formula, stat band, level policy, or TTK rule has been selected. Current human preferences remain provisional in the Damage Equation Decision Brief; they are not Decision Log entries.
 
-## Inputs represented
+## Scope and calibration
 
-| Input | Values |
-|---|---|
-| Proposed Attack | 200–400 |
-| Proposed Defense | 200–350 |
-| Proposed Vitality | 250–500 |
-| Test Attack/Defense profiles | Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350 |
-| Levels | 1, 25, 50, 100 |
-| Move powers | 40, 80, 100, 120, 160 |
-| Vitality test points | 250, 350, 500 |
-| Damage candidates | A direct ratio; B offset ratio (c=100); C level-scaled; D bounded offense share |
+| Measure | Result |
+|---|---:|
+| Attacker × defender pairs | 25 |
+| All-vs-all rows | 825 |
+| Single + combined perturbation rows | 2,695 |
+| Level sweep rows | 35 |
+| Raw/floored pairwise candidate comparisons | 4,125 |
+| Candidate B matchup-pair comparisons per offset | 2,775 |
 
-The profile names describe test coordinates only. In particular, these are paired attacker/defender stats in a single profile, not a full matchup matrix in which every attacker archetype is tested against every defender archetype.
+Five profiles remain synthetic coordinates: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350. Competitive comparison is Level 100; Level 50 remains the historical anchor. Vitality values are 250/350/500; Power 100.
 
-## Main comparison: Level 50, Power 100
+The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350, outside the provisional 4–6 target. The comparison was recalibrated to a shared **60-damage Level-100 anchor** at Power 100, Attack 300, Defense 275. This produces 6 floored hits. Each B offset is independently calibrated to the same anchor. Candidate C uses one global calibration constant based on the same reference profile. The original Level-50/50-damage experiment remains historical evidence.
 
-The table shows hits-to-knockout at each Vitality test point. First number is raw fractional damage; second number applies integer flooring once per successful hit (minimum 1 damage).
+## Candidate screening
 
-| Archetype | Candidate | VIT 250 | VIT 350 | VIT 500 |
-|---|---|---:|---:|---:|
-| Balanced | A — direct ratio | 5 / 5 | 7 / 7 | 10 / 10 |
-| Balanced | B — offset ratio | 5 / 5 | 7 / 7 | 10 / 10 |
-| Balanced | C — level-scaled | 5 / 5 | 7 / 7 | 10 / 10 |
-| Balanced | D — bounded share | 5 / 5 | 7 / 7 | 10 / 10 |
-| Offensive | A — direct ratio | 4 / 4 | 5 / 5 | 7 / 7 |
-| Offensive | B — offset ratio | 4 / 4 | 5 / 5 | 7 / 8 |
-| Offensive | C — level-scaled | 4 / 4 | 5 / 5 | 7 / 7 |
-| Offensive | D — bounded share | 5 / 5 | 6 / 6 | 9 / 9 |
-| Defensive | A — direct ratio | 7 / 8 | 10 / 10 | 14 / 15 |
-| Defensive | B — offset ratio | 7 / 7 | 9 / 10 | 13 / 14 |
-| Defensive | C — level-scaled | 7 / 7 | 10 / 10 | 14 / 14 |
-| Defensive | D — bounded share | 6 / 7 | 9 / 9 | 12 / 13 |
-| High-pressure | A — direct ratio | 3 / 3 | 4 / 4 | 5 / 5 |
-| High-pressure | B — offset ratio | 3 / 4 | 5 / 5 | 6 / 7 |
-| High-pressure | C — level-scaled | 3 / 3 | 4 / 4 | 6 / 6 |
-| High-pressure | D — bounded share | 4 / 4 | 6 / 6 | 8 / 8 |
-| Low-pressure | A — direct ratio | 9 / 9 | 13 / 13 | 18 / 18 |
-| Low-pressure | B — offset ratio | 8 / 8 | 11 / 11 | 15 / 16 |
-| Low-pressure | C — level-scaled | 9 / 9 | 12 / 13 | 17 / 18 |
-| Low-pressure | D — bounded share | 7 / 7 | 10 / 10 | 14 / 14 |
+Clean 2:1 specialization compares Attack 600 / Defense 300 against equal Attack 300 / Defense 300 at Power 100, Level 100. All TTK values use integer-floored damage.
 
-Notation: `raw hits / integer-floor hits`. Integer flooring can add a hit in several cells, especially where per-hit raw damage is fractional. It does not change the broad ordering that high-pressure profiles defeat faster than low-pressure profiles, but it can change close candidate comparisons. This is enough to show flooring is not universally negligible; it must remain in later pipeline testing.
+| Candidate | Neutral floored TTK | 2:1 damage ratio | Combined numeric gates |
+|---|---:|---:|---|
+| A — direct ratio | 6 | 2.000× | Fail: too volatile |
+| B — c=0 | 6 | 2.000× | Fail |
+| B — c=25 | 6 | 1.923× | Fail |
+| B — c=50 | 6 | 1.857× | Fail |
+| B — c=71 | 6 | 1.809× | Fail |
+| B — c=100 | 6 | 1.750× | **Pass** |
+| B — c=143 | 6 | 1.677× | **Pass** |
+| B — c=200 | 6 | 1.600× | **Pass** |
+| B — c=400 | 6 | 1.429× | **Pass** |
+| C — direct level | 6 | 1.977× | Fail |
+| D — bounded share | 6 | 1.333× | Fail: too compressed |
 
-## Flooring audit: candidate ranking and threshold sensitivity
+All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. The four B offsets listed as passing also meet the specialization gate. This is screening evidence, not a selection.
 
-The CI JSON was re-aggregated by candidate across its 300 rows each (same 300 scenario coordinates per candidate):
+## All-vs-all TTK at Vitality 350
 
-| Candidate | Rows whose KO count changes after flooring | Rows changing by more than 1 hit | Mean raw hits | Mean floored hits |
-|---|---:|---:|---:|---:|
-| A — direct ratio | 40 / 300 | 4 / 300 | 9.907 | 10.053 |
-| B — offset ratio (c=100) | 48 / 300 | 0 / 300 | 9.613 | 9.773 |
-| C — level-scaled | 91 / 300 | 52 / 300 | 21.223 | 22.610 |
-| D — bounded share | 68 / 300 | 4 / 300 | 9.733 | 9.973 |
+Candidate B at c=100; rows are attackers, columns are defenders.
 
-**Ranking result:** the aggregate mean-TTK order is unchanged by flooring: B, D, A, then C from fewest to most hits. Among A/B/D, the broad aggregate ranking therefore survives. This is not a universal pairwise stability result: the relative ordering of candidate pairs changes in some individual scenario coordinates, so per-matchup comparisons must still use floored values. Candidate C is not directly comparable as a competitive candidate in this aggregate because its level term spans Levels 1–100 while the other candidates are level-invariant.
+| Attacker ↓ / Defender → | Balanced | Offensive | Defensive | High-pressure | Low-pressure |
+|---|---:|---:|---:|---:|---:|
+| Balanced | 6 | 6 | 7 | 5 | 7 |
+| Offensive | 5 | 5 | 6 | 4 | 6 |
+| Defensive | 7 | 7 | 9 | 6 | 9 |
+| High-pressure | 5 | 5 | 6 | 4 | 6 |
+| Low-pressure | 8 | 8 | 10 | 7 | 10 |
 
-**Flooring threshold result:** 60/1,200 rows change by more than one hit, all from Candidate C; the largest increase is 30 hits. Therefore an acceptance tolerance of ±1 hit is not satisfied across the full mixed-level matrix. This is strongly concentrated in the direct-level candidate at low levels, where flooring small per-hit damage compounds into large KO-threshold shifts. For A, B, and D, only 8/900 rows change by more than one hit (4 A, 0 B, 4 D), and the maximum change is two hits. The experiment's current per-hit floor is an isolated model, so these figures do not establish the behavior of a complete modifier pipeline.
+Mean and range across the 25 pairings:
 
-**Concentration:** the 247 changed rows are distributed A=40, B=48, C=91, D=68. Candidate C accounts for 91/300 changed rows and all 52 rows whose KO count rises by more than one hit. The earlier observation that D compresses some profiles but is not uniformly safer is not contradicted by this aggregate audit; however, candidate order does change in individual matchup coordinates, so that qualitative conclusion must be rechecked in the all-vs-all floored matrix.
+| Candidate | Mean floored hits | Range |
+|---|---:|---:|
+| A | 6.76 | 4–12 |
+| B c=100 | 6.56 | 4–10 |
+| B c=143 | 6.40 | 4–9 |
+| B c=200 | 6.44 | 5–9 |
+| B c=400 | 6.36 | 5–8 |
+| C | 6.76 | 4–11 |
+| D | 6.56 | 5–9 |
 
-These findings mean the team must specify whether any proposed ±1-hit pacing tolerance applies to raw damage, integer-floored damage, or both. For candidate screening and eventual gameplay, the operative comparison must be the floored pipeline; raw values remain diagnostic only.
+The mean is descriptive, not a gate. Defensive-tail outcomes are visible in the matrix and should not be hidden by aggregate averages.
 
-## Level treatment
+## Flooring and ranking
 
-Candidate C is the only candidate with direct level dependence. At fixed Attack/Defense/Power, candidates A, B, and D are level-invariant. Candidate C's output increases with level, as intended by its structure.
+Across 4,125 candidate-pair comparisons (25 ordered matchups × three Vitality values × 55 candidate/offset pairs), flooring changed the pairwise relation in **439 comparisons**. All 439 were ties created or removed; there were **zero strict order reversals**. The simpler A/C/D audit reports two of 75 matchup/Vitality coordinates with a changed rank. The full pairwise audit includes every B offset and exposes ties.
 
-That makes the comparison conditional: use Level 50 for the common calibrated candidate-family comparison because the existing candidate calibration anchor is Level 50. Inspect Level 1/25/100 separately to understand the progression curve. Do not compare Candidate C at Level 100 against A/B/D as if the values had identical level semantics.
+Flooring remains mandatory. This result is specific to the Level-100 expanded matrix and does not invalidate the earlier mixed-level paired-profile flooring finding.
 
-The team's competitive normalization preference is split between Level 50 and Level 100. A single fixed level is required for normalized competitive combat; the actual constant remains unresolved. Level 50 is a practical working test point because it is the current calibration anchor and reduces displayed values, not because the game has selected it.
+## Candidate B offset stability
 
-## What the first results say
+Each c is compared with c=100 by ordering 75 matchup coordinates (25 pairs × three Vitality values), with 2,775 matchup-pair comparisons per offset.
 
-1. **Vitality dominates TTK across the tested band.** With the balanced profile at Level 50 and Power 100, the same candidate yields 5, 7, or 10 hits at Vitality 250, 350, or 500. Therefore a single 3–6 hit target cannot be applied to the whole proposed Vitality band without defining the reference Vitality / move-power context.
-2. **The high-pressure and low-pressure fixtures span a wide pacing range.** At Level 50, Power 100, Vitality 350, high-pressure profiles require 4–6 hits, while low-pressure profiles require 10–13. These are paired profiles, not all-vs-all matchups.
-3. **Candidate D compresses the offensive end more strongly.** At the offensive profile and Vitality 350, D requires 6 hits versus 5 for A/B/C; at high-pressure, D requires 6 versus 4–5 for A/B/C. It also produces faster KOs in the low-pressure profile, so “bounded share” should not be assumed to be a uniformly safer curve.
-4. **Candidate B is a plausible middle candidate, not a winner.** It softens some offensive extremes relative to A, but offset c=100 is an arbitrary synthetic parameter and its results depend on the chosen stat scale.
-5. **Candidate C should be reviewed as a progression policy as much as a formula family.** Its direct level multiplier materially changes story-mode progression. It should not be selected or rejected solely from the normalized competitive sweep.
+| c | Raw ordering changes | Floored ordering changes |
+|---:|---:|---:|
+| 0 | 11.32% | 11.68% |
+| 25 | 9.95% | 9.59% |
+| 50 | 8.86% | 7.57% |
+| 71 | 3.96% | 4.18% |
+| 143 | 5.01% | **1.62%** |
+| 200 | 8.25% | 5.30% |
+| 400 | 18.31% | 17.19% |
 
-## Proposed acceptance criteria for the next experiment
+c=143 is the most stable alternative to c=100 in floored matchup ordering. c=400 creates stronger compression but changes ordering more. Across individual matchup coordinates, the floored TTK spread across B offsets reaches 6 hits. The offset is a consequential parameter, not a cosmetic constant.
 
-These are proposed screening gates for team review, not approved game requirements:
+## Combined-stat interactions
 
-- **Calibration parity:** every candidate must match the same damage anchor at the chosen competitive level and reference stats before curve shape is compared.
-- **Neutral pacing:** a named reference profile, Vitality value, and ordinary move power must land inside the team-approved neutral TTK band. Do not call any profile “typical” until it is explicitly designated.
-- **No accidental one-hit standard KO:** ordinary-power moves should not one-hit a full-Vitality standard profile absent an explicit mechanic such as a critical hit or strong effectiveness.
-- **Specialization envelope:** define the acceptable damage multiplier for a 2:1 Attack/Defense ratio; reject candidates outside that envelope.
-- **Sensitivity and monotonicity:** increased Attack must not reduce damage; increased Defense must not increase damage; report single-stat and combined-stat perturbations.
-- **Integer behavior:** report raw and integer-floored damage/TTK. Any candidate whose conclusions materially change after flooring must be evaluated using the intended full rounding pipeline before selection.
-- **Reproducibility:** tests, generated JSON, and this human-readable summary must be published by CI from the same commit.
+The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates raw-damage and floored-TTK interaction residuals against the corresponding single-stat controls.
 
-The numerical limits for the specialization envelope and neutral pacing must be agreed before candidate pruning. Do not tune the criteria after seeing which candidate they favor.
+Largest absolute residuals:
+- Attack×Defense: 5 percentage points of raw damage; 2 floored TTK hits.
+- Attack×Vitality: 0 percentage points; 1 floored TTK hit.
+- Defense×Vitality: 0 percentage points; 1 floored TTK hit.
+- Attack×Defense×Vitality: 5 percentage points; 2 floored TTK hits.
 
-## Limitations and next experiment
+This demonstrates that even where raw damage effects combine cleanly, integer KO thresholds can produce non-additive results.
 
-- No type effectiveness, resisted attacks, STAB, modifiers, criticals, RNG, equipment, stages, screens, shields, multi-hit moves, or simultaneous resolution.
-- No all-vs-all archetype matchup matrix. Current profiles couple Attack and Defense as test pairs.
-- No combined-stat perturbation sweep yet; the current sensitivity report changes Attack or Defense one at a time.
-- Speed is not represented.
-- No stat-allocation conversion, class/nature effect, Vitality derivation, or actual creature data.
-- Flooring here is a deliberately isolated per-hit floor, not a final modifier/rounding pipeline.
+## Level treatment and Pokémon reference harness
 
-Next: run the flooring-enhanced CI workflow, add a combined-stat sensitivity and all-vs-all matchup matrix, then agree the neutral reference and 2:1 specialization envelope. Only after those steps should the candidate list be narrowed.
+The Generation IX deterministic base-damage implementation is a **reference harness**, not a fifth candidate. It uses the core level/power/Attack/Defense structure with exact integer floors and a fixed 100% random factor. STAB, type, criticals, weather, items, abilities, screens, and other modifiers are excluded.
+
+At Balanced 300/275, Power 100, Vitality 350:
+
+| Level | Derived-stat-only path | Direct-level C | Pokémon reference |
+|---:|---:|---:|---:|
+| 1 | 6 hits | 88 hits | 50 hits |
+| 5 | 6 | 59 | 35 |
+| 10 | 6 | 39 | 24 |
+| 25 | 6 | 20 | 13 |
+| 50 | 6 | 11 | 7 |
+| 75 | 6 | 8 | 5 |
+| 100 | 6 | 6 | 4 |
+
+The derived-stat-only path deliberately holds derived stats constant to isolate direct level dependence; it is not a story stat-growth simulation. Candidate C's low-level TTK demonstrates why a direct level term cannot be judged independently of stat growth. The Pokémon harness is not calibrated to this game's 60-damage anchor and is a mechanical reference only.
+
+## Interpretation
+
+1. Candidate B merits continued study. c=100, 143, 200, and 400 pass the current numeric gates. c=143 best preserves c=100 matchup ordering among the tested alternatives; this is not a selection.
+2. A and C exceed the 2:1 specialization envelope; D falls below it.
+3. Direct level scaling creates extreme low-level TTK when endgame derived stats are held constant. Actual story stat growth must be modeled before a progression decision.
+4. Flooring changed ties, but did not strictly reverse pairwise ordering in this Level-100 matrix.
+5. No formula is selected. Review and explicitly accept/revise the gates before any Decision Log entry.
+
+## Limitations
+
+No type/STAB, criticals, weather, status, abilities, items, equipment, stat stages, RNG variation, shields, multi-hit, simultaneous resolution, or final damage application. No actual creature/class data or stat-allocation model. Profiles are synthetic. The Pokémon harness is deliberately incomplete. The level-derived-only sweep holds battle stats constant. CI verifies implementation consistency, not game balance or human acceptance.
