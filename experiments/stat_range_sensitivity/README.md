@@ -39,19 +39,19 @@ All four existing candidate families are reused with their existing shared ancho
 - D: bounded offense share.
 
 The report contains:
-- Damage and raw hits-to-knockout for every archetype / level / power / candidate / Vitality combination.
+- Raw damage, integer-floored damage (minimum 1), raw hits-to-knockout, and integer-floor hits-to-knockout for every archetype / level / power / candidate / Vitality combination.
 - One-stat-at-a-time Attack and Defense sensitivity at requested +5%, +10%, and +20%.
 - Direct level-effect rows for each candidate.
 - Explicit assumptions and limitations.
 
-Damage and KO thresholds use exact rational arithmetic. Requested percentage stat changes are converted back to integer stats by truncation. KO counts are calculated from raw, unrounded damage and are not predictions of final battle behavior.
+Damage and KO thresholds use exact rational arithmetic. Requested percentage stat changes are converted back to integer stats by truncation. Both raw and integer-floor KO counts are reported. Integer flooring is applied once per successful hit, with a minimum of 1 damage; this isolates the effect of per-hit flooring but is not a final damage pipeline because modifiers, RNG, shields, multi-hit behavior, and damage application remain excluded.
 
 ## Important interpretation limits
 
 - The stat bands came from a team proposal and are not confirmed project data.
 - Archetypes are illustrative points, not creatures, class templates, or outputs of the 70-point allocation concept.
 - Move powers and levels are inherited comparison fixtures, not selected game ranges.
-- No Vitality formula, stat progression, damage modifiers, type effectiveness, RNG, integer damage flooring, shields, or simultaneous damage application is included.
+- No Vitality formula, stat progression, damage modifiers, type effectiveness, RNG, shields, multi-hit behavior, or simultaneous damage application is included. Integer flooring is modeled as an isolated per-hit sensitivity only.
 - Speed requires a separate turn-order experiment; it cannot be judged from damage output.
 - Candidate C directly includes level; A, B, and D do not. The experiment isolates that difference but does not prove which progression model is preferable.
 - A passing test suite verifies implementation properties, not game balance.
