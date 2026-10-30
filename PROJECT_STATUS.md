@@ -4,7 +4,7 @@
 Original creature-collecting RPG with tactical PvP ambitions. Long-term target platform is mobile (iOS/Android). No Unity project or engine implementation exists yet.
 
 ## Current Stage
-**Design consolidation and standalone mechanics experimentation.** The repository remains intentionally engine-independent.
+**Design consolidation, collaboration governance, and standalone mechanics experimentation.** The repository remains intentionally engine-independent.
 
 ## Verified Progress
 - Documentation foundation created and indexed.
@@ -14,29 +14,31 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Stat system research plan added; no stat formula has been selected.
 - Standalone Python damage RNG experiment and automated tests committed.
 - Prior local test run recorded: 6 tests passed.
-- Seeded JSON report committed.
 - GitHub Actions workflow executed successfully on Python 3.10, 3.11, 3.12, and 3.13; automated tests and JSON report smoke test passed in all four jobs.
+- Collaboration protocol added; Stage 1 governance changes are committed and pending human review.
 
 ## Current Experiment
 [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
 
-## Current Design Priorities
-1. Resolve side composition: what 3v3 counts, registered/selected roster, player role, active field, and reserve.
-2. Define turn phases, action economy, targeting, priority/speed/ties, invalidated actions, and knockout timing.
-3. Define replacement and victory conditions, including simultaneous defeat cases.
-4. Define stat ownership and Level 100 normalization.
-5. Define the full damage formula, modifier order, and rounding separately from RNG.
-6. Reconcile the type inventory and seven-village structure.
-7. Audit Light/Shadow stat drafts before using them as balance inputs.
-8. Define competitive clauses and timer policy after core turn resolution is coherent.
+## Canonical Project Priorities
+This is the single authoritative project-wide priority list. [Open Questions](docs/OPEN_QUESTIONS.md) groups unresolved questions in this order; it does not establish a separate priority hierarchy.
 
-See [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) for the decision-by-decision register.
+1. **Damage equation design resolution.** Define the deterministic damage pipeline, stat inputs, modifier order, immunity, and rounding boundaries. Treat RNG distribution/placement as a separate decision. This is the immediate prerequisite before expanding turn queues or state loops; it does not authorize selecting a final RNG model.
+2. **Battle structure and resolution.** Resolve side composition, roster/selection/active/reserve counts, player role, turn phases, action economy, targeting, priority/speed/ties, invalidated actions, and knockout timing.
+3. **Replacement and victory.** Define replacement timing and victory conditions, including simultaneous defeat and encounter-specific player defeat.
+4. **Stats and progression.** Define stat ownership, Level 100 normalization, allocation, and relationship-effect boundaries.
+5. **Types and competitive rules.** Reconcile the type inventory and seven-village structure; then define competitive clauses and timer policy.
+6. **Audit existing balance inputs.** Audit Light/Shadow stat drafts before using them as balance inputs.
+7. **Story and feature scope.** Revisit broader campaign/world systems after the battle foundations are coherent.
+
+The damage-equation-first ordering is a project sequencing decision, not a claim that all damage details are already specified. It is recorded in [Decision D-014](docs/DECISION_LOG.md).
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
 - Battle simulation or damage engine for the game.
 - Creature capture, progression, world traversal, puzzle, or story systems.
 - Online PvP, matchmaking, or server authority.
+- Automated documentation-governance validator (deferred Stage 2).
 
 ## Engineering Direction
 When engine work begins:
@@ -47,6 +49,7 @@ When engine work begins:
 - Avoid allocations and expensive work in per-frame gameplay paths.
 
 ## Repository Notes
+- Follow [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) for startup, authority, decision fidelity, verification, and conditional updates.
 - Do not assume an installed Unity version or existing Unity project folder.
 - Treat original project archives as immutable source material.
 - Experimental outputs are evidence, not approved balance rules.
