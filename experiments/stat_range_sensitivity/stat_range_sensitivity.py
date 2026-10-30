@@ -213,34 +213,44 @@ def level_sweep() -> list[dict]:
                 "pokemon_reference_damage": pokemon,
                 "derived_only_floor": max(1, floor_fraction(derived_only)),
                 "direct_level_floor": max(1, floor_fraction(direct)),
+                "derived_only_ttk_vit350": ceil_fraction(Fraction(350, max(1, floor_fraction(derived_only)))),
+                "direct_level_ttk_vit350": ceil_fraction(Fraction(350, max(1, floor_fraction(direct)))),
+                "pokemon_reference_ttk_vit350": ceil_fraction(Fraction(350, max(1, pokemon))),
             })
     return rows
 
 
 def calibration_and_gates() -> dict:
-    equal = Fraction(REFERENCE_DAMAGE)
-    ratio = candidate_damage("A_direct_ratio", 100, 600, 300, 100) / candidate_damage("A_direct_ratio", 100, 300, 300, 100)
-    gates = {}
-    for c in B_OFFSETS:
-        neutral = candidate_damage("B_offset_ratio", 100, 300, 275, 100, c)
-        specialized = candidate_damage("B_offset_ratio", 100, 600, 300, 100, c)
-        equal_stat = candidate_damage("B_offset_ratio", 100, 300, 300, 100, c)
-        ratio_2to1 = specialized / equal_stat
-        gates[str(c)] = {
-            "neutral_floored_ttk": ceil_fraction(Fraction(350, max(1, floor_fraction(neutral)))),
-            "two_to_one_damage_ratio": round(float(ratio_2to1), 6),
-            "full_vitality_one_hit_ko": floor_fraction(neutral) >= 350,
-            "specialization_gate_pass": Fraction(14, 10) <= ratio_2to1 <= Fraction(18, 10),
-            "neutral_ttk_gate_pass": 4 <= ceil_fraction(Fraction(350, max(1, floor_fraction(neutral)))) <= 6,
-            "one_hit_gate_pass": floor_fraction(neutral) < 350,
-        }
+    all_gates = {}
+    candidates = {
+        "A_direct_ratio": (100,),
+        "B_offset_ratio": B_OFFSETS,
+        "C_direct_level": (100,),
+        "D_bounded_share": (100,),
+    }
+    for name, offsets in candidates.items():
+        all_gates[name] = {}
+        for c in offsets:
+            neutral = candidate_damage(name, 100, 300, 275, 100, c)
+            specialized = candidate_damage(name, 100, 600, 300, 100, c)
+            equal_stat = candidate_damage(name, 100, 300, 300, 100, c)
+            ratio_2to1 = specialized / equal_stat
+            ttk = ceil_fraction(Fraction(350, max(1, floor_fraction(neutral))))
+            all_gates[name][str(c)] = {
+                "neutral_floored_ttk": ttk,
+                "two_to_one_damage_ratio": round(float(ratio_2to1), 6),
+                "full_vitality_one_hit_ko": floor_fraction(neutral) >= 350,
+                "specialization_gate_pass": Fraction(14, 10) <= ratio_2to1 <= Fraction(18, 10),
+                "neutral_ttk_gate_pass": 4 <= ttk <= 6,
+                "one_hit_gate_pass": floor_fraction(neutral) < 350,
+                "combined_numeric_gates_pass": 4 <= ttk <= 6 and Fraction(14, 10) <= ratio_2to1 <= Fraction(18, 10) and floor_fraction(neutral) < 350,
+            }
     return {
         "neutral_reference": {"level": 100, "attack": 300, "defense": 275, "power": 100, "vitality": 350, "target_floored_ttk": [4, 6]},
         "specialization_target": [1.4, 1.8],
-        "candidate_b_offset_gate_results": gates,
+        "candidate_gate_results": all_gates,
         "candidate_b_offset_values": list(B_OFFSETS),
         "candidate_b_scale_relative_offsets": {"0.25x_mean_reference_stat": 71, "0.50x_mean_reference_stat": 143},
-        "candidate_a_clean_2to1_ratio": round(float(ratio), 6),
     }
 
 
