@@ -219,11 +219,11 @@ def level_sweep() -> list[dict]:
 
 def calibration_and_gates() -> dict:
     equal = Fraction(REFERENCE_DAMAGE)
-    ratio = candidate_damage("A_direct_ratio", 100, 600, 275, 100) / equal
+    ratio = candidate_damage("A_direct_ratio", 100, 600, 300, 100) / candidate_damage("A_direct_ratio", 100, 300, 300, 100)
     gates = {}
     for c in B_OFFSETS:
         neutral = candidate_damage("B_offset_ratio", 100, 300, 275, 100, c)
-        specialized = candidate_damage("B_offset_ratio", 100, 600, 275, 100, c)
+        specialized = candidate_damage("B_offset_ratio", 100, 600, 300, 100, c)
         equal_stat = candidate_damage("B_offset_ratio", 100, 300, 300, 100, c)
         ratio_2to1 = specialized / equal_stat
         gates[str(c)] = {
