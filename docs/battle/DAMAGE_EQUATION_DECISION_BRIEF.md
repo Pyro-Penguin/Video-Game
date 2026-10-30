@@ -192,23 +192,23 @@ Before pruning candidates, use these proposed screening gates (all thresholds re
 
 Do not tune thresholds after observing which candidate they favor. Candidate pruning must follow agreed criteria, not aesthetic preference.
 
-### Review questions
+### Review questions and current human preferences
 
-The questions are grouped by decision ownership. Current responses are framing feedback only; binding preference collection should happen after the flooring-enhanced report passes CI and the updated human-readable results are committed.
+The review sequence is deliberate: name the neutral reference first, then set its TTK target, then test broader archetype behavior. Current human preferences are recorded here as **Provisional test directions**, not approved game rules or Decision Log entries. They must be revisited after the all-vs-all and combined-stat experiment.
 
-**A. Combat pacing and archetypes**
-1. For each of the five paired test profiles (Balanced 300/275, Offensive 400/250, Defensive 250/350, High-pressure 400/200, Low-pressure 200/350), what hits-to-KO band should we target at ordinary move power? Should any profile be renamed or replaced?
-2. Which profile, if any, should be the neutral reference? What Vitality and move power define that reference?
-3. Should the next experiment include all-vs-all attacker/defender archetype pairings and combined-stat perturbations?
+**A. Reference and combat pacing**
+1. **Neutral reference (proposed):** Balanced profile (300 Attack / 275 Defense), Vitality 350, ordinary move power 100. This is a proposed default reference, not a claim that these are final creature stats.
+2. **Neutral TTK (proposed):** 4–6 hits at that reference. Proposed surrounding targets for the same Vitality/power are high-pressure about 3–4 hits and low-pressure/defensive about 7–10 hits. These are provisional targets to validate against all-vs-all pairings and combined-stat interactions.
+3. Keep the five existing profiles as test coordinates only; do not promote their labels into final creature/class archetypes. The next experiment must include all-vs-all attacker/defender pairings and combined-stat perturbations.
 
 **B. Competitive normalization and progression**
-4. Confirm one fixed competitive level: Level 50 or Level 100? Level 50 is the current calibration anchor and reduces displayed values; Level 100 aligns with the proposed endgame convention. Neither is accepted yet.
-5. Should story level affect damage only through derived Attack/Defense/Vitality, or also through a separate level multiplier? The latter is an explicit progression power-cliff choice.
+4. **Competitive normalization preference: Level 100 (Provisional human preference).** Keep Level 50 as the historical calibration anchor for cross-candidate comparison, not as the intended competitive level. Level 100 is not merely cosmetic while Candidate C contains a direct level term: the current model shows approximately 1.84–1.89× damage from Level 50 to 100. The preferred architecture is that level primarily affects derived stats/Vitality; any direct story-mode level term must be tested separately to avoid double-counting progression. A Level-100 competitive normalization makes a direct level term constant within that mode, but does not settle story progression.
+5. Should story level affect damage only through derived Attack/Defense/Vitality, or also through a separate level multiplier? Keep both treatments measurable; default test bias is derived-stat-only until evidence supports a separate term.
 
 **C. Formula behavior and acceptance**
-6. For a 2:1 Attack/Defense ratio, should damage be approximately 2×, 1.5×, or another agreed multiplier? This defines the desired specialization curve.
-7. Is a neutral 3–6 hit envelope acceptable only for a named reference profile, or should it apply across a broader portion of the stat distribution?
-8. What exact outcomes invalidate a candidate (for example, ordinary-power one-hit KOs, excessive defensive TTK, or excessive sensitivity to small stat changes)?
+6. **Specialization preference: Pokémon-style damage calculation (Provisional human preference).** Do not convert this into an arbitrary 1.5×–1.7× cap. Use the cartridge-style level/power/offense/defense structure as a reference behavior, including integer operations, then measure the effective 2:1 Attack/Defense response across the proposed stat scales. Candidate C is the closest existing structural analogue, but its current simplified implementation is not a faithful Pokémon damage engine and must not be treated as one. Compare it with A/B/D under matched Level-100 calibration and a fully specified floor pipeline.
+7. **Proposed screening gates (not yet human-accepted):** (a) candidate calibration parity at Level 100 and the named reference; (b) neutral floored TTK 4–6; (c) no ordinary-power one-hit KO against a full-Vitality standard reference absent an explicit mechanic; (d) report the 2:1 ratio multiplier, with the Pokémon-style result as the reference target rather than a preselected cap; (e) monotonicity and combined-stat sensitivity; (f) report raw and floored outcomes, but use floored outcomes for pass/fail; (g) any ±1-hit tolerance must be evaluated on the floored pipeline. Do not tune gates after viewing candidate results.
+8. Which additional failure limits should invalidate a candidate (for example, excessive defensive TTK, severe breakpoints, or excessive sensitivity to small stat changes)?
 
-These answers should be recorded as Provisional only if the human explicitly accepts them. They are not yet Decision Log entries.
+The neutral reference, 4–6 target, Level 100 preference, and Pokémon-style formula preference are recorded as provisional working directions only. The all-vs-all/combined-stat results can revise them. Do not create Decision Log entries until the human explicitly accepts a resulting decision.
 
