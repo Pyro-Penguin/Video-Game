@@ -20,7 +20,7 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target i
 - Preserved contradictions and unknowns rather than inventing resolutions.
 - Implemented the standalone Python damage RNG experiment with six models.
 - Recorded the prior local test result: 6 tests passed.
-- Added a GitHub Actions workflow to run the experiment tests on Python 3.10–3.13 and smoke-test JSON report generation. CI result has not yet been verified.
+- Added a GitHub Actions workflow to run the experiment tests on Python 3.10–3.13 and smoke-test JSON report generation. CI verified: all four Python-version jobs passed, including unit tests and JSON report generation.
 - Added battle-format decision framework and stat-system research plan.
 
 ## Highest-Priority Design Decision
