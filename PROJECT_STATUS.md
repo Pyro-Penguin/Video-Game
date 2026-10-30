@@ -15,7 +15,7 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Standalone Python damage RNG experiment and automated tests committed.
 - Prior local test run recorded: 6 tests passed.
 - Seeded JSON report committed.
-- GitHub Actions workflow added for Python 3.10–3.13 tests and a report-generation smoke test. **Workflow execution is pending; do not claim CI has passed until a run is observed.**
+- GitHub Actions workflow executed successfully on Python 3.10, 3.11, 3.12, and 3.13; automated tests and JSON report smoke test passed in all four jobs.
 
 ## Current Experiment
 [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
