@@ -48,7 +48,7 @@ def _candidate_c(power: int, attack: int, defense: int, level: int) -> Fraction:
 
 def _candidate_d(power: int, attack: int, defense: int, level: int) -> Fraction:
     del level
-    return 100 * power * Fraction(attack, attack + defense)
+    return power * Fraction(attack, attack + defense)
 
 
 CANDIDATES: dict[str, Callable[[int, int, int, int], Fraction]] = {
