@@ -1,9 +1,9 @@
 # Open Questions
 
-Questions are grouped by what they block. Items marked as confirmed direction are not necessarily complete implementation rules.
+Questions are grouped in the canonical project-wide priority order defined only by [PROJECT_STATUS.md](../PROJECT_STATUS.md). These headings organize unresolved work; they do not establish a separate priority hierarchy. A decision can be Confirmed while implementation details remain unresolved.
 
-## Priority 1 — Damage Equation (Current Focus)
-1. What is the exact base damage equation, including level treatment and constants?
+## Priority 1 — Damage Equation Design
+1. What is the exact deterministic base damage equation, including level treatment and constants?
 2. Which move categories exist, and which attacker/defender stats do they use?
 3. How are effective Attack and Defense constructed from base stats, stages, class/nature, status, abilities, and equipment?
 4. Are screens included in effective Defense or applied as separate damage modifiers?
@@ -11,26 +11,26 @@ Questions are grouped by what they block. Items marked as confirmed direction ar
 6. Which modifiers are additive versus multiplicative?
 7. Where exactly does integer truncation occur?
 8. What is the minimum non-immune damage, and how is immunity handled?
-9. Which RNG distribution is selected, and is it rolled per action, target, or hit?
+9. Which RNG distribution is selected, and is it rolled per action, target, or hit? Keep this separate from the deterministic equation.
 10. How are multi-hit damage, recoil, drain, shields, and interruption handled?
 
-See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md).
+See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
 
-## Priority 2 — Battle Resolution
-1. What is the complete tie-break hierarchy after priority and Speed?
-2. Which abilities can win Speed ties, and do they override or modify the normal tie hierarchy?
-3. Is type effectiveness a valid tie-break only when two tied entities target each other, or under another precisely defined condition?
-4. What is the authoritative online fallback for exact ties? Client tap timestamps are not suitable as a trusted server rule.
-5. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
-6. What are the exact rules for simultaneous player defeat?
-7. Which encounter rules make player-character defeat mandatory versus optional?
-8. Does victory checking after replacement behave correctly when both sides have knockouts or no reserve?
+## Priority 2 — Battle Structure and Resolution
+1. What does the battle format count: registered roster, selected monsters, active field, player character, and reserve?
+2. What is the complete tie-break hierarchy after priority and Speed?
+3. Which abilities can win Speed ties, and do they override or modify the normal tie hierarchy?
+4. Is type effectiveness a valid tie-break only when two tied entities target each other, or under another precisely defined condition?
+5. What is the authoritative online fallback for exact ties? Client tap timestamps are not suitable as a trusted server rule.
+6. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
+7. What are the exact rules for simultaneous player defeat?
+8. Which encounter rules make player-character defeat mandatory versus optional?
 
-## Priority 3 — Encounter Composition
-1. What is the maximum simultaneous monster count in compressed random encounters?
-2. How are encounters with more monsters than the active field introduced: waves, reserves, or simultaneous deployment?
-3. Which single-player formats allow companion characters, and how are they controlled?
-4. Are single-player reserves available in every encounter format or only selected formats?
+## Priority 3 — Replacement and Victory
+1. What are the exact replacement phases and sequencing rules?
+2. Does victory checking after replacement behave correctly when both sides have knockouts or no reserve?
+3. What happens when both player characters are defeated in the same resolution window?
+4. Which encounter-specific rules alter player-defeat requirements?
 
 ## Priority 4 — Stats and Progression
 1. How does the 70-point allocation and 30-point cap work in story mode?
@@ -46,7 +46,11 @@ See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experi
 4. What are the exact Species Clause, Item Clause, and Open Team List rules?
 5. What are timer precedence, pause behavior, and timeout outcomes?
 
-## Priority 6 — Story and Feature Scope
+## Priority 6 — Balance Input Audit
+1. Which Light/Shadow stat drafts are current, and which are obsolete?
+2. What provenance and normalization are required before those drafts can be used as balance inputs?
+
+## Priority 7 — Story and Feature Scope
 1. What is the protagonist's role in the AI-related coup?
 2. What agency do the Light and Shadow mythical creatures have?
 3. Is the Portal Gauntlet the primary capture mechanic?
