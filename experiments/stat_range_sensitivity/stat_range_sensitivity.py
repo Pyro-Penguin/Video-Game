@@ -199,6 +199,40 @@ def offset_rank_audit(matchups: list[dict]) -> dict:
     return {"matchup_count": len(rows), "details": rows}
 
 
+def offset_cross_matchup_rank_stability(matchups: list[dict]) -> dict:
+    """Compare the ordering of all 75 matchup coordinates against c=100."""
+    base_rows = [r for r in matchups if r["candidate"] == "B_offset_ratio" and r["offset_c"] == 100]
+    key = lambda r: (r["attacker"], r["defender"], r["vitality"])
+    baseline = {key(r): r for r in base_rows}
+    comparisons = []
+    for c in B_OFFSETS:
+        if c == 100:
+            continue
+        current = {key(r): r for r in matchups if r["candidate"] == "B_offset_ratio" and r["offset_c"] == c}
+        changed_raw = 0
+        changed_floored = 0
+        total = 0
+        for i, left_key in enumerate(baseline):
+            for right_key in list(baseline)[i + 1:]:
+                b_left, b_right = baseline[left_key], baseline[right_key]
+                c_left, c_right = current[left_key], current[right_key]
+                base_raw = (b_left["raw_ttk"] > b_right["raw_ttk"]) - (b_left["raw_ttk"] < b_right["raw_ttk"])
+                now_raw = (c_left["raw_ttk"] > c_right["raw_ttk"]) - (c_left["raw_ttk"] < c_right["raw_ttk"])
+                base_floor = (b_left["floored_ttk"] > b_right["floored_ttk"]) - (b_left["floored_ttk"] < b_right["floored_ttk"])
+                now_floor = (c_left["floored_ttk"] > c_right["floored_ttk"]) - (c_left["floored_ttk"] < c_right["floored_ttk"])
+                changed_raw += base_raw != now_raw
+                changed_floored += base_floor != now_floor
+                total += 1
+        comparisons.append({
+            "c": c, "matchup_pair_comparisons": total,
+            "raw_order_changes_vs_c100": changed_raw,
+            "floored_order_changes_vs_c100": changed_floored,
+            "raw_fraction_changed": round(changed_raw / total, 6),
+            "floored_fraction_changed": round(changed_floored / total, 6),
+        })
+    return {"baseline_c": 100, "matchup_coordinates": len(baseline), "pair_comparisons_per_offset": 2775, "offsets": comparisons}
+
+
 def level_sweep() -> list[dict]:
     rows = []
     for profile, (attack, defense) in ATTACKERS.items():
@@ -282,6 +316,7 @@ def run_experiment() -> dict:
         "raw_vs_floored_rank_audit": rank_flip_audit(matchups),
         "pairwise_rank_flip_audit": pairwise_rank_flip_audit(matchups),
         "candidate_b_offset_rank_audit": offset_rank_audit(matchups),
+        "candidate_b_cross_matchup_rank_stability": offset_cross_matchup_rank_stability(matchups),
         "combined_perturbations": combined,
         "level_sweep": level_sweep(),
     }
