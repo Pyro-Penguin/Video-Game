@@ -66,6 +66,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
     def test_rank_audit_reports_all_25_pairs_at_three_vitalities(self):
         report = run_experiment()
         self.assertEqual(report["raw_vs_floored_rank_audit"]["matchup_count"], 75)
+        self.assertEqual(report["candidate_b_cross_matchup_rank_stability"]["pair_comparisons_per_offset"], 2775)
         self.assertEqual(len(report["raw_vs_floored_rank_audit"]["details"]), 75)
 
     def test_report_counts_match_generated_rows(self):
