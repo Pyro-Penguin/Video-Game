@@ -19,7 +19,8 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Stage 2 documentation validator, malformed-document tests, and CI integration committed. GitHub Actions run 41085210865 passed the documentation job, all four Python-version experiment jobs, and the damage RNG report smoke tests.
 - Damage Equation Decision Brief added; it compares candidate equation families without selecting a formula or changing game rules.
 - Synthetic damage-equation comparison experiment and six automated tests added. GitHub Actions run 41086133510 passed the equation tests and report-generation smoke test, the documentation checks, and the existing four-version damage RNG matrix.
-- Team-proposal stat-range sensitivity experiment added under `experiments/stat_range_sensitivity/`; it evaluates five synthetic Attack/Defense archetypes, four equation candidates, level/power/Vitality combinations, KO thresholds, and one-stat sensitivity. Automated tests and CI report validation have been added; latest run verification is pending.
+- Team-proposal stat-range sensitivity experiment added under `experiments/stat_range_sensitivity/`; five synthetic paired Attack/Defense profiles, four equation candidates, four levels, five move powers, three Vitality points, KO thresholds, and one-stat sensitivity are covered. Initial CI run [41089058406](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41089058406) passed all seven jobs and published the JSON artifact. A follow-up adds isolated integer-floor damage/KO fields and a corresponding test; its CI run is pending.
+- Human-readable [Stat-Range Sensitivity Results](experiments/stat_range_sensitivity/RESULTS.md) and updated grouped review criteria/questions added. No formula, normalization level, stat band, or TTK rule has been selected.
 
 ## Current Experiments
 - [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
@@ -44,7 +45,6 @@ The damage-equation-first ordering is a project sequencing decision, not a claim
 - Battle simulation or damage engine for the game.
 - Creature capture, progression, world traversal, puzzle, or story systems.
 - Online PvP, matchmaking, or server authority.
-- Lightweight documentation-governance validator and malformed-document tests committed; CI execution pending.
 
 ## Engineering Direction
 When engine work begins:
