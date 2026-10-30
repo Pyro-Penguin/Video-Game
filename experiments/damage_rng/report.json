@@ -1,0 +1,103 @@
+{
+  "experiment": "damage_rng_model_comparison",
+  "pre_rng_damage": 100,
+  "modifier_configuration": {
+    "stab": "1/1",
+    "type_effectiveness": "1/1",
+    "note": "Configurable experimental inputs only; not finalized game rules."
+  },
+  "simulation_settings": {
+    "trials_per_model_per_target": 100000,
+    "seed": 20261030,
+    "targets_hp": [200, 300],
+    "percentile_method": "nearest-rank"
+  },
+  "models": [
+    {
+      "name": "fixed_100",
+      "description": "Fixed 100% damage.",
+      "roll_percentages": [100],
+      "normalization_divisor": "1/1",
+      "theoretical_mean_multiplier": "1/1",
+      "realized_damage": [{"damage": 100, "count": 1, "probability": 1.0}],
+      "single_hit_ko_percent": {"100": 100.0, "95": 100.0, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 2.0, "median": 2.0, "p10": 2, "p90": 2, "min": 2, "max": 2},
+        "300": {"mean": 3.0, "median": 3.0, "p10": 3, "p90": 3, "min": 3, "max": 3}
+      }
+    },
+    {
+      "name": "fixed_95",
+      "description": "Fixed 95% damage.",
+      "roll_percentages": [95],
+      "normalization_divisor": "1/1",
+      "theoretical_mean_multiplier": "19/20",
+      "realized_damage": [{"damage": 95, "count": 1, "probability": 1.0}],
+      "single_hit_ko_percent": {"100": 0.0, "95": 100.0, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 3.0, "median": 3.0, "p10": 3, "p90": 3, "min": 3, "max": 3},
+        "300": {"mean": 4.0, "median": 4.0, "p10": 4, "p90": 4, "min": 4, "max": 4}
+      }
+    },
+    {
+      "name": "uniform_95_105",
+      "description": "Uniform integer 95–105%, inclusive.",
+      "roll_percentages": [95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],
+      "normalization_divisor": "1/1",
+      "theoretical_mean_multiplier": "1/1",
+      "realized_damage": [95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],
+      "single_hit_ko_percent": {"100": 54.5454545455, "95": 100.0, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 2.45342, "median": 2.0, "p10": 2, "p90": 3, "min": 2, "max": 3},
+        "300": {"mean": 3.46382, "median": 3.0, "p10": 3, "p90": 4, "min": 3, "max": 4}
+      }
+    },
+    {
+      "name": "uniform_90_110",
+      "description": "Uniform integer 90–110%, inclusive.",
+      "roll_percentages": [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+      "normalization_divisor": "1/1",
+      "theoretical_mean_multiplier": "1/1",
+      "realized_damage": [90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+      "single_hit_ko_percent": {"100": 52.380952381, "95": 76.1904761905, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 2.4763, "median": 2.0, "p10": 2, "p90": 3, "min": 2, "max": 3},
+        "300": {"mean": 3.4811, "median": 3.0, "p10": 3, "p90": 4, "min": 3, "max": 4}
+      }
+    },
+    {
+      "name": "uniform_85_105_raw",
+      "description": "Uniform integer 85–105%, inclusive; no normalization.",
+      "roll_percentages": [85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],
+      "normalization_divisor": "1/1",
+      "theoretical_mean_multiplier": "19/20",
+      "realized_damage": [85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],
+      "single_hit_ko_percent": {"100": 28.5714285714, "95": 52.380952381, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 2.85019, "median": 3.0, "p10": 2, "p90": 3, "min": 2, "max": 3},
+        "300": {"mean": 3.913, "median": 4.0, "p10": 4, "p90": 4, "min": 3, "max": 4}
+      }
+    },
+    {
+      "name": "uniform_85_105_normalized",
+      "description": "Uniform integer 85–105%, inclusive; divided by 0.95.",
+      "roll_percentages": [85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105],
+      "normalization_divisor": "19/20",
+      "theoretical_mean_multiplier": "1/1",
+      "realized_damage": [89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110],
+      "single_hit_ko_percent": {"100": 52.380952381, "95": 71.4285714286, "85": 100.0},
+      "simulations": {
+        "200": {"mean": 2.52154, "median": 3.0, "p10": 2, "p90": 3, "min": 2, "max": 3},
+        "300": {"mean": 3.52879, "median": 4.0, "p10": 3, "p90": 4, "min": 3, "max": 4}
+      }
+    }
+  ],
+  "limitations": [
+    "These calculations compare mathematical RNG models; they do not establish game balance.",
+    "Repeated-hit results assume independent rolls and constant damage inputs on every hit.",
+    "The experiment does not model defenses, stat stages, move power, abilities, status, shields, or turn economy.",
+    "STAB and type effectiveness are configurable inputs, not finalized game rules.",
+    "Simulation summaries are seed-dependent estimates; exact single-hit probabilities are enumerated.",
+    "No RNG model is selected or recommended as the final game rule."
+  ]
+}
