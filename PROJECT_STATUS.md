@@ -16,6 +16,8 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Prior local test run recorded: 6 tests passed.
 - GitHub Actions workflow executed successfully on Python 3.10, 3.11, 3.12, and 3.13; automated tests and JSON report smoke test passed in all four jobs.
 - Collaboration protocol and Stage 1 governance changes committed and read back from GitHub; human review/acceptance is pending.
+- Stage 2 documentation validator, malformed-document tests, and CI integration committed. GitHub Actions run 41085210865 passed the documentation job, all four Python-version experiment jobs, and the damage RNG report smoke tests.
+- Damage Equation Decision Brief added; it compares candidate equation families without selecting a formula or changing game rules.
 
 ## Current Experiment
 [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
