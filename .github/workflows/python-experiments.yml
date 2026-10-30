@@ -64,13 +64,13 @@ jobs:
       - name: Generate and validate sensitivity report
         working-directory: experiments/stat_range_sensitivity
         run: |
-          python stat_range_sensitivity.py --output /tmp/stat-range-report.json
-          python -c "import json; p=json.load(open('/tmp/stat-range-report.json')); assert p['sample_count'] == len(p['results']); assert p['sensitivity_sample_count'] == len(p['sensitivity']); assert p['level_sample_count'] == len(p['level_effect']); print('Stat-range report smoke test passed')"
+          python stat_range_sensitivity.py --output /tmp/stat-range-report-v2.json
+          python -c "import json; p=json.load(open('/tmp/stat-range-report-v2.json')); c=p['sample_counts']; assert c['all_vs_all_rows'] == len(p['all_vs_all']); assert c['combined_perturbation_rows'] == len(p['combined_perturbations']); assert c['level_rows'] == len(p['level_sweep']); assert p['raw_vs_floored_rank_audit']['matchup_count'] == 75; print('Expanded stat-range report smoke test passed')"
       - name: Publish stat-range sensitivity report
         uses: actions/upload-artifact@v4
         with:
-          name: stat-range-sensitivity-report
-          path: /tmp/stat-range-report.json
+          name: expanded-damage-sensitivity-report
+          path: /tmp/stat-range-report-v2.json
           if-no-files-found: error
           retention-days: 30
 
