@@ -154,8 +154,8 @@ def rank_flip_audit(matchups: list[dict]) -> dict:
         for defender in DEFENDERS:
             for vitality in VITALITIES:
                 subset = [r for r in matchups if r["attacker"] == attacker and r["defender"] == defender and r["vitality"] == vitality and r["candidate"] != "B_offset_ratio"]
-                raw_order = sorted((r["candidate"], r["raw_ttk"]) for r in subset, key=lambda x: (x[1], x[0]))
-                floor_order = sorted((r["candidate"], r["floored_ttk"]) for r in subset, key=lambda x: (x[1], x[0]))
+                raw_order = sorted(((r["candidate"], r["raw_ttk"]) for r in subset), key=lambda x: (x[1], x[0]))
+                floor_order = sorted(((r["candidate"], r["floored_ttk"]) for r in subset), key=lambda x: (x[1], x[0]))
                 raw_rank = {name: i for i, (name, _) in enumerate(raw_order)}
                 floor_rank = {name: i for i, (name, _) in enumerate(floor_order)}
                 changed = [name for name in raw_rank if raw_rank[name] != floor_rank[name]]
