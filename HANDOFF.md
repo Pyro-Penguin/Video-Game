@@ -34,7 +34,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 ## Current Work State
 **Stage 1 governance changes:** committed and read back from GitHub (Verified); human review/acceptance remains pending. **Stage 2 validator:** committed, read back, and tested successfully in GitHub Actions run [41085210865](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41085210865).
 
-**Stat-range experiment:** the initial implementation and JSON report passed all seven jobs in [CI run 41089058406](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41089058406). The artifact `stat-range-sensitivity-report` was published and retrieved. A follow-up adds per-hit integer flooring and a test; its CI run is currently pending. The human-readable initial summary is [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md). Do not mark the flooring extension Tested until its own CI run passes.
+**Stat-range experiment:** the initial implementation passed all seven jobs in [CI run 41089058406](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41089058406). The flooring-enhanced implementation and report passed all seven jobs in [CI run 41090778744](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41090778744). Its artifact was downloaded and inspected: 1,200 damage/KO rows, 120 sensitivity rows, 80 level rows; per-hit integer flooring changes KO count in 247/1,200 rows. See the human-readable [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md).
 
 ## Active Review Package
 Team proposal is represented only as synthetic test ranges:
@@ -50,11 +50,10 @@ Team proposal is represented only as synthetic test ranges:
 The initial comparison is calibrated at Level 50. Team feedback is split on Level 50 vs Level 100 normalization and direct vs derived-stat-only story level scaling; both remain unresolved. The team broadly supports 3–6 neutral hits, moderate specialization, and treating the bands as test envelopes only. These are review preferences, not accepted decisions.
 
 ## Highest-Priority Next Work
-1. Confirm the integer-floor extension CI run is green; inspect the updated artifact and update RESULTS.md so its evidence points to the same green commit.
-2. Extend the experiment with (a) an all-vs-all attacker/defender archetype matrix and (b) combined-stat perturbations. Current profiles pair Attack and Defense and do not test every attacker against every defender.
-3. Use the screening criteria in [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md): calibration parity, named neutral TTK reference, no accidental ordinary-power one-hit KO, agreed 2:1 specialization envelope, sensitivity/monotonicity, integer behavior, and reproducibility.
-4. Collect binding preferences only after the extended report and human-readable summary are validated. Keep responses as proposals until the human explicitly accepts them; do not add Decision Log entries without that acceptance.
-5. Keep the battle-structure track alive in parallel. Damage-equation work must not silently replace the unresolved active/reserve, commander, simultaneous-selection, and turn-resolution decisions.
+1. Extend the experiment with an all-vs-all attacker/defender archetype matrix and combined-stat perturbations; current paired profiles and one-stat sensitivity do not cover those interactions.
+2. Use the screening criteria in the decision brief to agree calibration parity, a named neutral TTK reference, the no-accidental-one-hit boundary, and the 2:1 specialization envelope.
+3. Collect binding preferences only after the extended report and human-readable summary are validated. Keep responses as proposals until the human explicitly accepts them; do not add Decision Log entries without that acceptance.
+4. Keep the battle-structure track alive in parallel. Damage-equation work must not silently replace unresolved active/reserve, commander, simultaneous-selection, and turn-resolution decisions.
 
 No formula, normalization level, stat range, level-scaling policy, TTK rule, or RNG model has been selected.
 
