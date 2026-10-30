@@ -107,7 +107,7 @@ At Balanced 300/275, Power 100, Vitality 350:
 
 | Level | Derived-stat-only path | Direct-level C | Pokémon reference |
 |---:|---:|---:|---:|
-| 1 | 6 hits | 88 hits | 50 hits |
+| 1 | 6 hits | 88 hits | 59 hits |
 | 5 | 6 | 59 | 35 |
 | 10 | 6 | 39 | 24 |
 | 25 | 6 | 20 | 13 |
