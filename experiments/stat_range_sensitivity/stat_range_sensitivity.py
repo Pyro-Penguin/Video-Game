@@ -70,10 +70,11 @@ def raw_d(power: int, attack: int, defense: int) -> Fraction:
 
 
 def raw_c_direct(power: int, attack: int, defense: int, level: int) -> Fraction:
-    def core(lvl: int) -> Fraction:
-        return (Fraction(2 * lvl, 5) + 2) * power * attack / (50 * defense) + 2
-    anchor = core(REFERENCE_LEVEL)
-    return REFERENCE_DAMAGE * core(level) / anchor
+    def core(lvl: int, atk: int, deff: int) -> Fraction:
+        return (Fraction(2 * lvl, 5) + 2) * power * atk / (50 * deff) + 2
+    anchor = core(REFERENCE_LEVEL, REFERENCE_ATTACK, REFERENCE_DEFENSE)
+    return REFERENCE_DAMAGE * core(level, attack, defense) / anchor
+
 
 
 def candidate_damage(name: str, power: int, attack: int, defense: int, level: int, offset: int = 100) -> Fraction:
