@@ -17,12 +17,12 @@ All profiles and values are synthetic test coordinates, not final creatures, cla
 
 ## Experiment contents
 
-1. **All-vs-all matrix:** every attacker profile against every defender profile at each Vitality point. Damage candidates A–D are calibrated to 50 damage at Level 100, Power 100, Attack 300, Defense 275. Each Candidate B offset is independently calibrated to the same anchor.
+1. **All-vs-all matrix:** every attacker profile against every defender profile at each Vitality point. Damage candidates A–D are calibrated to 60 damage at Level 100, Power 100, Attack 300, Defense 275. Each Candidate B offset is independently calibrated to the same anchor.
 2. **Combined-stat perturbations:** Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality. Each participating stat receives the same −20%, −10%, −5%, +5%, +10%, or +20% change, plus baseline. Integer stat values are floored and actual values are reported.
 3. **Level treatment:** level-derived-only candidates hold derived stats constant across level; Candidate C measures a separate direct-level term. The story sweep includes all seven specified levels.
 4. **Pokémon reference harness:** deterministic Generation IX base-damage core with fixed 100% random factor. It is not a fifth candidate and is not calibrated to the game's candidate anchor. STAB, type, criticals, weather, items, abilities, screens, and other modifiers are excluded.
 5. **Candidate B offset study:** reports neutral TTK, clean 2:1 Attack/Defense response, full-Vitality one-hit behavior, and per-matchup floored TTK spread for each c.
-6. **Rank/floor audit:** reports raw and floored candidate ordering for each matchup. Ties are explicit. Aggregate order is supplemental, never a substitute for matchup-level rank changes.
+6. **Rank/floor audit:** reports raw and floored candidate ordering for each matchup, including pairwise rank flips and tie changes across all Candidate B offsets. Aggregate order is supplemental, never a substitute for matchup-level rank changes.
 
 ## Pre-registered screening gates
 
