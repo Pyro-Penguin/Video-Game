@@ -19,7 +19,8 @@ After these, use the task-specific references below.
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md) — separate roster, active field, player, and reserve decisions.
 - [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) — actionable blocking, important, and deferred rules decisions.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
-- [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md) — candidate equation families, mathematical checks, and experiment plan; no rule selected.
+- [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
+- [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md) — candidate equation families, mathematical checks, and experiment plan; no rule selected.
 - [Damage RNG Experiment](experiments/damage_rng/README.md) — executable Python experiment and tests.
 - [Damage Equation Comparison Experiment](experiments/damage_equation/README.md) — synthetic comparison of four equation families; no game rule selected.
 - [Proposed Endgame Stat-Range Sensitivity Experiment](experiments/stat_range_sensitivity/README.md) — tests the team's proposed endgame stat bands against damage, KO pacing, and stat sensitivity; synthetic only.

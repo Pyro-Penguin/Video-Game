@@ -17,7 +17,7 @@
 
 Five profiles remain synthetic coordinates: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350. Competitive comparison is Level 100; Level 50 remains the historical anchor. Vitality values are 250/350/500; Power 100.
 
-The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350, outside the provisional 4–6 target. The comparison was recalibrated to a shared **60-damage Level-100 anchor** at Power 100, Attack 300, Defense 275. This produces 6 floored hits. Each B offset is independently calibrated to the same anchor. Candidate C uses one global calibration constant based on the same reference profile. The original Level-50/50-damage experiment remains historical evidence.
+The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350, outside the provisional 4–6 target from the outset. The comparison was therefore recalibrated to a shared **60-damage Level-100 anchor** at Power 100, Attack 300, Defense 275. This produces 6 floored hits (350/60 = 5.83 raw hits-to-KO). The anchor is recorded as Provisional Decision D-016: a comparison calibration, not a selected gameplay damage value; revisit it if the neutral reference stats, Vitality, ordinary move power, competitive normalization, or 4–6 target changes. Each B offset is independently calibrated to the same anchor. Candidate C uses one global calibration constant based on the same reference profile. The original Level-50/50-damage experiment remains historical evidence.
 
 ## Candidate screening
 
@@ -67,7 +67,7 @@ The mean is descriptive, not a gate. Defensive-tail outcomes are visible in the 
 
 ## Flooring and ranking
 
-Across 4,125 candidate-pair comparisons (25 ordered matchups × three Vitality values × 55 candidate/offset pairs), flooring changed the pairwise relation in **439 comparisons**. All 439 were ties created or removed; there were **zero strict order reversals**. The simpler A/C/D audit reports two of 75 matchup/Vitality coordinates with a changed rank. The full pairwise audit includes every B offset and exposes ties.
+Across 4,125 candidate-pair comparisons (25 ordered matchups × three Vitality values × 55 candidate/offset pairs), flooring changed the pairwise relation in **439 comparisons**: **122 raw ties became strict floored orderings**, while **317 raw strict orderings became floored ties**. There were **zero strict order reversals**: no pair that was strictly ordered one way before flooring became strictly ordered the opposite way after flooring. Flooring changed pairwise distinctions, but did not invert a strict preference. The simpler A/C/D audit reports two of 75 matchup/Vitality coordinates with a changed rank. The full pairwise audit includes every B offset and exposes ties.
 
 Flooring remains mandatory. This result is specific to the Level-100 expanded matrix and does not invalidate the earlier mixed-level paired-profile flooring finding.
 
@@ -91,13 +91,7 @@ c=143 is the most stable alternative to c=100 in floored matchup ordering. c=400
 
 The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates raw-damage and floored-TTK interaction residuals against the corresponding single-stat controls.
 
-Largest absolute residuals:
-- Attack×Defense: 5 percentage points of raw damage; 2 floored TTK hits.
-- Attack×Vitality: 0 percentage points; 1 floored TTK hit.
-- Defense×Vitality: 0 percentage points; 1 floored TTK hit.
-- Attack×Defense×Vitality: 5 percentage points; 2 floored TTK hits.
-
-This demonstrates that even where raw damage effects combine cleanly, integer KO thresholds can produce non-additive results.
+Across the combined-stat portion, **1,320 interaction residuals** were evaluated (5 profiles × 11 candidate/offset variants × 4 combined groups × 6 nonzero perturbations). **660/1,320 raw-damage residuals were nonzero**; the largest absolute residual was **5 percentage points**. **721/1,320 floored-TTK residuals were nonzero**; the largest absolute residual was **2 hits**. By interaction: Attack×Defense max 5 pp / 2 hits; Attack×Vitality 0 pp / 1 hit; Defense×Vitality 0 pp / 1 hit; Attack×Defense×Vitality 5 pp / 2 hits. These are descriptive findings, not a pass/fail result: the pre-registration required reporting but did **not** define a numeric residual tolerance. The design review must set or explicitly decline such a tolerance before using it as a gate.
 
 ## Level treatment and Pokémon reference harness
 
@@ -115,11 +109,11 @@ At Balanced 300/275, Power 100, Vitality 350:
 | 75 | 6 | 8 | 5 |
 | 100 | 6 | 6 | 4 |
 
-The derived-stat-only path deliberately holds derived stats constant to isolate direct level dependence; it is not a story stat-growth simulation. Candidate C's low-level TTK demonstrates why a direct level term cannot be judged independently of stat growth. The Pokémon harness is not calibrated to this game's 60-damage anchor and is a mechanical reference only.
+**These figures isolate the level term by holding derived stats constant; in a real progression, low-level combatants would have proportionally lower stats, so the Level-1 direct-level figure is not a story-mode prediction.** Candidate C's low-level TTK demonstrates that direct-level scaling is sensitive to the strength of its level term and must be evaluated together with progression-derived stats. The Pokémon harness is not calibrated to this game's 60-damage anchor and is a mechanical reference only.
 
 ## Interpretation
 
-1. Candidate B merits continued study. c=100, 143, 200, and 400 pass the current numeric gates. c=143 best preserves c=100 matchup ordering among the tested alternatives; this is not a selection.
+1. Candidate B's currently eligible tested interval is c=100–400 at sampled points 100, 143, 200, and 400. These form a tradeoff curve, not a ranking: c=100 gives the strongest specialization response (1.750×); c=143 gives 1.677× and 1.62% floored ordering change versus c=100; c=200 gives 1.600× and 5.30%; c=400 gives the softest response (1.429×) and 17.19%. The team must choose the intended specialization feel; c=143's ordering stability is a screening metric, not a design preference.
 2. A and C exceed the 2:1 specialization envelope; D falls below it.
 3. Direct level scaling creates extreme low-level TTK when endgame derived stats are held constant. Actual story stat growth must be modeled before a progression decision.
 4. Flooring changed ties, but did not strictly reverse pairwise ordering in this Level-100 matrix.

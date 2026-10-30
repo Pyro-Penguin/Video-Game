@@ -338,7 +338,7 @@ def run_experiment() -> dict:
         },
         "method": {
             "arithmetic": "Exact rational arithmetic for candidate equations; floor applied explicitly for gameplay damage.",
-            "calibration": "A, B and D calibrated to 50 damage at Level 100, P100, A300, D275. Each B offset is separately calibrated to this same anchor. C direct-level path is calibrated to 50 at the same Level-100 anchor.",
+            "calibration": "A, B and D calibrated to 60 damage at Level 100, P100, A300, D275. Each B offset is separately calibrated to this same anchor. C direct-level path is calibrated to 60 at the same Level-100 anchor.",
             "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, RNG, multi-hit, simultaneous resolution, or damage application.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression."],
         },
         "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "level_rows": len(level_sweep())},

@@ -39,19 +39,21 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 ## Expanded experiment findings
 
-- The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target.
+- The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target; D-016 records the corrected 60 anchor as Provisional, with explicit revisit conditions.
 - Candidate B offsets c=100, 143, 200, and 400 pass the current provisional neutral TTK, 2:1 specialization, and no-full-HP-one-hit numeric gates. No offset is selected.
 - c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
-- Flooring changed 439/4,125 pairwise candidate relations, all by creating/removing ties; there were zero strict order reversals in this Level-100 matrix.
-- Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. This isolates direct level dependence; it is not a story stat-growth model.
+- Flooring changed 439/4,125 pairwise relations: 122 raw ties became strict floored relations, 317 strict raw relations became ties, and zero strict order reversals occurred.
+- Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. The Level-1 result is not a story prediction; it isolates sensitivity to the direct level term.
+- Combined-stat interaction residuals: 1,320 evaluated; 660 raw-damage residuals nonzero (max 5 percentage points); 721 floored-TTK residuals nonzero (max 2 hits). No numeric residual tolerance was pre-registered, so no pass/fail claim is justified.
 - The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; it uses the integer level term (including at Level 1) and excludes external modifiers.
 - Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
-1. Review the expanded results against the provisional gates; accept or revise the neutral reference, 4–6 floored TTK target, 1.4×–1.8× specialization envelope, and candidate-screening rules.
-2. If gates are accepted, decide whether a second sensitivity pass across a wider stat scale / progression-derived stats is needed before narrowing B offsets or pruning A–D. Do not select c=143 or any formula from this synthetic grid alone.
-3. Keep battle structure/resolution alive as the next project priority after damage-equation resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
-4. Do not create game-rule Decision Log entries until the human explicitly accepts the decisions.
+1. Conduct the one-sitting design review using [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md). Numeric gates, residual gaps, the c tradeoff curve, level-path questions, and the conditional third-experiment rule are listed there.
+2. Hold the expanded experiment. Run a third pass only if the team says current stat ranges or progression-derived stats are inadequate, and scope it to the specific missing range or progression gap. No broad sensitivity pass by default.
+3. Carry the historical **150 maximum base Speed** into a separate speed-tier review. It is not an accepted cap; examine tier density, investment breakpoints, priority interaction, and intended Speed distribution before locking Speed rules.
+4. After damage-equation resolution, continue battle structure/resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
+5. Do not create further game-rule Decision Log entries until the human explicitly accepts the decisions.
 
 No final damage formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected.
 
