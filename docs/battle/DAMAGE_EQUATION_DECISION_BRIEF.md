@@ -154,7 +154,7 @@ The proposal is useful as a sensitivity-test envelope, but it is not yet a stat 
 
 ### Level-treatment recommendation (not a decision)
 
-Keep direct level out of the base equation for the first design pass. Let level affect derived stats and Vitality through the progression model. If mixed-level encounters later lack sufficient separation, evaluate a separate, explicit level-difference modifier rather than coupling level to every damage calculation.
+**Provisional human preference, not a confirmed principle:** prefer level → derived stats/Vitality → damage, without a separate direct level multiplier. Because this remains provisional, the next experiment must retain and measure both paths: (1) level-independent candidates using identical derived battle stats at every level, and (2) a direct-level path using the cartridge-style level term. Do not assume either path wins before low-level and Level-100 results are reviewed. If mixed-level encounters lack sufficient separation under derived-stat-only scaling, evaluate a separately specified level-difference mechanic rather than silently adding level to the base equation.
 
 For normalized competitive combat at Level 100, a direct level term is constant across combatants and can be absorbed into calibration. This does not establish how story-mode level progression should work.
 
@@ -181,13 +181,13 @@ The team's feedback supports these working preferences, but they are not accepte
 
 The initial report is now summarized in [Stat-Range Sensitivity Results](../../experiments/stat_range_sensitivity/RESULTS.md). It shows that Vitality alone changes the balanced profile from 5 to 10 hits across 250–500 Vitality at Level 50 / Power 100. It also shows isolated integer flooring can add a hit in some cells. The current profiles pair attacker and defender stats; they are not an all-vs-all matchup matrix.
 
-Before pruning candidates, use these proposed screening gates (all thresholds require team agreement):
+Before pruning candidates, use these provisional screening gates supplied by the human reviewer (they remain subject to explicit acceptance or revision after results):
 1. **Calibration parity:** candidates share the same damage anchor at the selected competitive normalization level and reference stats.
 2. **Neutral pacing:** define a named reference profile, Vitality, and ordinary move power; test it against the agreed neutral TTK band.
 3. **No accidental one-hit standard KO:** ordinary-power attacks should not one-hit a full-Vitality standard profile absent an explicit mechanic.
 4. **Specialization envelope:** define the acceptable damage multiplier for a 2:1 Attack/Defense ratio.
 5. **Sensitivity:** preserve monotonicity and report both one-stat and combined-stat perturbations.
-6. **Integer behavior:** compare raw and floored results; material changes require full-pipeline evaluation.
+6. **Integer behavior:** compare raw and floored results; floored TTK governs every pass/fail gate. Raw values are diagnostic only. Any ±1-hit variance/tolerance criterion must be evaluated on floored TTK, never raw damage or raw TTK.
 7. **Reproducibility:** tests, JSON, and human-readable results must come from the same green CI commit.
 
 Do not tune thresholds after observing which candidate they favor. Candidate pruning must follow agreed criteria, not aesthetic preference.
@@ -211,4 +211,28 @@ The review sequence is deliberate: name the neutral reference first, then set it
 8. Which additional failure limits should invalidate a candidate (for example, excessive defensive TTK, severe breakpoints, or excessive sensitivity to small stat changes)?
 
 The neutral reference, 4–6 target, Level 100 preference, and Pokémon-style formula preference are recorded as provisional working directions only. The all-vs-all/combined-stat results can revise them. Do not create Decision Log entries until the human explicitly accepts a resulting decision.
+
+### Pre-registered specification for the next experiment
+
+**Scope and role separation**
+- All-vs-all: each of the five existing attacker profiles is paired against each of the five defender profiles (25 ordered matchups). Attacker Attack comes from the attacking profile; defender Defense and Vitality come from the defending profile. Keep profile names as synthetic coordinates, not class/archetype definitions.
+- Competitive comparison: Level 100. Retain Level 50 only as the historical calibration anchor in the report. Story progression sweep: Levels 1, 5, 10, 25, 50, 75, 100.
+- Level architecture: measure both level-derived-only (identical derived stats produce identical damage at every level) and direct-level scaling. The direct-level path remains a measured alternative, not a commitment.
+- Pokémon-style calculation is a **reference harness**, not a fifth selectable candidate. Implement the deterministic Generation IX base-damage core with exact integer-floor checkpoints and a fixed 100% random factor; omit STAB, type, criticals, weather, items, abilities, screens, and other modifiers. Unit fixtures validate the core arithmetic. This is a recognizable mechanical reference, not a claim that Pokémon's balance is appropriate for this game.
+
+**Combined-stat perturbation grid**
+- For each profile and candidate, evaluate simultaneous Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality changes.
+- Each participating stat receives the same signed perturbation: −20%, −10%, −5%, +5%, +10%, +20%; convert resulting stats to integers by floor and report actual values. Include the unmodified baseline.
+- Report damage response separately from floored TTK response. Monotonicity is checked dimensionally: Attack increases cannot reduce damage; Defense increases cannot increase damage; Vitality increases cannot reduce hits-to-KO. Combined changes can oppose one another, so report interaction residuals against the corresponding single-stat effects rather than applying a simplistic combined pass/fail.
+
+**Candidate B offset pre-registration**
+- Absolute offsets: c ∈ {0, 25, 50, 100, 200, 400}. Scale-relative offsets: c = 0.25× and 0.50× the arithmetic mean of the neutral-reference Attack and Defense, rounded down and calculated once from reference stats, not fitted per matchup.
+- Recalibrate each c variant to the same Level-100 neutral-reference damage anchor before comparing curve shape.
+- A c value is eligible for further consideration only if neutral floored TTK is 4–6, clean 2:1 Attack/Defense floored damage ratio is 1.4×–1.8× relative to equal stats, no ordinary Power-100 move one-hit-KOs the full-Vitality neutral reference, and monotonicity holds. Apply the same gates to every c; no per-matchup fitting.
+- Report rank flips for every ordered matchup across all c values, raw and floored. Report the fraction of matchup pairs whose ordering changes relative to c=100. Do not call a c robust if its ordering is unstable across the preregistered range.
+
+**Ranking and flooring outputs**
+- Report candidate pairwise rank flips for every one of the 25 matchups comparing raw vs floored TTK, plus aggregate ordering. Report ties explicitly; do not hide them in average ranks.
+- All acceptance gates, including any ±1-hit archetype variance limit, use integer-floored damage per hit and floored TTK. Raw outputs remain diagnostic.
+- Report TTK at each defender profile's full Vitality and at a common Vitality-350 reference, so stat-profile and HP effects can be distinguished.
 
