@@ -48,6 +48,25 @@ The table shows hits-to-knockout at each Vitality test point. First number is ra
 
 Notation: `raw hits / integer-floor hits`. Integer flooring can add a hit in several cells, especially where per-hit raw damage is fractional. It does not change the broad ordering that high-pressure profiles defeat faster than low-pressure profiles, but it can change close candidate comparisons. This is enough to show flooring is not universally negligible; it must remain in later pipeline testing.
 
+## Flooring audit: candidate ranking and threshold sensitivity
+
+The CI JSON was re-aggregated by candidate across its 300 rows each (same 300 scenario coordinates per candidate):
+
+| Candidate | Rows whose KO count changes after flooring | Rows changing by more than 1 hit | Mean raw hits | Mean floored hits |
+|---|---:|---:|---:|---:|
+| A — direct ratio | 40 / 300 | 4 / 300 | 9.907 | 10.053 |
+| B — offset ratio (c=100) | 48 / 300 | 0 / 300 | 9.613 | 9.773 |
+| C — level-scaled | 91 / 300 | 52 / 300 | 21.223 | 22.610 |
+| D — bounded share | 68 / 300 | 4 / 300 | 9.733 | 9.973 |
+
+**Ranking result:** the aggregate mean-TTK order is unchanged by flooring: B, D, A, then C from fewest to most hits. Among A/B/D, the broad aggregate ranking therefore survives. This is not a universal pairwise stability result: the relative ordering of candidate pairs changes in some individual scenario coordinates, so per-matchup comparisons must still use floored values. Candidate C is not directly comparable as a competitive candidate in this aggregate because its level term spans Levels 1–100 while the other candidates are level-invariant.
+
+**Flooring threshold result:** 60/1,200 rows change by more than one hit, all from Candidate C; the largest increase is 30 hits. Therefore an acceptance tolerance of ±1 hit is not satisfied across the full mixed-level matrix. This is strongly concentrated in the direct-level candidate at low levels, where flooring small per-hit damage compounds into large KO-threshold shifts. For A, B, and D, only 8/900 rows change by more than one hit (4 A, 0 B, 4 D), and the maximum change is two hits. The experiment's current per-hit floor is an isolated model, so these figures do not establish the behavior of a complete modifier pipeline.
+
+**Concentration:** the 247 changed rows are distributed A=40, B=48, C=91, D=68. Candidate C accounts for 91/300 changed rows and all 52 rows whose KO count rises by more than one hit. The earlier observation that D compresses some profiles but is not uniformly safer is not contradicted by this aggregate audit; however, candidate order does change in individual matchup coordinates, so that qualitative conclusion must be rechecked in the all-vs-all floored matrix.
+
+These findings mean the team must specify whether any proposed ±1-hit pacing tolerance applies to raw damage, integer-floored damage, or both. For candidate screening and eventual gameplay, the operative comparison must be the floored pipeline; raw values remain diagnostic only.
+
 ## Level treatment
 
 Candidate C is the only candidate with direct level dependence. At fixed Attack/Defense/Power, candidates A, B, and D are level-invariant. Candidate C's output increases with level, as intended by its structure.
