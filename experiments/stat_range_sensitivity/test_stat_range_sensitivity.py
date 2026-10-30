@@ -22,7 +22,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
 
     def test_specialization_gate_uses_exact_two_to_one_ratio(self):
         from stat_range_sensitivity import calibration_and_gates
-        gates = calibration_and_gates()["candidate_b_offset_gate_results"]
+        gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
         self.assertAlmostEqual(gates["100"]["two_to_one_damage_ratio"], 1.75)
         self.assertTrue(gates["100"]["specialization_gate_pass"])
 
