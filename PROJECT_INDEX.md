@@ -8,8 +8,10 @@ Canonical navigation for the Video Game project repository.
 - [Game Overview](docs/GAME_OVERVIEW.md) — premise, player fantasy, and current scope.
 - [Design Pillars](docs/DESIGN_PILLARS.md) — provisional design principles.
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md) — battle format, timers, clauses, and conflicts.
+- [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md) — separate roster, active field, player, and reserve decisions.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
 - [Damage RNG Experiment](experiments/damage_rng/README.md) — executable Python experiment and tests.
+- [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md) — stat ownership, normalization questions, and next experiment.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
 - [Types and Villages](docs/world/TYPES_AND_VILLAGES.md) — candidate type inventory.
 - [Clans and Abilities](docs/world/CLANS_AND_ABILITIES.md) — current partial clan concepts.
@@ -36,4 +38,5 @@ Canonical navigation for the Video Game project repository.
 - `docs/creatures/` — creature concepts and stat records.
 - `docs/inspiration/` — visual, audio, and gameplay references.
 - `experiments/` — isolated executable mechanics investigations.
+- `.github/workflows/` — automated validation for Python experiments.
 - A Unity `Assets/`, `Packages/`, and `ProjectSettings/` structure will be added only after an engine project is deliberately created.
