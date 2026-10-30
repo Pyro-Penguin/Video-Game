@@ -28,7 +28,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - Added collaboration protocol and reconciled the canonical priority order; see D-014.
 
 ## Current Work State
-**Stage 1 governance changes:** committed and read-back verification still required. Human review/acceptance is pending. Stage 2 automated documentation validation is deferred until the human-readable protocol is reviewed.
+**Stage 1 governance changes:** committed and read back from GitHub (Verified). Human review/acceptance is pending. Stage 2 automated documentation validation is deferred until the human-readable protocol is reviewed.
 
 ## Highest-Priority Next Work
 1. Review and accept or amend the collaboration protocol and Stage 1 document changes.
