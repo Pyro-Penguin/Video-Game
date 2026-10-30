@@ -1,19 +1,22 @@
 # Developer Handoff
 
 ## Project
-Original creature-collecting RPG with tactical PvP ambitions. Long-term target is mobile (iOS/Android). No Unity project exists yet; current work is engine-independent design consolidation and mechanics experimentation.
+Original creature-collecting RPG with tactical PvP ambitions. Long-term target platform is mobile (iOS/Android). No Unity project exists yet; current work is engine-independent design consolidation and mechanics experimentation.
+
+## Mandatory Startup
+Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow its startup sequence. The repository is the shared project memory; conversations are temporary workspaces.
 
 ## Source of Truth
-1. [Project Index](PROJECT_INDEX.md)
-2. [Project Status](PROJECT_STATUS.md)
-3. [Game Overview](docs/GAME_OVERVIEW.md)
-4. [Battle Overview](docs/battle/BATTLE_OVERVIEW.md)
-5. [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md)
-6. [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md)
-7. [Damage Model](docs/battle/DAMAGE_MODEL.md)
-8. [Damage RNG Experiment](experiments/damage_rng/README.md)
-9. [Decision Log](docs/DECISION_LOG.md)
-10. [Open Questions](docs/OPEN_QUESTIONS.md)
+- [Project Index](PROJECT_INDEX.md)
+- [Project Status](PROJECT_STATUS.md) — canonical project-wide priorities.
+- [Decision Log](docs/DECISION_LOG.md) — authoritative durable decisions.
+- [Open Questions](docs/OPEN_QUESTIONS.md) — unresolved questions grouped by canonical priority.
+- [Game Overview](docs/GAME_OVERVIEW.md)
+- [Battle Overview](docs/battle/BATTLE_OVERVIEW.md)
+- [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md)
+- [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md)
+- [Damage Model](docs/battle/DAMAGE_MODEL.md)
+- [Damage RNG Experiment](experiments/damage_rng/README.md)
 
 ## Completed
 - Structured fragmented concepts into referenceable documents.
@@ -22,14 +25,20 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target i
 - Recorded the prior local test result: 6 tests passed.
 - Added a GitHub Actions workflow to run the experiment tests on Python 3.10–3.13 and smoke-test JSON report generation. CI verified: all four Python-version jobs passed, including unit tests and JSON report generation.
 - Added battle-format decision framework and stat-system research plan.
+- Added collaboration protocol and reconciled the canonical priority order; see D-014.
 
-## Highest-Priority Design Decision
-Separate roster size, selected monsters, active monsters, player participation, and reserve count. These are independent variables. Do not call a format "3v3" without defining what the three counts.
+## Current Work State
+**Stage 1 governance changes:** committed and read-back verification still required. Human review/acceptance is pending. Stage 2 automated documentation validation is deferred until the human-readable protocol is reviewed.
 
-A useful local test candidate is player + two active monsters, with one reserve monster. This is a recommendation for a test fixture only, not a final design decision.
+## Highest-Priority Next Work
+1. Review and accept or amend the collaboration protocol and Stage 1 document changes.
+2. Begin the damage-equation design investigation under the canonical priority order. Inspect the existing damage model and stat definitions first; separate deterministic formula/modifier/rounding decisions from RNG distribution and placement.
+3. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
+
+Do not begin Unity implementation or select a final RNG model without explicit approval.
 
 ## Engineering Guardrails
-- Keep authoritative rules in pure, testable C# where practical.
+- Keep authoritative rules in pure, testable C# where practical once engine implementation is authorized.
 - Unity components adapt input and presentation; they do not own core rules.
 - Prefer composition and explicit ownership.
 - Communicate across boundaries through commands, events, and narrow interfaces.
@@ -43,9 +52,3 @@ A useful local test candidate is player + two active monsters, with one reserve 
 - That unresolved battle rules have been approved.
 - That any source archive may be modified.
 - That the RNG experiment selects a final damage model.
-
-## Immediate Next Work
-1. Get explicit agreement on the battle format variables.
-2. Build a standalone stat-normalization experiment only after selecting the candidate input model.
-3. Define the full damage formula and rounding checkpoints separately from the RNG model.
-4. Evaluate the type chart and village structure after the type roster is fixed.
