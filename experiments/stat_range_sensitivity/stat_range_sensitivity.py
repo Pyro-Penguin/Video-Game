@@ -50,9 +50,9 @@ def pokemon_gen9_base(level: int, power: int, attack: int, defense: int) -> int:
     """
     if level < 1 or power < 1 or attack < 1 or defense < 1:
         raise ValueError("level, power, attack and defense must be positive")
-    level_term = Fraction(2 * level, 5) + 2
+    level_term = (2 * level) // 5 + 2
     numerator = level_term * power * attack
-    return floor_fraction(numerator / (50 * defense)) + 2
+    return numerator // (50 * defense) + 2
 
 
 def raw_a(power: int, attack: int, defense: int) -> Fraction:
