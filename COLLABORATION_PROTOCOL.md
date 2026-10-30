@@ -155,4 +155,6 @@ At the end of substantial work, provide a concise report using this structure:
 - **Open issues:** unresolved risks, conflicts, or missing inputs.
 - **Next action:** one concrete next step, its dependencies, and what requires human approval.
 
+Before committing a handoff, re-check the verification state against the latest relevant CI run and the exact commit it tested. Update stale run IDs, pending/completed wording, and artifact counts; never carry forward an unverified status statement.
+
 Do not create a handoff merely to restate unchanged context. Update HANDOFF.md when the next-session starting point or active work has materially changed.
