@@ -3,8 +3,16 @@
 ## Purpose
 Canonical navigation for the Video Game project repository.
 
-## Start Here
-- [Project Status](PROJECT_STATUS.md) — current stage and verified progress.
+## Mandatory Start Here
+1. [Collaboration Protocol](COLLABORATION_PROTOCOL.md) — startup sequence, authority, decision fidelity, verification, and handoff rules.
+2. [Project Status](PROJECT_STATUS.md) — current stage, verified progress, and canonical project priorities.
+3. [Developer Handoff](HANDOFF.md) — current work state and next action.
+4. [Decision Log](docs/DECISION_LOG.md) — durable decisions and their status.
+5. [Open Questions](docs/OPEN_QUESTIONS.md) — unresolved questions grouped by canonical project priority.
+
+After these, use the task-specific references below.
+
+## Design and Systems
 - [Game Overview](docs/GAME_OVERVIEW.md) — premise, player fantasy, and current scope.
 - [Design Pillars](docs/DESIGN_PILLARS.md) — provisional design principles.
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md) — battle format, timers, clauses, and conflicts.
@@ -19,19 +27,16 @@ Canonical navigation for the Video Game project repository.
 - [Creature Design](docs/creatures/CREATURE_DESIGN.md) — creature and progression ideas.
 - [Player Character and Classes](docs/player/PLAYER_CHARACTER_AND_CLASSES.md) — player combat role and class concepts.
 - [Exploration and Capture](docs/world/EXPLORATION_AND_CAPTURE.md) — Portal Gauntlet, traversal, puzzles, and capture ideas.
-- [Decision Log](docs/DECISION_LOG.md) — confirmed, provisional, and unresolved decisions.
-- [Open Questions](docs/OPEN_QUESTIONS.md) — design and technical blockers.
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) — milestones and exit criteria.
-- [Developer Handoff](HANDOFF.md) — concise context for continuing work.
 
 ## Documentation Rules
-1. Treat this repository as the project source of truth.
-2. Label decisions as **confirmed**, **provisional**, or **unresolved**.
-3. Do not silently convert brainstorms into confirmed requirements.
-4. Update the relevant specification and decision log when a rule changes.
-5. Preserve original archives as immutable reference material.
-6. Keep implementation status evidence-based: distinguish designed, implemented, and tested.
-7. Keep experimental code/results separate from approved game rules.
+1. Treat this repository as the shared, durable project memory; conversations are temporary workspaces.
+2. Follow [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) for authority, status labels, verification, and update rules.
+3. Use only **Confirmed**, **Provisional**, **Unresolved**, or **Superseded** for decision status.
+4. Do not silently convert brainstorming or experimental results into confirmed requirements.
+5. Keep implementation status evidence-based: distinguish committed, verified, tested, and human-accepted work.
+6. Keep experimental code/results separate from approved game rules.
+7. Preserve original archives as immutable reference material.
 
 ## Repository Areas
 - `docs/battle/` — battle rules and mechanics.
