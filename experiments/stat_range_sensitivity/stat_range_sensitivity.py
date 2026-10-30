@@ -119,6 +119,9 @@ def make_matchups() -> list[dict]:
 def combined_perturbations() -> list[dict]:
     rows = []
     groups = {
+        "single_attack": ("attack",),
+        "single_defense": ("defense",),
+        "single_vitality": ("vitality",),
         "attack_defense": ("attack", "defense"),
         "attack_vitality": ("attack", "vitality"),
         "defense_vitality": ("defense", "vitality"),
@@ -146,6 +149,33 @@ def combined_perturbations() -> list[dict]:
                             "floored_damage": floored,
                             "floored_ttk": ceil_fraction(Fraction(values["vitality"], floored)),
                         })
+    lookup = {
+        (r["profile"], r["candidate"], r["offset_c"], r["group"], r["requested_percent"]): r
+        for r in rows
+    }
+    for row in rows:
+        if row["group"].startswith("single_") or row["requested_percent"] == 0:
+            row["interaction_damage_residual_pct"] = 0.0
+            row["interaction_ttk_residual_hits"] = 0
+            continue
+        dimensions = {
+            "attack_defense": ("single_attack", "single_defense"),
+            "attack_vitality": ("single_attack", "single_vitality"),
+            "defense_vitality": ("single_defense", "single_vitality"),
+            "attack_defense_vitality": ("single_attack", "single_defense", "single_vitality"),
+        }[row["group"]]
+        controls = [
+            lookup[(row["profile"], row["candidate"], row["offset_c"], group, row["requested_percent"])]
+            for group in dimensions
+        ]
+        baseline_ttk = lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]["floored_ttk"]
+        row["interaction_damage_residual_pct"] = round(
+            row["raw_damage_delta_percent"] - sum(x["raw_damage_delta_percent"] for x in controls), 6
+        )
+        row["interaction_ttk_residual_hits"] = (
+            row["floored_ttk"] - baseline_ttk
+            - sum(x["floored_ttk"] - baseline_ttk for x in controls)
+        )
     return rows
 
 
