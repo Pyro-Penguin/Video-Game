@@ -65,7 +65,7 @@ jobs:
         working-directory: experiments/stat_range_sensitivity
         run: |
           python stat_range_sensitivity.py --output /tmp/stat-range-report-v2.json
-          python -c "import json; p=json.load(open('/tmp/stat-range-report-v2.json')); c=p['sample_counts']; assert c['all_vs_all_rows'] == len(p['all_vs_all']); assert c['combined_perturbation_rows'] == len(p['combined_perturbations']); assert c['level_rows'] == len(p['level_sweep']); assert p['raw_vs_floored_rank_audit']['matchup_count'] == 75; assert p['pairwise_rank_flip_audit']['pairwise_comparisons'] == 4125; print('Expanded stat-range report smoke test passed')"
+          python -c "import json; p=json.load(open('/tmp/stat-range-report-v2.json')); c=p['sample_counts']; assert c['all_vs_all_rows'] == len(p['all_vs_all']); assert c['combined_perturbation_rows'] == len(p['combined_perturbations']); assert c['level_rows'] == len(p['level_sweep']); assert p['raw_vs_floored_rank_audit']['matchup_count'] == 75; assert p['pairwise_rank_flip_audit']['pairwise_comparisons'] == 4125; assert p['candidate_b_cross_matchup_rank_stability']['pair_comparisons_per_offset'] == 2775; print('Expanded stat-range report smoke test passed')"
       - name: Publish stat-range sensitivity report
         uses: actions/upload-artifact@v4
         with:
