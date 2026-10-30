@@ -42,7 +42,7 @@ def _candidate_b(power: int, attack: int, defense: int, level: int) -> Fraction:
 
 def _candidate_c(power: int, attack: int, defense: int, level: int) -> Fraction:
     raw = (Fraction(2 * level, 5) + 2) * power * attack / (50 * defense) + 2
-    calibration = Fraction(25, 22)  # Makes the defined baseline equal 50.
+    calibration = Fraction(25, 23)  # Makes the defined baseline equal 50.
     return calibration * raw
 
 
