@@ -35,7 +35,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 **Expanded damage experiment:** CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs. Its artifact was downloaded and inspected: 825 all-vs-all rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise candidate comparisons. [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md) was updated from this artifact. Subsequent documentation, status, and index updates passed all seven jobs in [41095218936](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41095218936).
 
-**Verification before this handoff edit:** CI run 41095218936 tested commit `254fc50719c11d82e137ff38a68a278547b9266a` and passed all seven jobs. This handoff edit triggers a new run; check that run before describing this handoff as Tested.
+**Verification before this handoff edit:** CI run 41095664456 tested commit `91aac671e672b1f1cc2867c7481b8051df8099a0` and passed all seven jobs. This handoff edit triggers a new run; check that run before describing this handoff as Tested.
 
 ## Expanded experiment findings
 
@@ -44,7 +44,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
 - Flooring changed 439/4,125 pairwise candidate relations, all by creating/removing ties; there were zero strict order reversals in this Level-100 matrix.
 - Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. This isolates direct level dependence; it is not a story stat-growth model.
-- The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; external modifiers are excluded.
+- The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; it uses the integer level term (including at Level 1) and excludes external modifiers.
 - Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
