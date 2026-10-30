@@ -66,6 +66,13 @@ jobs:
         run: |
           python stat_range_sensitivity.py --output /tmp/stat-range-report.json
           python -c "import json; p=json.load(open('/tmp/stat-range-report.json')); assert p['sample_count'] == len(p['results']); assert p['sensitivity_sample_count'] == len(p['sensitivity']); assert p['level_sample_count'] == len(p['level_effect']); print('Stat-range report smoke test passed')"
+      - name: Publish stat-range sensitivity report
+        uses: actions/upload-artifact@v4
+        with:
+          name: stat-range-sensitivity-report
+          path: /tmp/stat-range-report.json
+          if-no-files-found: error
+          retention-days: 30
 
   documentation:
     runs-on: ubuntu-latest
