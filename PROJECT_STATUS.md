@@ -1,30 +1,33 @@
 # Project Status
 
 ## Project
-Original creature-collecting RPG with tactical PvP ambitions. The long-term target platform is mobile (iOS/Android), but no Unity project or engine implementation exists yet.
+Original creature-collecting RPG with tactical PvP ambitions. Long-term target platform is mobile (iOS/Android). No Unity project or engine implementation exists yet.
 
 ## Current Stage
-**Design consolidation and standalone mechanics experimentation.** The repository is intentionally engine-independent at this stage.
+**Design consolidation and standalone mechanics experimentation.** The repository remains intentionally engine-independent.
 
 ## Verified Progress
-- Repository documentation foundation created.
-- High-level game premise, design pillars, world/story concepts, type/village inventory, creature concepts, and inspiration references documented.
-- Battle-format conflicts and unresolved timer/roster rules recorded rather than silently reconciled.
-- Standalone Python damage RNG experiment implemented.
-- Exact single-hit KO checks match the required probabilities.
-- Automated test suite executed locally: 6 tests passed.
-- Seeded JSON experiment report generated and committed.
+- Documentation foundation created and indexed.
+- Supplied game, story, world, creature, class, exploration, and art/audio concepts organized into topic documents.
+- Battle-format contradictions preserved explicitly.
+- Battle format decision framework added, including a provisional local-prototype candidate clearly marked as not approved.
+- Stat system research plan added; no stat formula has been selected.
+- Standalone Python damage RNG experiment and automated tests committed.
+- Prior local test run recorded: 6 tests passed.
+- Seeded JSON report committed.
+- GitHub Actions workflow added for Python 3.10–3.13 tests and a report-generation smoke test. **Workflow execution is pending; do not claim CI has passed until a run is observed.**
 
 ## Current Experiment
-See [Damage RNG Experiment](experiments/damage_rng/README.md). It compares six RNG models and does not select a final game rule.
+[Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
 
 ## Current Design Priorities
-1. Resolve the battle party/field format, especially player character versus monster counts.
-2. Define commander/player defeat and reserve deployment.
+1. Resolve roster size, active field size, player role, reserve, and defeat conditions.
+2. Define action economy and simultaneous resolution semantics.
 3. Clarify timer interaction and competitive clauses.
-4. Define the full damage formula separately from the isolated RNG experiment.
-5. Reconcile the type inventory and seven-village structure.
-6. Audit Light/Shadow stat drafts before using them as balance inputs.
+4. Define the stat calculation pipeline and Level 100 normalization.
+5. Define the full damage formula separately from RNG.
+6. Reconcile the type inventory and seven-village structure.
+7. Audit Light/Shadow stat drafts before using them as balance inputs.
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
