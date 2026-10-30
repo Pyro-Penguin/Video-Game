@@ -47,15 +47,18 @@ Team proposal is represented only as synthetic test ranges:
 - Vitality points: 250, 350, 500.
 - Five paired test profiles: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350.
 
-The initial comparison is calibrated at Level 50. Team feedback is split on Level 50 vs Level 100 normalization and direct vs derived-stat-only story level scaling; both remain unresolved. The team broadly supports 3–6 neutral hits, moderate specialization, and treating the bands as test envelopes only. These are review preferences, not accepted decisions.
+The initial candidate calibration anchor remains Level 50. The current human review has expressed these **Provisional preferences**: competitive normalization Level 100; neutral reference = Balanced 300 Attack / 275 Defense, Vitality 350, Power 100; neutral target = 4–6 hits; and Pokémon-style damage calculation as the specialization-response reference rather than an arbitrary 1.5×–1.7× cap. These are working directions, not accepted game rules. Story-level treatment remains open; default test bias is level → derived stats → damage, with direct level scaling retained as a comparison. Five profiles remain test coordinates only.
+
+Flooring audit of the CI JSON is now documented in RESULTS.md: the 247 changed rows distribute A=40, B=48, C=91, D=68; 60 rows change by more than one hit, all in Candidate C. Aggregate mean-TTK ranking remains B, D, A, C, but individual pairwise ordering changes in some scenario coordinates. Floored outcomes must govern future pass/fail checks.
 
 ## Highest-Priority Next Work
-1. Extend the experiment with an all-vs-all attacker/defender archetype matrix and combined-stat perturbations; current paired profiles and one-stat sensitivity do not cover those interactions.
-2. Use the screening criteria in the decision brief to agree calibration parity, a named neutral TTK reference, the no-accidental-one-hit boundary, and the 2:1 specialization envelope.
-3. Collect binding preferences only after the extended report and human-readable summary are validated. Keep responses as proposals until the human explicitly accepts them; do not add Decision Log entries without that acceptance.
+1. Extend the experiment with the all-vs-all attacker/defender matrix and combined-stat perturbations; include matched Level-100 calibration, raw and floored outputs, and a Pokémon-style cartridge reference calculation.
+2. Re-evaluate the provisional Balanced/Vitality-350/Power-100 neutral reference and 4–6 TTK target, plus the measured 2:1 specialization response, against that expanded matrix. Any ±1-hit tolerance must apply to floored results.
+3. Parameterize Candidate B's offset rather than treating c=100 as scale-independent. Do not prune candidates until the expanded results are reviewed against pre-stated gates.
 4. Keep the battle-structure track alive in parallel. Damage-equation work must not silently replace unresolved active/reserve, commander, simultaneous-selection, and turn-resolution decisions.
+5. Do not add Decision Log entries until the human explicitly accepts the resulting decisions.
 
-No formula, normalization level, stat range, level-scaling policy, TTK rule, or RNG model has been selected.
+No final formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected. Level 100 and Pokémon-style calculation are provisional human preferences only.
 
 ## Engineering Guardrails
 - Keep authoritative rules in pure, testable C# where practical once engine implementation is authorized.
