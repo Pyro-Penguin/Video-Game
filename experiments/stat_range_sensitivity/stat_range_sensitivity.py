@@ -85,6 +85,8 @@ def run_experiment() -> dict:
                     damage = equation(power, attack, defense, level)
                     for vitality in VITALITY_VALUES:
                         hits = ceil_fraction(Fraction(vitality, 1) / damage)
+                        floored_damage = max(1, damage.numerator // damage.denominator)
+                        floored_hits = ceil_fraction(Fraction(vitality, floored_damage))
                         rows.append({
                             "archetype": archetype,
                             "attack": attack,
@@ -95,6 +97,8 @@ def run_experiment() -> dict:
                             "vitality": vitality,
                             "raw_damage": as_number(damage),
                             "hits_to_knockout": hits,
+                            "integer_floor_damage": floored_damage,
+                            "hits_to_knockout_integer_floor": floored_hits,
                         })
 
     sensitivity = []
