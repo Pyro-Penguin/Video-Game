@@ -18,6 +18,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - [Damage Model](docs/battle/DAMAGE_MODEL.md)
 - [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
 - [Damage Equation Comparison Experiment](experiments/damage_equation/README.md)
+- [Proposed Endgame Stat-Range Sensitivity Experiment](experiments/stat_range_sensitivity/README.md)
 - [Damage RNG Experiment](experiments/damage_rng/README.md)
 
 ## Completed
@@ -33,12 +34,13 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 **Stage 1 governance changes:** committed and read back from GitHub (Verified); human review/acceptance remains pending. **Stage 2 validator:** committed, read back, and tested successfully in GitHub Actions run [41085210865](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41085210865). The documentation validator, malformed-document tests, four Python-version experiment jobs, and RNG report smoke tests passed.
 
 ## Highest-Priority Next Work
-1. Review and accept or amend the collaboration protocol and Stage 1/Stage 2 governance changes.
-2. Run the synthetic comparison locally using [Damage Equation Comparison Experiment](experiments/damage_equation/README.md) to inspect the generated JSON across both stat scales. Evaluate direct ratio versus offset ratio and direct-level versus derived-stat level treatment; these are synthetic inputs, not intended game values.
-3. Use the measured tradeoffs to narrow the design choices, then request human approval for any actual damage equation, stat scale, or RNG decision. Do not select a formula or RNG model automatically.
-3. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
+1. Review and accept or amend the collaboration protocol and Stage 1/Stage 2 governance changes; human acceptance remains pending.
+2. Review the new [stat-range sensitivity experiment](experiments/stat_range_sensitivity/README.md) and its CI-generated JSON report. It converts the team's proposed Attack/Defense/Vitality bands into synthetic test fixtures; it does not approve them.
+3. Resolve the focused design questions in [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md): usefulness of the proposed stat bands, competitive Level 100 normalization, story-mode level treatment, desired neutral-matchup turns-to-knockout, and desired sensitivity to offensive specialization.
+4. After human review, update the experiment inputs only where requested; then evaluate the damage/TTK envelope and separately design a Speed/turn-order sensitivity experiment.
+5. Only after damage equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
 
-Do not begin Unity implementation or select a final RNG model without explicit approval.
+Current repository work is committed in the default branch and CI verification for the new experiment is pending. No formula, stat range, level-scaling policy, or RNG model has been selected.
 
 ## Engineering Guardrails
 - Keep authoritative rules in pure, testable C# where practical once engine implementation is authorized.
