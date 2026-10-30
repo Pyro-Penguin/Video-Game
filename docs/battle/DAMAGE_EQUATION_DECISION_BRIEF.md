@@ -227,7 +227,7 @@ The neutral reference, 4–6 target, Level 100 preference, and Pokémon-style fo
 
 **Candidate B offset pre-registration**
 - Absolute offsets: c ∈ {0, 25, 50, 100, 200, 400}. Scale-relative offsets: c = 0.25× and 0.50× the arithmetic mean of the neutral-reference Attack and Defense, rounded down and calculated once from reference stats, not fitted per matchup.
-- Recalibrate each c variant to the same Level-100 neutral-reference damage anchor before comparing curve shape.
+- Recalibrate each c variant to the same Level-100 neutral-reference damage anchor before comparing curve shape. The first expanded run showed that a 50-damage anchor yields 7 hits against Vitality 350, outside the stated neutral gate; the expanded comparison therefore uses a shared 60-damage anchor (6 floored hits) to make calibration and the 4–6 target internally consistent. This calibration change is reported explicitly and does not change the TTK target.
 - A c value is eligible for further consideration only if neutral floored TTK is 4–6, clean 2:1 Attack/Defense floored damage ratio is 1.4×–1.8× relative to equal stats, no ordinary Power-100 move one-hit-KOs the full-Vitality neutral reference, and monotonicity holds. Apply the same gates to every c; no per-matchup fitting.
 - Report rank flips for every ordered matchup across all c values, raw and floored. Report the fraction of matchup pairs whose ordering changes relative to c=100. Do not call a c robust if its ordering is unstable across the preregistered range.
 
