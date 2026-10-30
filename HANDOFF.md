@@ -28,12 +28,13 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - Added collaboration protocol and reconciled the canonical priority order; see D-014.
 
 ## Current Work State
-**Stage 1 governance changes:** committed and read back from GitHub (Verified). Human review/acceptance is pending. Stage 2 automated documentation validation is deferred until the human-readable protocol is reviewed.
+**Stage 1 governance changes:** committed and read back from GitHub (Verified); human review/acceptance remains pending. **Stage 2 validator:** implementation and malformed-document tests committed; CI result and any link-audit fixes are pending.
 
 ## Highest-Priority Next Work
-1. Review and accept or amend the collaboration protocol and Stage 1 document changes.
-2. Begin the damage-equation design investigation under the canonical priority order. Inspect the existing damage model and stat definitions first; separate deterministic formula/modifier/rounding decisions from RNG distribution and placement.
-3. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
+1. Inspect the Stage 2 GitHub Actions result; fix validator/test failures or existing broken links it identifies.
+2. Review and accept or amend the collaboration protocol and Stage 1/Stage 2 governance changes.
+3. Begin the damage-equation design investigation under the canonical priority order. Inspect the existing damage model and stat definitions first; separate deterministic formula/modifier/rounding decisions from RNG distribution and placement.
+4. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
 
 Do not begin Unity implementation or select a final RNG model without explicit approval.
 
