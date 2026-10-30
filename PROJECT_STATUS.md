@@ -19,9 +19,12 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Stage 2 documentation validator, malformed-document tests, and CI integration committed. GitHub Actions run 41085210865 passed the documentation job, all four Python-version experiment jobs, and the damage RNG report smoke tests.
 - Damage Equation Decision Brief added; it compares candidate equation families without selecting a formula or changing game rules.
 - Synthetic damage-equation comparison experiment and six automated tests added. GitHub Actions run 41086133510 passed the equation tests and report-generation smoke test, the documentation checks, and the existing four-version damage RNG matrix.
+- Team-proposal stat-range sensitivity experiment added under `experiments/stat_range_sensitivity/`; it evaluates five synthetic Attack/Defense archetypes, four equation candidates, level/power/Vitality combinations, KO thresholds, and one-stat sensitivity. Automated tests and CI report validation have been added; latest run verification is pending.
 
-## Current Experiment
-[Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
+## Current Experiments
+- [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
+- [Damage Equation Comparison](experiments/damage_equation/README.md) compares four base-equation families on synthetic inputs.
+- [Stat-Range Sensitivity](experiments/stat_range_sensitivity/README.md) translates the team's proposed endgame bands into synthetic damage, KO-pacing, and sensitivity tests.
 
 ## Canonical Project Priorities
 This is the single authoritative project-wide priority list. [Open Questions](docs/OPEN_QUESTIONS.md) groups unresolved questions in this order; it does not establish a separate priority hierarchy.
