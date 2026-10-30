@@ -23,10 +23,12 @@ Five profiles and Vitality values remain synthetic test coordinates, not accepte
 | Pairwise tie changes | Report count and direction; no numeric cap currently pre-registered | 439 total relation changes; decide whether tie creation/removal needs a bound |
 | Combined-stat raw interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 660 nonzero; maximum absolute residual 5 percentage points |
 | Combined-stat floored-TTK interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 721 nonzero; maximum absolute residual 2 hits |
-| Matchup TTK variance | **No ±1-hit acceptance bound was numerically pre-registered** | Do not claim a ±1-hit pass. Set a bound or leave this descriptive |
+| Isolated-stat TTK screen | **±1 hit is a proposed screen, not a confirmed pre-registered numeric gate** | The brief pre-registered floored TTK for any such tolerance, but did not fix ±1 as the accepted limit. Team must accept/revise the proposed ±1 isolated-stat screen |
+| Combined-stat interaction TTK residual | **Separate tolerance required; no limit pre-registered** | Observed maximum residual is 2 hits, exceeding ±1 if someone were to apply that screen indiscriminately. Decide the combined-stat tolerance separately |
+| Matchup TTK variance | **No numeric acceptance bound pre-registered** | Do not infer a ±1-hit matchup-variance pass. Set a bound or leave descriptive |
 | Candidate B offset interval | Tested eligible points c={100,143,200,400}; sampled bounds **[100,400]** | Candidate interval only, not a selected value or proof every intermediate c passes |
 
-The review must explicitly decide whether to add numeric limits for interaction residuals and matchup variance. Do not backfill tolerances after seeing the results and describe them as pre-registered.
+The ±1-hit wording requires careful scope. The experiment brief required any ±1-hit tolerance to be assessed on floored TTK, but it did not pre-register ±1 as a numeric acceptance limit. For this review, ±1 hit is presented as a proposed isolated-stat screen only. Combined-stat interaction residuals are a separate question: the observed maximum is 2 hits, so applying ±1 to combined residuals would fail at least one observed case. The team must explicitly accept, revise, or reject the isolated ±1 screen and set or decline a separate combined-stat residual tolerance. No tolerance may be retroactively labelled pre-registered.
 
 ## 3. Candidate B is a design tradeoff curve
 
@@ -48,7 +50,7 @@ The 4,125 comparisons contain:
 - 317 cases where raw TTK was strictly ordered but flooring made them tied.
 - 0 cases where a strict ordering became the opposite strict ordering.
 
-Flooring changed 439 pairwise relations, but caused no strict preference reversal. Tie creation/removal remains meaningful and should not be collapsed into “no pairwise changes.”
+Flooring changed 439 pairwise relations, but caused no strict preference reversal. It merged 317 strict raw distinctions into ties while splitting 122 raw ties into strict orderings: flooring therefore more often collapses than creates distinctions in this sample, conservatively under-reporting ordering differences. Tie creation/removal remains meaningful and should not be collapsed into “no pairwise changes.”
 
 ## 5. Level treatment
 
@@ -69,11 +71,27 @@ If both answers are **yes**, no third damage experiment is needed before narrowi
 
 If either answer is **no**, specify the exact gap (which stat range, progression band, level interval, or interaction is missing). Any third experiment must be scoped only to that gap. No general-purpose wider sensitivity pass is authorized by this review.
 
-## 7. Speed-system dependency — historical 150 cap
+## 7. Speed-system review pre-registration — historical 150 cap
 
-Initial planning used **150 as the maximum base Speed stat**. Treat this as a historical design input to validate, not an accepted cap. The battle model orders actions by priority tier and then Speed, so the Speed scale must be reviewed alongside stat allocation and progression before the speed rule is locked.
+Initial planning used **150 as the maximum base Speed stat**. Treat this as a historical design input to validate, not an accepted cap. The prior allocation proposal is **70 total points with a maximum of 30 in any one stat** (D-010, Provisional); it is not confirmed. Any Speed-tier analysis must state whether it assumes that 70/30 allocation model or a different explicitly named scenario. Do not analyze a 150 cap in isolation from the allocation budget and cap.
 
-The review should ask whether a 150 ceiling creates useful tier density across realistic builds, whether small Speed investments cross too many decisive breakpoints, and how priority effects interact with Speed. Do not extrapolate speed-tier balance from the damage experiment: it contains no Speed distributions or action-order simulation. Keep Speed analysis as a parallel design dependency for the later battle-structure review; it does not reopen or extend the damage experiment by itself.
+### Tier-density question and proposed cluster definition
+
+Before running a Speed distribution analysis, define a decisive threshold as a Speed breakpoint at which a one-point stat/build difference changes the action order between two otherwise comparable builds, after applying the priority tier. Proposed cluster flag: **more than 2 distinct legal builds fall within ±5% of the same decisive Speed threshold**. This is a proposed operational definition for review, not an accepted balance gate. The team must accept or revise the count (>2), distance (±5%), and what qualifies as a distinct legal build before any distribution run. Report both build count and represented usage/build prevalence where available; raw build enumeration alone can overstate practical clustering.
+
+### Keep priority mechanics separate
+
+Priority tier is resolved before Speed under the current turn model. The Speed review may identify where priority changes the comparison set, but it must not decide priority move availability, priority magnitude, cancellation, or priority-vs-counterplay balance. Those are combat-architecture questions for Battle Structure and Resolution. Speed analysis should report ordinary same-priority ordering first, then provide clearly separated sensitivity cases for any already-defined priority rules. Do not invent priority rules to complete the Speed model.
+
+### Required Speed review questions
+
+1. Under the explicitly stated 150 base-Speed ceiling and provisional 70-total/30-per-stat allocation model, how dense are legal Speed tiers across representative builds?
+2. How many decisive thresholds meet the proposed cluster definition (>2 distinct builds within ±5%)?
+3. What is the opportunity cost of Speed investment versus Vitality and offense under the same allocation budget?
+4. Do progression-derived Speed values create different clusters from competitive normalized builds?
+5. Which conclusions remain valid if the provisional 70/30 allocation model changes?
+
+No speed distribution, tier-density analysis, or action-order simulation is included in the damage experiment. The Speed review is a separate design task and does not reopen the damage experiment by itself.
 
 ## 8. Decisions required from the review
 
@@ -82,12 +100,17 @@ The review should ask whether a 150 ceiling creates useful tier density across r
 3. Accept or revise the no-full-health-one-hit rule.
 4. Accept or revise the 1.40×–1.80× specialization envelope.
 5. Accept or revise zero strict pairwise reversals as the flooring gate; decide whether tie changes need a numeric bound.
-6. Set or decline numeric tolerances for combined-stat residuals and matchup TTK variance.
+6. Decide whether to adopt ±1 floored hit as an isolated-stat screen; separately set or decline a combined-stat interaction residual tolerance (observed maximum: 2 hits) and a matchup TTK variance bound.
 7. Choose the desired specialization feel on the c=100/143/200/400 curve, or request a narrowly defined additional offset sample.
 8. Choose derived-stat-only versus direct-level contribution, with progression evidence considered.
 9. Confirm whether current stat ranges and progression-derived stats represent the intended design space.
-10. Carry the historical 150 maximum base Speed into a separate speed-tier review; do not silently approve it as a cap.
+10. Carry the historical 150 maximum base Speed into the separately pre-registered speed-tier review; explicitly confirm the assumed allocation model (provisional 70 total / 30 per stat) and accept or revise the proposed cluster definition before analysis.
 
-## 9. Hold point
+## 9. Review exit criteria and hold point
 
-No formula, Candidate B offset, stat band, level path, Speed cap, or new numeric residual tolerance is selected by this document. The experiment remains held. A third damage experiment requires a documented “no” on the stat-scale or progression-adequacy question and a narrowly scoped gap statement.
+The review must end in one of two states:
+
+- **Decision reached:** The team accepts/revises the gates, accepts a level path, confirms the tested stat/progression space is adequate, and selects an offset from the stated tradeoff curve. The selected formula/parameter is recorded as **Confirmed** with scope and limitations. No third experiment runs unless the review identifies a specific uncovered gap.
+- **Evidence gap identified:** The team rejects a gate or cannot choose an offset/level path on the available evidence. Record the exact disputed criterion or missing data. Any next experiment is scoped only to that rejection or gap; no general sensitivity pass is authorized. If the team accepts the gates but leaves the offset undecided without naming a concrete evidence gap, the review is not complete and must resolve the design preference rather than defaulting to another experiment.
+
+No formula, Candidate B offset, stat band, level path, Speed cap, or new numeric residual tolerance is selected by this document. The experiment remains held. A third damage experiment requires a documented rejection or specific gap and a narrowly scoped plan.

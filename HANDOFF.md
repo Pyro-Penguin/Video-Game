@@ -44,14 +44,15 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
 - Flooring changed 439/4,125 pairwise relations: 122 raw ties became strict floored relations, 317 strict raw relations became ties, and zero strict order reversals occurred.
 - Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. The Level-1 result is not a story prediction; it isolates sensitivity to the direct level term.
-- Combined-stat interaction residuals: 1,320 evaluated; 660 raw-damage residuals nonzero (max 5 percentage points); 721 floored-TTK residuals nonzero (max 2 hits). No numeric residual tolerance was pre-registered, so no pass/fail claim is justified.
+- Combined-stat interaction residuals: 1,320 evaluated; 660 raw-damage residuals nonzero (max 5 percentage points); 721 floored-TTK residuals nonzero (max 2 hits). The ±1-hit concept was specified to use floored TTK but was not established as a numeric acceptance gate; if adopted as an isolated-stat screen, combined residuals require a separate tolerance. The 5 pp raw / 2-hit floored maxima are threshold-sensitive, not unrelated effects.
+- Flooring changed 439 pairwise relations: 122 ties split into strict orderings, 317 strict orderings merged into ties, zero strict reversals; flooring more often collapses distinctions in this sample.
 - The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; it uses the integer level term (including at Level 1) and excludes external modifiers.
 - Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
-1. Conduct the one-sitting design review using [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md). Numeric gates, residual gaps, the c tradeoff curve, level-path questions, and the conditional third-experiment rule are listed there.
+1. Conduct the one-sitting design review using [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md). Resolve the scope of the proposed ±1 isolated-stat screen versus the separate combined-stat residual tolerance; select or reject an offset and level path; use the explicit exit criteria.
 2. Hold the expanded experiment. Run a third pass only if the team says current stat ranges or progression-derived stats are inadequate, and scope it to the specific missing range or progression gap. No broad sensitivity pass by default.
-3. Carry the historical **150 maximum base Speed** into a separate speed-tier review. It is not an accepted cap; examine tier density, investment breakpoints, priority interaction, and intended Speed distribution before locking Speed rules.
+3. Carry the historical **150 maximum base Speed** into the pre-registered speed-tier review. It is not an accepted cap. State the assumed allocation model (provisional 70 total / 30 per stat), accept/revise the proposed cluster definition (>2 distinct builds within ±5% of a decisive threshold), and keep priority-mechanic design separate from Speed analysis.
 4. After damage-equation resolution, continue battle structure/resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
 5. Do not create further game-rule Decision Log entries until the human explicitly accepts the decisions.
 
