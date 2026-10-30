@@ -64,3 +64,21 @@ jobs:
       - name: Validate project documentation
         working-directory: tools
         run: python validate_docs.py
+
+  damage-equation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Run equation comparison tests
+        working-directory: experiments/damage_equation
+        run: python -m unittest -v
+      - name: Generate comparison report smoke test
+        working-directory: experiments/damage_equation
+        run: |
+          python damage_equation.py --output /tmp/damage-equation-report.json
+          python -c "import json; p=json.load(open('/tmp/damage-equation-report.json')); assert p['sample_count'] == len(p['results']); assert p['status'].startswith('synthetic investigation'); print('Damage equation report smoke test passed')"
