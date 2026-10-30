@@ -14,6 +14,8 @@ Canonical navigation for the Video Game project repository.
 - [Types and Villages](docs/world/TYPES_AND_VILLAGES.md) — candidate type inventory.
 - [Clans and Abilities](docs/world/CLANS_AND_ABILITIES.md) — current partial clan concepts.
 - [Creature Design](docs/creatures/CREATURE_DESIGN.md) — creature and progression ideas.
+- [Player Character and Classes](docs/player/PLAYER_CHARACTER_AND_CLASSES.md) — player combat role and class concepts.
+- [Exploration and Capture](docs/world/EXPLORATION_AND_CAPTURE.md) — Portal Gauntlet, traversal, puzzles, and capture ideas.
 - [Decision Log](docs/DECISION_LOG.md) — confirmed, provisional, and unresolved decisions.
 - [Open Questions](docs/OPEN_QUESTIONS.md) — design and technical blockers.
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) — milestones and exit criteria.
