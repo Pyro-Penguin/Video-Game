@@ -55,6 +55,11 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         for c in B_OFFSETS:
             self.assertEqual(candidate_damage("B_offset_ratio", 100, 300, 275, 100, c), Fraction(60))
 
+    def test_candidate_c_retains_attack_defense_sensitivity_after_global_calibration(self):
+        base = candidate_damage("C_direct_level", 100, 300, 300, 100)
+        stronger = candidate_damage("C_direct_level", 100, 600, 300, 100)
+        self.assertGreater(stronger, base)
+
     def test_level_derived_only_and_direct_level_paths_are_distinct(self):
         low = candidate_damage("A_direct_ratio", 100, 300, 275, 1)
         high = candidate_damage("A_direct_ratio", 100, 300, 275, 100)
