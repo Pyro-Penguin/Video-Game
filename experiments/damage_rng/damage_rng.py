@@ -48,7 +48,7 @@ def calculate_damage(
     pre_rng_damage: int,
     roll_percent: int,
     *,
-    stab: Fraction = Fraction(3, 2),
+    stab: Fraction = Fraction(1),
     effectiveness: Fraction = Fraction(1, 1),
     immune: bool = False,
     normalization: Fraction = Fraction(1, 1),
