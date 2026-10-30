@@ -16,6 +16,8 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md)
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md)
 - [Damage Model](docs/battle/DAMAGE_MODEL.md)
+- [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
+- [Damage Equation Comparison Experiment](experiments/damage_equation/README.md)
 - [Damage RNG Experiment](experiments/damage_rng/README.md)
 
 ## Completed
@@ -32,7 +34,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 ## Highest-Priority Next Work
 1. Review and accept or amend the collaboration protocol and Stage 1/Stage 2 governance changes.
-2. Review the synthetic comparison report from [Damage Equation Comparison Experiment](experiments/damage_equation/README.md) after its CI run completes. Evaluate sensitivity across both synthetic scales, especially direct ratio versus offset ratio and direct-level versus derived-stat level treatment.
+2. Run the synthetic comparison locally using [Damage Equation Comparison Experiment](experiments/damage_equation/README.md) to inspect the generated JSON across both stat scales. Evaluate direct ratio versus offset ratio and direct-level versus derived-stat level treatment; these are synthetic inputs, not intended game values.
 3. Use the measured tradeoffs to narrow the design choices, then request human approval for any actual damage equation, stat scale, or RNG decision. Do not select a formula or RNG model automatically.
 3. Only after the damage-equation work is sufficiently specified, return to battle structure and turn-resolution decisions.
 
