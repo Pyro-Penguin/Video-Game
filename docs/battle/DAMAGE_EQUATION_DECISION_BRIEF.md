@@ -169,16 +169,46 @@ For normalized competitive combat at Level 100, a direct level term is constant 
 
 The experiment uses exact rational arithmetic. KO counts use raw damage without integer flooring and are comparative indicators only. Speed, modifiers, RNG, equipment, type, stat progression, and final damage application are out of scope. The proposed ranges, archetypes, and move powers remain synthetic.
 
+### Team review synthesis and evaluation gates
+
+The team's feedback supports these working preferences, but they are not accepted game rules:
+
+- The proposed Attack 200–400, Defense 200–350, and Vitality 250–500 bands are acceptable as synthetic test envelopes only.
+- Competitive combat should use one fixed normalization level. The team is split between Level 50 (lower displayed values and current calibration anchor) and Level 100 (narrative endgame convention); keep the choice open.
+- For story progression, one reviewer prefers level → derived stats → damage for the first pass; another recommends direct level scaling. Keep both treatments testable rather than silently choosing one.
+- Suggested neutral pacing is 3–6 hits, with 2HKO for strongly favorable / heavily invested attacks and 5–7+ for a defensive wall against resisted attacks. Type effectiveness is not yet modeled, so the latter cannot be tested in this experiment.
+- The preference is moderate offensive specialization rather than fully linear extremes or heavy compression. Candidate B and a softened-A variant merit further investigation; A and D remain useful bounds. No candidate is selected.
+
+The initial report is now summarized in [Stat-Range Sensitivity Results](../../experiments/stat_range_sensitivity/RESULTS.md). It shows that Vitality alone changes the balanced profile from 5 to 10 hits across 250–500 Vitality at Level 50 / Power 100. It also shows isolated integer flooring can add a hit in some cells. The current profiles pair attacker and defender stats; they are not an all-vs-all matchup matrix.
+
+Before pruning candidates, use these proposed screening gates (all thresholds require team agreement):
+1. **Calibration parity:** candidates share the same damage anchor at the selected competitive normalization level and reference stats.
+2. **Neutral pacing:** define a named reference profile, Vitality, and ordinary move power; test it against the agreed neutral TTK band.
+3. **No accidental one-hit standard KO:** ordinary-power attacks should not one-hit a full-Vitality standard profile absent an explicit mechanic.
+4. **Specialization envelope:** define the acceptable damage multiplier for a 2:1 Attack/Defense ratio.
+5. **Sensitivity:** preserve monotonicity and report both one-stat and combined-stat perturbations.
+6. **Integer behavior:** compare raw and floored results; material changes require full-pipeline evaluation.
+7. **Reproducibility:** tests, JSON, and human-readable results must come from the same green CI commit.
+
+Do not tune thresholds after observing which candidate they favor. Candidate pruning must follow agreed criteria, not aesthetic preference.
+
 ### Review questions
 
-1. Are these proposed bands useful as provisional test targets, including the explicit bounded endpoints used in the first sweep?
-2. Should Level 100 be the competitive normalization level while story progression changes derived stats only?
-3. What should a representative neutral matchup survive: approximately how many successful attacks at ordinary move power?
-4. Should offensive specialization create a substantial damage advantage, or should the equation compress extreme Attack/Defense ratios?
-5. Should Speed be evaluated next as a linear turn-order stat, or should we first complete the damage/TTK envelope?
+The questions are grouped by decision ownership. Current responses are framing feedback only; binding preference collection should happen after the flooring-enhanced report passes CI and the updated human-readable results are committed.
 
-Do not select a candidate automatically from the lowest or highest KO count. The intended tactical pacing and desired counterplay must determine acceptable outcomes.
+**A. Combat pacing and archetypes**
+1. For each of the five paired test profiles (Balanced 300/275, Offensive 400/250, Defensive 250/350, High-pressure 400/200, Low-pressure 200/350), what hits-to-KO band should we target at ordinary move power? Should any profile be renamed or replaced?
+2. Which profile, if any, should be the neutral reference? What Vitality and move power define that reference?
+3. Should the next experiment include all-vs-all attacker/defender archetype pairings and combined-stat perturbations?
 
-## Recommended next action
+**B. Competitive normalization and progression**
+4. Confirm one fixed competitive level: Level 50 or Level 100? Level 50 is the current calibration anchor and reduces displayed values; Level 100 aligns with the proposed endgame convention. Neither is accepted yet.
+5. Should story level affect damage only through derived Attack/Defense/Vitality, or also through a separate level multiplier? The latter is an explicit progression power-cliff choice.
 
-Review the generated sensitivity report and answer the review questions above. Keep all current formula, stat-scale, level-treatment, modifier-order, and RNG decisions open until explicitly accepted by the human.
+**C. Formula behavior and acceptance**
+6. For a 2:1 Attack/Defense ratio, should damage be approximately 2×, 1.5×, or another agreed multiplier? This defines the desired specialization curve.
+7. Is a neutral 3–6 hit envelope acceptable only for a named reference profile, or should it apply across a broader portion of the stat distribution?
+8. What exact outcomes invalidate a candidate (for example, ordinary-power one-hit KOs, excessive defensive TTK, or excessive sensitivity to small stat changes)?
+
+These answers should be recorded as Provisional only if the human explicitly accepts them. They are not yet Decision Log entries.
+
