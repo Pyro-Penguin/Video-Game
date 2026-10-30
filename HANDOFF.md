@@ -32,33 +32,28 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - Added collaboration protocol and reconciled the canonical priority order; see D-014.
 
 ## Current Work State
-**Stage 1 governance changes:** committed and read back from GitHub (Verified); human review/acceptance remains pending. **Stage 2 validator:** committed, read back, and tested successfully in GitHub Actions run [41085210865](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41085210865).
 
-**Stat-range experiment:** the initial implementation passed all seven jobs in [CI run 41089058406](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41089058406). The flooring-enhanced implementation and report passed all seven jobs in [CI run 41090778744](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41090778744). Its artifact was downloaded and inspected: 1,200 damage/KO rows, 120 sensitivity rows, 80 level rows; per-hit integer flooring changes KO count in 247/1,200 rows. See the human-readable [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md).
+**Expanded damage experiment:** CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs. Its artifact was downloaded and inspected: 825 all-vs-all rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise candidate comparisons. [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md) was updated from this artifact. Subsequent documentation, status, and index updates passed all seven jobs in [41095218936](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41095218936).
 
-## Active Review Package
-Team proposal is represented only as synthetic test ranges:
-- Attack / Special Attack: 200–400.
-- Defense / Special Defense: 200–350.
-- Vitality / HP: 250–500.
-- Speed: 100–400 (not included in damage experiment).
-- Levels: 1, 25, 50, 100.
-- Move powers: 40, 80, 100, 120, 160.
-- Vitality points: 250, 350, 500.
-- Five paired test profiles: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350.
+**Verification before this handoff edit:** CI run 41095218936 tested commit `254fc50719c11d82e137ff38a68a278547b9266a` and passed all seven jobs. This handoff edit triggers a new run; check that run before describing this handoff as Tested.
 
-The initial candidate calibration anchor remains Level 50. The current human review has expressed these **Provisional preferences**: competitive normalization Level 100; neutral reference = Balanced 300 Attack / 275 Defense, Vitality 350, Power 100; neutral target = 4–6 hits; and Pokémon-style damage calculation as the specialization-response reference rather than an arbitrary 1.5×–1.7× cap. These are working directions, not accepted game rules. Story-level treatment remains open; default test bias is level → derived stats → damage, with direct level scaling retained as a comparison. Five profiles remain test coordinates only.
+## Expanded experiment findings
 
-Flooring audit of the CI JSON is now documented in RESULTS.md: the 247 changed rows distribute A=40, B=48, C=91, D=68; 60 rows change by more than one hit, all in Candidate C. Aggregate mean-TTK ranking remains B, D, A, C, but individual pairwise ordering changes in some scenario coordinates. Floored outcomes must govern future pass/fail checks.
+- The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target.
+- Candidate B offsets c=100, 143, 200, and 400 pass the current provisional neutral TTK, 2:1 specialization, and no-full-HP-one-hit numeric gates. No offset is selected.
+- c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
+- Flooring changed 439/4,125 pairwise candidate relations, all by creating/removing ties; there were zero strict order reversals in this Level-100 matrix.
+- Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. This isolates direct level dependence; it is not a story stat-growth model.
+- The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; external modifiers are excluded.
+- Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
-1. Extend the experiment with the all-vs-all attacker/defender matrix and combined-stat perturbations; include matched Level-100 calibration, raw and floored outputs, and a Pokémon-style cartridge reference calculation.
-2. Re-evaluate the provisional Balanced/Vitality-350/Power-100 neutral reference and 4–6 TTK target, plus the measured 2:1 specialization response, against that expanded matrix. Any ±1-hit tolerance must apply to floored results.
-3. Parameterize Candidate B's offset rather than treating c=100 as scale-independent. Do not prune candidates until the expanded results are reviewed against pre-stated gates.
-4. Keep the battle-structure track alive in parallel. Damage-equation work must not silently replace unresolved active/reserve, commander, simultaneous-selection, and turn-resolution decisions.
-5. Do not add Decision Log entries until the human explicitly accepts the resulting decisions.
+1. Review the expanded results against the provisional gates; accept or revise the neutral reference, 4–6 floored TTK target, 1.4×–1.8× specialization envelope, and candidate-screening rules.
+2. If gates are accepted, decide whether a second sensitivity pass across a wider stat scale / progression-derived stats is needed before narrowing B offsets or pruning A–D. Do not select c=143 or any formula from this synthetic grid alone.
+3. Keep battle structure/resolution alive as the next project priority after damage-equation resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
+4. Do not create game-rule Decision Log entries until the human explicitly accepts the decisions.
 
-No final formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected. Level 100 and Pokémon-style calculation are provisional human preferences only.
+No final damage formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected.
 
 ## Engineering Guardrails
 - Keep authoritative rules in pure, testable C# where practical once engine implementation is authorized.
