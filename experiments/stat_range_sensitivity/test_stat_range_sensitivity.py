@@ -56,6 +56,16 @@ class StatRangeSensitivityTests(unittest.TestCase):
             self.assertGreater(row["raw_damage"]["numerator"], 0)
             self.assertGreaterEqual(row["hits_to_knockout"], 1)
 
+    def test_integer_floor_damage_and_ko_are_reported(self):
+        report = run_experiment()
+        for row in report["results"]:
+            self.assertGreaterEqual(row["integer_floor_damage"], 1)
+            self.assertGreaterEqual(row["hits_to_knockout_integer_floor"], 1)
+            self.assertGreaterEqual(
+                row["hits_to_knockout_integer_floor"],
+                row["hits_to_knockout"],
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
