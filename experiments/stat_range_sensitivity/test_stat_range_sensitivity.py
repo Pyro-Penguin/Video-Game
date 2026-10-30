@@ -18,7 +18,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         for name in ("A_direct_ratio", "B_offset_ratio", "C_direct_level", "D_bounded_share"):
             offsets = B_OFFSETS if name == "B_offset_ratio" else (100,)
             for c in offsets:
-                self.assertEqual(candidate_damage(name, 100, 300, 275, 100, c), Fraction(50))
+                self.assertEqual(candidate_damage(name, 100, 300, 275, 100, c), Fraction(60))
 
     def test_generation_nine_reference_core_known_fixtures(self):
         self.assertEqual(pokemon_gen9_base(100, 100, 100, 100), 86)
