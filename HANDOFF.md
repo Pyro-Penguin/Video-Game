@@ -35,7 +35,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 **Expanded damage experiment:** CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs. Its artifact was downloaded and inspected: 825 all-vs-all rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise candidate comparisons. [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md) was updated from this artifact. Subsequent documentation, status, and index updates passed all seven jobs in [41095218936](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41095218936).
 
-**Verification before this handoff edit:** CI run 41095664456 tested commit `91aac671e672b1f1cc2867c7481b8051df8099a0` and passed all seven jobs. This handoff edit triggers a new run; check that run before describing this handoff as Tested.
+**Review-package verification:** CI run [41097941386](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41097941386) tested commit `1ca7ddca3d8460058220ad2b5ffa8c5309c0923a` and passed all seven jobs, including documentation validation, damage equation, stat-range sensitivity, and the four-version damage RNG matrix. This handoff refresh is documentation-only and triggers a follow-up CI run; check that run before marking this exact handoff commit Tested.
 
 ## Expanded experiment findings
 
