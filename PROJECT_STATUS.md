@@ -18,6 +18,7 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Collaboration protocol and Stage 1 governance changes committed and read back from GitHub; human review/acceptance is pending.
 - Stage 2 documentation validator, malformed-document tests, and CI integration committed. GitHub Actions run 41085210865 passed the documentation job, all four Python-version experiment jobs, and the damage RNG report smoke tests.
 - Damage Equation Decision Brief added; it compares candidate equation families without selecting a formula or changing game rules.
+- Synthetic damage-equation comparison experiment and tests added; CI execution pending.
 
 ## Current Experiment
 [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
