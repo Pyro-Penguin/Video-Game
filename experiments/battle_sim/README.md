@@ -23,7 +23,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 | Action economy | Every active unit submits exactly one command | Current broad direction; detailed player action set unresolved |
 | Selection | All commands validate against the same turn-start state | Exercises simultaneous selection |
 | Resolution | Priority descending, then Speed descending | Broad direction; exact ties unresolved |
-| Exact tie | User-defined hierarchy: tie-granting ability → greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat → greater Champion relationship → hardware/tap input-registration priority | Confirmed hierarchy; implementation details and all-equal fallback remain open. Unit ID ascending is fixture-only. |
+| Exact tie | Greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat | Confirmed by D-021; ability, Champion relationship, and hardware/input priority excluded. Comparison details and all-equal fallback remain open. Unit ID ascending is fixture-only. |
 | Targeting | One opposing active unit | Simplifies core sequencing; no ally/area/self targeting |
 | Damage | Positive integer supplied by an injected DamageModel; current FixedDamageFixture reads MoveDefinition fixture damage | Placeholder fixture value, not the damage formula |
 | Invalidated actor/target | Queued action is skipped; no retarget | Matches current D-006 direction for defeated actors/targets |
