@@ -21,6 +21,7 @@ After these, use the task-specific references below.
 - [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) — actionable blocking, important, and deferred rules decisions.
 - [Battle Engine Gap Analysis](docs/battle/BATTLE_ENGINE_GAP_ANALYSIS.md) — current harness boundaries, unresolved correctness risks, domain ownership, and staged engine roadmap.
 - [Battle Simulation Harness](experiments/battle_sim/README.md) — pure-Python deterministic turn-resolution prototype with synthetic fixtures; not final game rules or Unity runtime.
+- [Provisional Creature Pairwise Screen](experiments/battle_sim/draft_roster_screen.py) — 25 neutral Power-80 single-attacker matchups at c=100/c=143; diagnostic only, not match TTK.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
 - [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
 - [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md) — candidate equation families, mathematical checks, and experiment plan; no rule selected.
