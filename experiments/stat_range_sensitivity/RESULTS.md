@@ -1,6 +1,6 @@
 # Expanded Damage Sensitivity — Results
 
-**Evidence:** The updated experiment and battle harness passed all eight CI jobs in [run 41165870453](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41165870453), testing commit `dc0e128897b332de48f5f935406fcb3f966df782`. Artifact `expanded-damage-sensitivity-report` was downloaded and inspected (SHA-256 `d281347a283af9d55cf466e7e50bec55f1eb8a011758cfc1153f8685ece06cf9`).
+**Evidence:** The corrected independent Defense sweep, floored specialization gate, Pokémon scaffolding fixture, and CLI runner passed all eight CI jobs in [run 41169363724](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41169363724), testing commit `14492fa6fb447997d93e736a3e4c25aa80ac49dd`. CI published the regenerated `expanded-damage-sensitivity-report` and the deterministic `pokemon-scaffold-pipeline-trace` artifact. The exact pipeline runner was executed three battles twice; both JSON and readable traces compared byte-for-byte.
 
 **Design status:** Synthetic evidence only. No formula, stat band, level policy, or TTK rule has been selected. Current human preferences remain provisional in the Damage Equation Decision Brief; they are not Decision Log entries.
 
@@ -17,7 +17,7 @@
 | Raw/floored pairwise candidate comparisons | 4,125 |
 | Candidate B matchup-pair comparisons per offset | 2,775 |
 
-Five profiles remain synthetic coordinates: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350. Competitive comparison is Level 100; Level 50 remains the historical anchor. Vitality values are 250/350/500; Power 100.
+Attacker profiles remain synthetic coordinates: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350. The independent defender sweep uses five distinct Defense coordinates: 200, 250, 275, 300, 350. Competitive comparison is Level 100; Level 50 remains the historical anchor. Vitality values are 250/350/500; Power 100.
 
 The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350, outside the provisional 4–6 target from the outset. The comparison was therefore recalibrated to a shared **60-damage Level-100 anchor** at Power 100, Attack 300, Defense 275. This produces 6 floored hits (350/60 = 5.83 raw hits-to-KO). The anchor is recorded as Provisional Decision D-016: a comparison calibration, not a selected gameplay damage value; revisit it if the neutral reference stats, Vitality, ordinary move power, competitive normalization, or 4–6 target changes. Each B offset is independently calibrated to the same anchor. Candidate C uses one global calibration constant based on the same reference profile. The original Level-50/50-damage experiment remains historical evidence.
 

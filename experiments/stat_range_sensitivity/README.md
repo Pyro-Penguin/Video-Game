@@ -6,7 +6,8 @@ This experiment extends the initial paired-profile study with the pre-registered
 
 ## Synthetic inputs
 
-- Attack/Defense profiles: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350.
+- Attacker profiles: Balanced 300/275; Offensive 400/250; Defensive 250/350; High-pressure 400/200; Low-pressure 200/350.
+- Independent defender sweep: Defense 200, 250, 275, 300, and 350 (five distinct coordinates; not aliased to the attacker profiles).
 - Five attacker profiles × five defender profiles = 25 ordered matchups.
 - Vitality: 250, 350, 500. Ordinary reference power: 100.
 - Competitive comparison level: 100. Level 50 is retained as the historical calibration anchor.
