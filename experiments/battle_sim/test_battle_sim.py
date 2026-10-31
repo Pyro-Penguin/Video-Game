@@ -76,7 +76,7 @@ class BattleSimulationTests(unittest.TestCase):
             event.actor_id for event in result.events
             if event.event_type == "DamageApplied"
         ]
-        self.assertEqual(actors, sorted(actors))
+        self.assertEqual(actors, ["A-C", "B-C", "A-M1", "A-M2", "B-M1", "B-M2"])
 
     def test_exact_speed_tie_prefers_greater_supplied_type_effectiveness(self):
         tied_state = replace(
