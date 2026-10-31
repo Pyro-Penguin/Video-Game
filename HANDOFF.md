@@ -57,11 +57,13 @@ The Gen I–IX CSV audit isolates 546 final-stage entries (mean BST 509.2) and 4
 - Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
-1. Conduct the one-sitting design review using [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md). Resolve the scope of the proposed ±1 isolated-stat screen versus the separate combined-stat residual tolerance; select or reject an offset and level path; use the explicit exit criteria.
-2. Hold the expanded experiment. Run a third pass only if the team says current stat ranges or progression-derived stats are inadequate, and scope it to the specific missing range or progression gap. No broad sensitivity pass by default.
-3. Carry the historical **150 maximum base Speed** into the pre-registered speed-tier review. It is not an accepted cap. State the assumed allocation model (provisional 70 total / 30 per stat), accept/revise the proposed cluster definition (>2 distinct builds within ±5% of a decisive threshold), and keep priority-mechanic design separate from Speed analysis.
-4. After damage-equation resolution, continue battle structure/resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
-5. Do not create further game-rule Decision Log entries until the human explicitly accepts the decisions.
+1. Verify the corrected specialization gate and regression tests in CI. Treat the corrected profile-wide results as authoritative; the previous single-point gate is superseded.
+2. Consolidate experiment parameters (profiles, offsets, powers, levels, Vitalities, and numeric gates) into one machine-readable configuration consumed by scripts and documentation. Keep this as a separate, reviewable change.
+3. Re-run the expanded report and inspect its artifact. Prune candidates only against the agreed provisional numeric criteria: neutral floored TTK 4–6 at Balanced / P100 / Vitality 350; 2:1 specialization 1.4×–1.8× across the full Defense band; no ordinary-power one-hit KO on full Vitality. Floored results govern.
+4. Once the experiment is internally consistent, hold the damage-equation design review. Do not treat passing a gate as selecting a formula or offset.
+5. Carry historical maximum base Speed 150 into the separate pre-registered speed-tier review; it is not an accepted cap. Keep allocation assumptions and priority mechanics explicitly separate.
+6. After damage-equation resolution, continue battle structure/resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
+7. Do not create further game-rule Decision Log entries until the human explicitly accepts the decisions.
 
 No final damage formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected.
 
