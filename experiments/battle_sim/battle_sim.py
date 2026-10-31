@@ -5,6 +5,8 @@ All combat values are synthetic test fixtures, not approved game rules.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
+from functools import cmp_to_key
+from fractions import Fraction
 from typing import Iterable, Mapping, Optional, Protocol, Tuple
 
 ACTIVE = "active"
@@ -47,6 +49,9 @@ class ActionCommand:
     actor_id: str
     move_id: str
     target_id: str
+    # Optional action-vs-target effectiveness supplied by the caller as an exact ratio.
+    # None means the action has no defined effectiveness value for tie comparison.
+    type_effectiveness: Optional[Tuple[int, int]] = None
 
 
 @dataclass(frozen=True)
@@ -148,6 +153,42 @@ def _validate_moves(moves: Mapping[str, MoveDefinition]) -> None:
             raise BattleValidationError(f"fixture damage for {key} must be positive")
 
 
+def _compare_action_commands(
+    left: ActionCommand,
+    right: ActionCommand,
+    moves: Mapping[str, MoveDefinition],
+    start_units: Mapping[str, UnitState],
+) -> int:
+    """Sort higher-priority actions first; exact Speed ties follow D-021.
+
+    Undefined or equal effectiveness advances to the next criterion. The final
+    unit-ID comparison is a deterministic fixture fallback only.
+    """
+    left_move, right_move = moves[left.move_id], moves[right.move_id]
+    if left_move.priority != right_move.priority:
+        return -1 if left_move.priority > right_move.priority else 1
+    left_actor, right_actor = start_units[left.actor_id], start_units[right.actor_id]
+    if left_actor.speed != right_actor.speed:
+        return -1 if left_actor.speed > right_actor.speed else 1
+
+    if left.type_effectiveness is not None and right.type_effectiveness is not None:
+        left_effect = Fraction(*left.type_effectiveness)
+        right_effect = Fraction(*right.type_effectiveness)
+        if left_effect != right_effect:
+            return -1 if left_effect > right_effect else 1
+
+    # Compare HP percentages exactly; avoid floating-point rounding.
+    hp_cross_left = left_actor.vitality * right_actor.max_vitality
+    hp_cross_right = right_actor.vitality * left_actor.max_vitality
+    if hp_cross_left != hp_cross_right:
+        return -1 if hp_cross_left > hp_cross_right else 1
+    if left_actor.vitality != right_actor.vitality:
+        return -1 if left_actor.vitality > right_actor.vitality else 1
+    if left_actor.max_vitality != right_actor.max_vitality:
+        return -1 if left_actor.max_vitality > right_actor.max_vitality else 1
+    return -1 if left.actor_id < right.actor_id else (1 if left.actor_id > right.actor_id else 0)
+
+
 def _validate_commands(
     state: BattleState,
     commands: Iterable[ActionCommand],
@@ -168,6 +209,10 @@ def _validate_commands(
     for command in command_tuple:
         if command.move_id not in moves:
             raise BattleValidationError(f"unknown move: {command.move_id}")
+        if command.type_effectiveness is not None:
+            numerator, denominator = command.type_effectiveness
+            if numerator <= 0 or denominator <= 0:
+                raise BattleValidationError("type effectiveness ratio must be positive")
         target = by_id.get(command.target_id)
         actor = by_id[command.actor_id]
         if target is None or target.status != ACTIVE:
@@ -225,11 +270,9 @@ class BattleResolver:
         start_units = dict(units)
         ordered = sorted(
             locked_commands,
-            key=lambda command: (
-                -moves[command.move_id].priority,
-                -start_units[command.actor_id].speed,
-                command.actor_id,
-            ),
+            key=cmp_to_key(lambda left, right: _compare_action_commands(
+                left, right, moves, start_units
+            )),
         )
         events = [BattleEvent("TurnStarted", detail=str(state.turn_number))]
 
