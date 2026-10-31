@@ -11,19 +11,21 @@
 
 ## Gate A — Side composition and team selection
 
-| ID | Decision | What is unresolved | Recommended test default | Priority |
-|---|---|---|---|---|
-| A1 | Meaning of "3v3" | Three total field units, three monsters, or player plus three monsters? | Define format by exact composition; avoid shorthand | Blocking |
-| A2 | Registered roster | Notes say bring five monsters | Five monsters registered for preview | Important |
-| A3 | Selected roster | Notes say select three; does this include player? | Three monsters selected; player separate | Blocking |
-| A4 | Active field | Does player count toward active unit limit? | Player + two active monsters, as a test fixture only | Blocking |
-| A5 | Player role | Combatant, commander outside field, or both? | Player is a field combatant for test fixture | Blocking |
-| A6 | Reserve | One reserve or multiple off-field selected monsters? | One reserve for test fixture | Blocking |
-| A7 | Replacement | Automatic or player-selected; when does it happen? | Automatic after knockout at a defined replacement phase | Blocking |
-| A8 | Defeat | Does player defeat end match? What if all monsters faint? | Player defeat OR no viable monsters ends match; test simultaneous cases | Blocking |
-| A9 | Preview | How do five registered monsters become three selected? | Preview locks three; player chosen separately | Important |
+The competitive target's roster accounting is confirmed by D-003: register five monsters, select three monsters, field two active monsters, hold one selected monster in reserve, and field the commander separately. Do not count the commander as one of the three selected monsters. Story encounter compositions remain configurable.
 
-**Deliverable:** a diagram for each side showing registered roster, selected roster, active units, reserve, and player.
+| ID | Decision | Current direction / remaining question | Status |
+|---|---|---|---|
+| A1 | Meaning of "3v3" | Use explicit counts: 1 commander + 2 active monsters; 1 additional selected monster in reserve. "3v3" is shorthand and must not drive array sizes. | Confirmed |
+| A2 | Registered roster | Five monsters enter team preview. | Confirmed |
+| A3 | Selected roster | Select three monsters; commander is separate. | Confirmed |
+| A4 | Active field | Commander plus two active monsters per side. | Confirmed |
+| A5 | Player role | Commander/player character is a field combatant. | Confirmed |
+| A6 | Reserve | One of the three selected monsters is reserve. | Confirmed |
+| A7 | Replacement | Automatic replacement is a provisional prototype behavior; trigger, exact timing, and handling of multiple vacancies remain unresolved. | Provisional |
+| A8 | Defeat | Broad direction: monster knockouts alone do not defeat a side; commander/player defeat is required, subject to encounter-specific rules. Exact simultaneous and no-reserve outcomes remain unresolved. | Confirmed |
+| A9 | Preview | Choose three monsters from the five registered monsters; the three comprise two active and one reserve. | Confirmed |
+
+**Remaining deliverable:** define the replacement choice/entry timing and exact match-end behavior. The five-to-three roster arithmetic is no longer a blocker.
 
 ## Gate B — Turn and action semantics
 
