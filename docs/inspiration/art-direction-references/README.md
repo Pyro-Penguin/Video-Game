@@ -40,3 +40,14 @@ Do not assume that an image found online is licensed for reuse. These images are
 ## Curation rule
 
 Keep useful contrasting references, not just images that all share one look. Add a note about the specific quality being studied; do not treat a reference as an accepted direction until it has been reviewed and recorded in the relevant design document.
+
+
+## Category folders
+
+- [Character & NPC](Character%20%26%20NPC/README.md) — character silhouettes, proportions, expressions, costumes, and animation.
+- [Creature](Creature/README.md) — creature anatomy, shape language, locomotion, personality, and combat readability.
+- [Armor & Weapons](Armor%20%26%20Weapons/README.md) — equipment silhouettes, construction, materials, and role communication.
+- [Environment](Environment/README.md) — villages, routes, interiors, architecture, terrain, and environmental storytelling.
+- [Lighting](Lighting/README.md) — time of day, weather, atmosphere, color scripting, and visual hierarchy.
+- [VFX](VFX/README.md) — spells, impacts, status feedback, ambient effects, and transitions.
+- [UI](UI/README.md) — mobile interface hierarchy, touch targets, typography, battle readability, and accessibility.
