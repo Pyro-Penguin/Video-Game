@@ -49,6 +49,19 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 - docs/battle/BATTLE_ENGINE_GAP_ANALYSIS.md identifies the current harness boundary and the highest-risk gaps: damage/effective-stat contract, attack-only action model, unresolved mutual-KO semantics, D-021 effectiveness comparison semantics, and incomplete state/terminal invariants. It proposes domain ownership and a staged roadmap without adding rules.
 - These are analysis documents only. No Decision Log entry was added, no game mechanic was promoted, and no Python battle code or Unity/C# runtime was changed.
 
+### Navigation first-playable prototype — artifacts committed, Unity verification pending
+
+A bounded navigation prototype package is now committed under `prototypes/navigation/`:
+- `data/navigation.json` and `data/gates.json`: corrected hand-authored six-node/four-edge fixture and linker/Boolean gates.
+- `FIRST_PLAYABLE_CHECKLIST.md`: scene wiring, recorded builder walkthrough, traversal/gate/dual-node/reset checklist, and concrete failure criteria.
+- `PathWalker.cs`: supplied Unity movement candidate.
+- `ResetReloadTests.cs`: supplied scene-reload Unity test candidate.
+- `README.md`: scope, ownership/lifetime/communication boundaries, and verification limits.
+
+This is a user-authorized, bounded parallel prototype, not a change to the canonical priority order. No Unity project or navigation domain source was added. The JSON walkthrough has not been reproduced against builder source in this repository. The C# files have not been compiled or run. Code review found a final-edge issue in PathWalker: it clears the graph and raises Arrived before assigning the exact final destination position. Fix that before using the walker in a scene. The dual-node context-switch behavior remains deliberately unresolved; the resolver can select a co-located alternate node for which no graph edge exists.
+
+**Navigation next action:** only after the actual domain source and a Unity test scene/project are available and authorized, compile the candidate, correct the final-edge snap, then execute the checklist. The reset test also requires a real FirstPlayable scene, NavigationHost, NodeId/domain API, and FakeQuestProvider.SetOpen(bool). Do not claim Unity verification until those checks are run.
+
 ## Highest-Priority Next Work
 1. Keep Playtest A's JSON fixture and CLI runner stable as an engineering scaffold. Replace the fixture's creature section only when original game creature data is approved; preserve the schema and runner contract.
 2. Complete Priority 1 damage-model narrowing under D-022–D-025: compare c=100 and c=143 using the existing full-band floored gates; retain c=200 only if it adds useful information. Do not broaden the sweep or select a formula from synthetic evidence alone.
