@@ -25,21 +25,29 @@ The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350
 
 Corrected gate: 2:1 specialization is evaluated for each of the five pre-registered defender profiles. For each profile Defense D, the specialized coordinate is Attack 2D / Defense D and the equal-stat coordinate is Attack D / Defense D, at Power 100 / Level 100. Both the minimum and maximum ratio across the profile band must remain within 1.4×–1.8×. This replaces the earlier single-point Defense=300 check. All TTK values use integer-floored damage.
 
-| Candidate | Neutral floored TTK | 2:1 damage ratio | Combined numeric gates |
+| Candidate | Neutral floored TTK | Full-band floored 2:1 ratio (min–max) | Combined numeric gates |
 |---|---:|---:|---|
-| A — direct ratio | 6 | 2.000× | Fail: too volatile |
-| B — c=0 | 6 | 2.000× | Fail |
-| B — c=25 | 6 | 1.923× | Fail |
-| B — c=50 | 6 | 1.857× | Fail |
-| B — c=71 | 6 | 1.809× | Fail |
-| B — c=100 | 6 | 1.750× | **Pass** |
-| B — c=143 | 6 | 1.677× | **Pass** |
-| B — c=200 | 6 | 1.600× | **Pass** |
-| B — c=400 | 6 | 1.429× | **Pass** |
-| C — direct level | 6 | 1.977× | Fail |
-| D — bounded share | 6 | 1.333× | Fail: too compressed |
+| A — direct ratio | 6 | 2.000×–2.000× | Fail: too volatile |
+| B — c=0 | 6 | 2.000×–2.000× | Fail |
+| B — c=25 | 6 | 1.891×–1.945× | Fail |
+| B — c=50 | 6 | 1.818×–1.891× | Fail |
+| B — c=71 | 6 | 1.764×–1.855× | Fail: exceeds upper bound |
+| B — c=100 | 6 | 1.661×–1.786× | **Pass** |
+| B — c=143 | 6 | 1.589×–1.714× | **Pass** |
+| B — c=200 | 6 | 1.491×–1.632× | **Pass** |
+| B — c=400 | 6 | 1.351×–1.474× | **Fail: below lower bound** |
+| C — direct level | 6 | 1.964×–1.964× | Fail: too volatile |
+| D — bounded share | 6 | 1.333×–1.333× | Fail: too compressed |
 
-All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. The four B offsets listed as passing also meet the specialization gate. This is screening evidence, not a selection.
+The ratio range is calculated from integer-floored specialized and equal-stat damage at every pre-registered Defense profile (200, 250, 275, 350, 350). Both extrema must satisfy the 1.40×–1.80× gate. All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. This is screening evidence, not a selection.
+
+### c=400 reconciliation audit — commit 4dd9fd3
+
+The original RESULTS.md value of 1.429× was not the minimum across the registered Defense band. It numerically corresponds to the single-point raw ratio at Defense 300, which is not one of the registered defender profiles. The source at commit 4dd9fd3 did sweep all five profiles, but calculated the specialization ratio from raw Fraction damage rather than floored per-hit damage, contrary to D-022.
+
+Recomputing the same Candidate B c=400 inputs with the D-022 floored-ratio definition gives Defense 200: 77/57 = 1.351×; Defense 250: 80/57 = 1.404×; Defense 275: 81/57 = 1.421×; Defense 350: 84/57 = 1.474×. The worst case is 1.351×, so c=400 fails the 1.40× minimum. The earlier raw values 1.333× at Defense 200 and 1.385× at Defense 250 are also mathematically correct, but raw values are diagnostic rather than the gate.
+
+The gate now floors specialized and equal-stat damage before taking their ratio. Regression coverage asserts the Defense-200 c=400 result and verifies that flooring changes the ratio from 4/3 to 77/57. This is a narrow gate/report correction, not a new experiment.
 
 ## All-vs-all TTK at Vitality 350
 

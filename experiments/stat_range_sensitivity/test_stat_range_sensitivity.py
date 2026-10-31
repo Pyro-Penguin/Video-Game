@@ -26,20 +26,28 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
         c100 = gates["100"]
         self.assertEqual(set(c100["specialization_ratio_by_profile"]), set(ATTACKERS))
-        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["balanced"], 650 / 375, places=5)
-        self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 500 / 300, places=5)
-        self.assertAlmostEqual(c100["specialization_best_case_ratio"], 800 / 450, places=5)
+        self.assertEqual(c100["specialization_ratio_by_profile"]["balanced"], 97 / 56)
+        self.assertEqual(c100["specialization_worst_case_ratio"], 93 / 56)
+        self.assertEqual(c100["specialization_best_case_ratio"], 100 / 56)
         self.assertTrue(c100["specialization_gate_pass"])
 
     def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
-        self.assertAlmostEqual(
-            gates["400"]["specialization_ratio_by_profile"]["high_pressure"],
-            4 / 3,
-            places=5,
-        )
+        self.assertEqual(gates["400"]["specialization_ratio_by_profile"]["high_pressure"], 77 / 57)
+        self.assertEqual(gates["400"]["specialization_worst_case_ratio"], 77 / 57)
+        self.assertEqual(gates["400"]["specialization_best_case_ratio"], 28 / 19)
         self.assertFalse(gates["400"]["specialization_gate_pass"])
         self.assertFalse(gates["400"]["combined_numeric_gates_pass"])
+
+    def test_specialization_gate_uses_floored_damage_not_raw_damage(self):
+        equal_raw = candidate_damage("B_offset_ratio", 100, 200, 200, 100, 400)
+        specialized_raw = candidate_damage("B_offset_ratio", 100, 400, 200, 100, 400)
+        self.assertEqual(specialized_raw / equal_raw, Fraction(4, 3))
+        self.assertEqual(
+            Fraction(specialized_raw.numerator // specialized_raw.denominator,
+                     equal_raw.numerator // equal_raw.denominator),
+            Fraction(77, 57),
+        )
 
     def test_cross_matchup_audit_rejects_missing_coordinate(self):
         rows = make_matchups()

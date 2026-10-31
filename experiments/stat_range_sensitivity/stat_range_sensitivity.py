@@ -359,8 +359,10 @@ def calibration_and_gates() -> dict:
         for c in offsets:
             neutral = candidate_damage(name, 100, 300, 275, 100, c)
             profile_ratios = {
-                profile: candidate_damage(name, 100, 2 * defense, defense, 100, c)
-                / candidate_damage(name, 100, defense, defense, 100, c)
+                profile: Fraction(
+                    max(1, floor_fraction(candidate_damage(name, 100, 2 * defense, defense, 100, c))),
+                    max(1, floor_fraction(candidate_damage(name, 100, defense, defense, 100, c))),
+                )
                 for profile, defense in SPECIALIZATION_PROFILES
             }
             worst_case_ratio = min(profile_ratios.values())
