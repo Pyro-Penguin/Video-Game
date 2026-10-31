@@ -11,7 +11,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 - BattleState is the authoritative immutable snapshot returned by each turn.
 - UnitState, MoveDefinition, and BattleRules are immutable input data.
 - Callers own the current snapshot and submit a complete tuple of ActionCommand values.
-- BattleResolver owns no persistent match state. It validates commands, resolves one turn, and returns a new BattleState plus an ordered event tuple. Damage is injected through the pure DamageModel protocol; FixedDamageFixture is only the current test implementation.
+- BattleResolver owns no persistent match state. It validates commands, resolves one turn, and returns a new BattleState plus an ordered event tuple. It receives pure `DamageModel`, `ReserveSelector`, and `VictoryPolicy` strategies; the caller owns all per-turn choices. Damage is injected through the pure DamageModel protocol; FixedDamageFixture is only the current test implementation.
 - Presentation, replay storage, UI, networking, and persistence are outside the package. They may consume snapshots/events later; they must not mutate battle state.
 - Communication is command-in / state-and-events-out. No global service locator, callbacks, or bidirectional references.
 
@@ -28,7 +28,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 | Damage | Positive integer supplied by an injected DamageModel; current FixedDamageFixture reads MoveDefinition fixture damage | Placeholder fixture value, not the damage formula |
 | Invalidated actor/target | Queued action is skipped; no retarget | Matches current D-006 direction for defeated actors/targets |
 | Replacement | At end of turn, auto-deploy all eligible reserves when there are no more reserves than vacancies; if reserves outnumber vacancies, caller must provide an explicit selection for each vacancy | Implements D-019 through an injected pure `ReserveSelector`; selection input is caller-owned. Voluntary switching remains separate |
-| Victory | Commander defeat; mutual commander defeat is a draw | Uses D-007 broad commander-survival principle; exact encounter conditions remain open |
+| Victory | Injected pure `VictoryPolicy` evaluates derived `BattleFacts`; `ConfiguredVictoryPolicy` supports commander-defeat and monster-team-wipe flags | Default fixture enables commander defeat only. With both flags enabled, either condition independently eliminates a side. Other timeout/tournament/draw policies remain future strategies |
 | RNG, types, statuses | Omitted | Not needed to validate command sequencing |
 
 The test fixture contains a commander plus three selected monsters per side (two active, one reserve). It does not implement the unresolved five-to-three team preview process.
@@ -41,7 +41,7 @@ The test fixture contains a commander plus three selected monsters per side (two
 4. Resolve actions sequentially. A defeated actor cannot act; an unavailable target is not retargeted.
 5. Apply knockouts immediately to the working state.
 6. Resolve reserve choices at end of turn. Automatically deploy when there is no meaningful choice; require explicit caller selection when multiple eligible reserves compete for fewer vacancies.
-7. Check commander-defeat victory; a state in which both commanders are already defeated is classified as a draw. The sequential single-target action loop cannot itself create a mutual knockout because a defeated actor loses its queued action.
+7. Derive immutable `BattleFacts` (commander status and active/reserve monster counts) and pass them to the injected `VictoryPolicy`. The default fixture policy ends on commander defeat; team-wipe and combined-condition configurations are available. A state in which both sides meet an enabled terminal condition is a draw. The sequential single-target action loop cannot itself create mutual damage knockout because a defeated actor loses its queued action.
 8. Return a new immutable state and ordered events.
 
 ## Deterministic scenario trace
@@ -70,7 +70,8 @@ No third-party dependencies are required. The package is compatible with Python 
 - Multiple legal reserves require an explicit valid selection; selected reserve deploys and unselected reserves remain in reserve.
 - Missing, duplicate, ineligible, unnecessary, and unknown-side reserve selections are rejected.
 - Single commander knockout ends the match with the surviving side winning.
-- A pre-existing dual-commander-defeat terminal state is classified as a draw; simultaneous damage generation remains unresolved.
+- A pre-existing dual-commander-defeat terminal state is classified as a draw under the default policy; simultaneous damage generation remains unresolved.
+- Derived battle facts and configurable commander/team-wipe victory policy, including combined-condition behavior.
 - Monster knockouts alone do not end the match.
 - Invalid command set rejection.
 - Finished match cannot resolve another turn.
