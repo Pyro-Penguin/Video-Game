@@ -189,6 +189,9 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
             )
         self.assertEqual((gate["worst_fewest_hits"], gate["worst_most_hits"]), (5, 9))
         self.assertEqual(gate["failing_profiles"], [250, 275, 300, 350])
+        reference = profiles[275]
+        self.assertEqual((reference["fewest_hits"], reference["most_hits"]), (6, 7))
+        self.assertFalse(reference["passes"])
         self.assertFalse(gate["guaranteed_ttk_gate_pass"])
 
     def test_live_candidate_b_c100_band_result_is_not_the_prior_estimate(self):
