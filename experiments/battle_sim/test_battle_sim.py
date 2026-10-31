@@ -156,7 +156,7 @@ class BattleSimulationTests(unittest.TestCase):
             self.resolver.resolve_turn(self.state, commands[:-1], self.moves)
 
     def test_finished_battle_rejects_more_turns(self):
-        moves = {"finisher": MoveDefinition("finisher", 120, 0)}
+        moves = {"strike": MoveDefinition("strike", 40, 0), "finisher": MoveDefinition("finisher", 120, 0)}
         targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
                    "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
         commands = [
