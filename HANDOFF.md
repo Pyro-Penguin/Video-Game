@@ -34,6 +34,8 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 ## Current Work State
 
+**New review material:** [Population, Professions & Mobilization](docs/world/POPULATION_PROFESSIONS_MOBILIZATION.md) records an unresolved world-simulation concept for later team review. [Analytical Experiment Pipeline Team Review](docs/EXPERIMENT_PIPELINE_TEAM_REVIEW.md) records the team's supplied audit findings as pending independent source/test verification. Neither document changes game rules or the canonical priority order. The current repository remains a design/documentation workspace plus offline Python experiments; runtime/mobile hot-path concerns are future-facing only.
+
 **Expanded damage experiment:** CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs. Its artifact was downloaded and inspected: 825 all-vs-all rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise candidate comparisons. [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md) was updated from this artifact. Subsequent documentation, status, and index updates passed all seven jobs in [41095218936](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41095218936).
 
 **Review-package verification:** CI run [41099538231](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41099538231) tested commit `a4656a11ca326d2328cfaf97d6254c27a3008784` and passed all seven jobs, including documentation validation, damage equation, stat-range sensitivity, and the four-version damage RNG matrix. This handoff refresh is documentation-only and triggers a follow-up CI run; check that run before marking this exact handoff commit Tested.
