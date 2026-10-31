@@ -1,148 +1,169 @@
-# Painterly Folklore: Five-Style Integration and Character Pipeline
+# Painterly Folklore — Unified Runtime Art Direction
 
-**Status:** Provisional architecture proposal. This document translates the supplied five-style synthesis into testable production constraints. It does not approve a renderer, shader, engine version, character ratio, texture budget, or final art direction.
+**Status:** Provisional architecture proposal incorporating the creative director's latest direction. This is not a production build rule or a final art bible.
 
-## Executive decision
+## Direction
 
-Use **Painterly Folklore** as the primary visual identity. Treat the five mobile styles as specialist techniques with bounded responsibilities rather than five competing global styles:
+The target is **sleek, cool, stylized painterly 3D**. Avoid exaggerated chibi proportions, toy-like bodies, oversized heads, and thick cartoon outlines. Characters should feel agile, elegant, and grounded in a distinctive fantasy world. Their readability comes primarily from silhouette, pose, proportion, value grouping, animation, and restrained color—not from cartoon exaggeration.
 
-| Style family | Proposed role | Adoption status |
-|---|---|---|
-| Clean cel-shaded anime | Selective silhouette/edge readability and restrained gradient accents | Provisional; do not adopt its global hard cel bands or anime rendering language |
-| High-readability stylized proportions | Character and creature silhouette readability at mobile camera distance | Provisional; test 1:3, 1:4, and an elongated-limb/smaller-head alternative |
-| Dark-fantasy PBR | Character-creator presentation only | Provisional; constrain scope and profile performance |
-| Neo-retro low-poly / vertex-lit | Runtime environment and character-lighting cost strategy | Provisional; validate on target devices; not a blanket ban on dynamic lighting |
-| Stylized hard-surface / emissive tech | Gauntlet, ancient mechanisms, and selected UI-adjacent objects | Provisional; isolate emissive masks and preserve painterly material contrast |
+Painterly Folklore remains the leading visual identity, but real-time painterly 3D on mobile is unproven. Prove that central rendering approach before adding techniques borrowed from unrelated styles. Cohesion is a higher priority than collecting visual tricks.
 
-The world remains painterly, atmospheric, and shape-led. The character pipeline may be more graphic for legibility, and the Gauntlet may be deliberately technological. These contrasts must feel authored as one world through shared palette, value hierarchy, material response, and shape language.
+## Core architecture decision
 
-## Character pipeline: proposed stages
+**Use one shared stylized character-rendering pipeline for both customization and gameplay. Do not build a high-fidelity PBR creator plus a second gameplay bake pipeline by default.**
 
-### 1. Authoritative character definition
+The creator and gameplay should use the same character assets, material model, shader family, and appearance data. The creator may present the character with a dedicated turntable, controlled studio lighting, a higher-quality render scale, and restrained post-processing. These are presentation settings—not a second asset pipeline.
 
-**Owner:** Character data model and customization domain, not the renderer.
+This avoids maintaining two versions of every hair piece, face feature, armor piece, and material, and avoids a converter whose job is to make two representations match.
 
-Persist semantic customization data: body preset, proportions preset, face/hair choices, palette choices, equipment identifiers, and any supported blend parameters. Keep gameplay stats and identity separate from appearance data. Use stable IDs and versioned data so a character can be re-created after content updates.
+A bake may be reconsidered only if profiling later demonstrates a concrete need and a measured prototype shows a net benefit that justifies its content and maintenance cost. It is not part of the baseline architecture.
 
-Do not store generated shader state, transient render targets, or platform-specific GPU resources as character identity.
+## Product-first visual test: six combatants
 
-### 2. Creator presentation
+The game's defining visual load is not a lone avatar. It is a hero plus two creatures per side: **six characters visible in a mobile battle scene**. The creature roster and its growth over time determine the real content and runtime budget.
 
-The creator may use a richer material and lighting setup than gameplay. PBR and a restrained skin response are candidates, not requirements. Prefer a controlled studio lighting rig and a representative range of skin/material presets over unrestricted real-time lights.
+The first art prototype must include:
+- One hero and two distinct creatures on each side.
+- Six distinct silhouettes, with different body plans and readable roles.
+- At least two contrasting elemental identities represented through shape language, palette accents, and restrained VFX—not color alone.
+- Idle, locomotion, attack, hit reaction, and defeat/recall poses sufficient to test silhouette and animation readability.
+- A painterly environment with foreground/background detail, so separation is tested against the intended visual density.
+- The actual battle camera, framing, target phone aspect ratio, and realistic character screen-space height.
 
-Do not assume high-poly meshes or true subsurface scattering are necessary to deliver a satisfying creator. A well-authored low/medium-poly base mesh, layered materials, and carefully designed lighting may achieve the required customization quality at lower cost.
+The scene must remain legible when all six characters act or overlap. Test status indicators and targeting selection without relying on tiny text.
 
-Creator-only assets and shaders must live in an explicitly scoped creator content group. Opening the creator may load that group; leaving it should release creator-only render targets/material variants where practical. Character customization data survives; transient presentation resources do not.
+## Proportions and silhouette
 
-### 3. Bake / gameplay representation
+Do not use 1:3 chibi as the default. It conflicts with the desired sleek aesthetic. Do not infer a final proportion from 2D/2.5D side-scrolling references; translate only high-level principles such as graceful shape flow, atmospheric composition, and restrained detail.
 
-The bake is a conversion from semantic customization data to a gameplay representation. It is not automatically a conversion from a fully lit PBR image into a universal albedo map.
+Create three genuinely distinct proportion boards:
+1. **Sleek heroic:** smaller head, longer limbs, narrow/athletic massing, clear equipment silhouette.
+2. **Stylized heroic:** moderately enlarged hands/feet and facial features for mobile readability, without toy-like proportions.
+3. **Creature-led stylization:** varied species-specific body plans; no universal human proportion ratio imposed on creatures.
 
-**Preferred first implementation hypothesis:** retain a simplified, animatable 3D mesh and rig; bake or compose appearance into a compact material atlas; preserve lighting response through a small runtime material model. This keeps camera rotation, equipment visibility, animation, and silhouette changes possible.
+Evaluate hero and creatures independently. A creature may need a large head, broad shell, long neck, or unusual limb arrangement to communicate its identity. Do not force every creature into the hero's proportion system.
 
-A 2D impostor may be useful for distant NPCs or preview thumbnails, but should not be the default player representation while the camera can orbit or the character must animate in combat.
+Pass criteria at battle-camera scale:
+- Facing and action are identifiable at a glance.
+- Silhouette remains distinct in grayscale.
+- Creature identity is not dependent on fine texture or color alone.
+- Equipment and elemental cues remain readable without obscuring anatomy.
+- The hero is visually important but does not overwhelm the creatures.
 
-Separate material information that must remain dynamic (e.g. emissive Gauntlet seams, selected metal response) from appearance that can be baked. Avoid baking one scene's directional lighting into base color unless the resulting flat look is intentional and tested under day/night changes.
+## Rendering hypothesis
 
-The conversion should be deterministic from versioned customization data and content assets. Cache the resulting atlas by a stable content hash. Rebuild only when customization or source assets change, not every time the player enters the world. Define fallback behavior if a bake fails or the cache is invalid.
+First test a single coherent stylized 3D material/shader family that supports:
+- Hand-authored base color and value grouping.
+- Controlled roughness/specular response; avoid photorealistic PBR as the visual target.
+- Soft painterly lighting transitions and atmospheric depth.
+- Stable material response across the world, hero, and creatures.
+- Optional vertex color or baked environment contribution where it supports the look and reduces cost.
 
-**Unresolved:** whether baking occurs in an editor/content pipeline, on first character creation, or on-device after customization. On-device baking must be profiled for latency, memory spikes, and thermal impact before adoption.
+Do not assume vertex lighting alone guarantees performance. Measure GPU time, CPU time, draw calls, material count, texture memory, overdraw, transparency, skinning, animation, and thermal behavior. Do not claim 60 FPS or battery benefits without device measurements.
 
-### 4. Gameplay silhouette and proportions
+The initial prototype should use one primary lighting model and avoid layering a separate cel-shaded look on top. A subtle per-character outline may be tested as an isolated A/B option only if the unoutlined character fails readability. Full-screen edge detection is not the starting point.
 
-The 1:3 ratio is a useful candidate, not a locked requirement. It is strongly chibi; the accompanying elongated-limb/small-head description may point toward a less extreme proportion. Compare at least:
-- 1:3 head-to-total-height ratio.
-- 1:4 ratio.
-- An elongated, smaller-head variant with enlarged hands/feet/equipment for readable pose language.
+The Gauntlet and ancient technology may eventually use a restrained emissive accent, but do not add a hard-surface visual language until the base world/character combination feels cohesive. If tested, emissive state must remain readable in daylight, overcast, dusk, and low display brightness.
 
-Evaluate at actual battle-camera scale on a narrow six-inch-class phone viewport. Test front, side, three-quarter, movement, attack, damage, and equipment silhouettes. The pass condition is not “cute”; it is that facing, role, equipment, action, and state remain readable without relying on tiny detail.
+## Character and creature content architecture
 
-### 5. Edge treatment
+### Persistent definition
 
-Do not begin with full-screen edge detection. It can outline background texture, foliage, particles, and UI, adding noise and mobile post-processing cost.
+A versioned, engine-independent definition owns:
+- Stable character/creature ID.
+- Species/body-plan or hero body preset.
+- Proportion and silhouette preset.
+- Face, hair, markings, and palette selections where applicable.
+- Equipment and cosmetic IDs.
+- Animation-set and material-profile IDs.
+- Elemental identity and gameplay stats as separate data domains.
 
-Prototype a per-character outline first (inverted hull or material/vertex-based edge treatment). Make thickness stable in screen space where possible, but test perspective and animation artifacts. Use the outline selectively: important characters and interactables should separate from the background without becoming sticker-like.
+Appearance data must not own gameplay stats, battle state, or engine-specific shader objects. Creature species identity, elemental typing, and combat role must not be encoded only in textures or color.
 
-Gradient hair tips and edge accents may use palette anchors such as Midnight Indigo (#2A2354) and Amber (#E88B3A), but these are candidate colors, not universal material rules.
+### Runtime representation
 
-### 6. Gauntlet and ancient technology
+- Reuse the same approved mesh, rig, material family, and appearance data in creator and gameplay.
+- Creator presentation owns its turntable camera, studio lighting, preview framing, and temporary UI state.
+- Gameplay character views own spawned mesh/rig/material instances and animation state for the life of the spawned actor.
+- A pure customization validator checks stable IDs and compatible combinations before the view is updated.
+- UI and character views communicate through data and narrow interfaces/events; avoid bidirectional scene-object references.
 
-Treat the Gauntlet as a high-contrast hard-surface object that can bridge puzzle interaction, traversal, and diegetic UI. Cyan emissive (#1ECBE1) is a candidate accent. Use emissive masks for controlled seams, glyphs, and state feedback; avoid making every surface glow.
+No atlas bake, high-poly/PBR twin asset, or runtime conversion service is required for the baseline.
 
-The Gauntlet should remain visually distinct from the painterly world through geometry, value contrast, and restrained emissive response—not by importing an unrelated full-screen sci-fi UI language. Keep puzzle-critical state readable in grayscale and at low brightness.
+## Roster-scale content budget
 
-## Runtime environment strategy
+The asset budget must scale with the planned number of creatures, not with the number in the first prototype. Before production content expansion, define:
+- Target creature count per village/element and total launch roster.
+- Number of shared base rigs/body plans versus unique rigs.
+- Animation set per rig archetype and required unique creature animations.
+- Material slots and texture resolution tiers.
+- Reuse policy for accessories, markings, VFX, and locomotion.
+- Maximum simultaneous animated characters and VFX density in battle.
+- Low/mid/high device tiers and memory/frame-time budgets.
 
-Vertex colors/lighting, hand-painted textures, baked ambient occlusion, and simplified material response are candidate runtime tools. They do not guarantee a frame rate by themselves.
-
-The performance budget must account for:
-- GPU fill rate and overdraw, especially foliage, particles, transparent effects, and outlines.
-- Draw calls/material variants and texture memory/bandwidth.
-- Mesh density, skinning cost, animation count, and CPU submission.
-- Dynamic lights/shadows, post-processing, render resolution, and thermal throttling.
-- Worst-case combat scenes and dense village scenes, not only an empty route.
-
-Do not prohibit all dynamic shadows in advance. Prefer baked/static lighting for stable environment illumination; reserve dynamic lighting/shadows for cases where they materially improve gameplay or composition and pass device profiling.
-
-**No 60 FPS claim is accepted yet.** Establish low/mid/high device targets, resolution policy, frame-time budgets, memory budgets, and thermal test duration before committing to a runtime lighting stack.
+Prefer a small set of high-quality reusable rig archetypes where anatomy permits, with bespoke rigs only when the silhouette or motion language genuinely requires them. Avoid a one-rig-fits-all rule that erases creature identity.
 
 ## AI-assisted content pipeline
 
-Keep the three-agent division, but make every output deterministic and reviewable:
+The intended content pipeline is AI-assisted and budget-conscious; do not assume outsourced artist capacity unless the project explicitly adopts that model.
 
-1. **Data generator:** emits schema-validated, versioned JSON for semantic character parameters and references stable content IDs. It does not emit shaders, texture files, or engine-specific code.
-2. **Prompt writer:** converts approved data and visual briefs into artist prompts. Prompts should specify original high-level traits—painterly brush texture, atmospheric value grouping, stylized readable proportions, flat hand-painted surface treatment, controlled edge accents, and restrained emissive tech. Do not require direct imitation of named contemporary artists or reproduce reference compositions.
-3. **Asset validator:** checks imported assets against a versioned profile by folder/asset role. It should validate measurable metadata, not infer quality from vague labels.
+1. **Data generator:** produces schema-validated, versioned JSON for creature/character identity, body plan, proportions, palettes, rig profile, animation needs, and stats. It does not output shaders or textures.
+2. **Prompt writer:** turns approved design data into original visual briefs and prompts. Describe properties such as sleek silhouette, elegant proportions, painterly brush texture, atmospheric value grouping, restrained material response, and readable elemental motifs. Do not request imitation of a named living artist or reproduce a reference composition.
+3. **Asset validator:** checks measurable metadata and project conventions. It should report texture dimensions/formats, channel usage, material/shader identifiers, normal-map use, material-slot counts, rig/animation references, and folder/profile violations. Do not pretend metadata validation can judge artistic quality.
 
-### Validator profiles
+Separate creator presentation settings from gameplay runtime restrictions only where the same shared assets genuinely need different quality settings. Do not create duplicate creator/gameplay asset classes merely to satisfy a validator.
 
-Use separate profiles so creator exceptions do not weaken gameplay restrictions:
+## Prototype plan: prove the core style first
 
-- **Gameplay character/environment:** allowlisted runtime shaders/material features; texture dimension and format caps; explicit normal-map policy; bounded material slots; no creator-only shader dependencies; controlled emissive usage.
-- **Creator-only:** explicitly allowlisted richer material features and creator-only dependencies; separate memory and load profile.
-- **Gauntlet/tech:** allowlisted emissive mask/channel and material variants; enforce restrained texture and material budgets.
+Build one representative scene before making a production pipeline decision.
 
-A first validator can inspect import metadata and a small asset manifest. It should fail closed on unknown shader/material identifiers in restricted folders. Avoid brittle rules based only on shader display names. A “4K texture forbidden” rule should be a configurable numeric maximum per profile, not a hardcoded global assumption.
+### Scene contents
+- Six combatants: hero + two creatures per side.
+- One painterly 3D environment.
+- One shared stylized shader/material family.
+- Actual battle camera and mobile aspect ratio.
+- Representative animation and modest battle VFX.
+- No creator/gameplay bake.
+- No mandatory outline; test it as a separate optional variant.
 
-## Architecture ownership and lifetime
+### Capture variants
+- Three proportion/silhouette options, including the sleek option as the leading candidate.
+- Same camera, pose, lighting, and environment for fair comparisons.
+- Neutral lighting and one warm/cool lighting comparison.
+- With and without a subtle per-character outline only if needed.
+- Phone-size screenshots and short motion captures.
 
-- **CharacterDefinition (pure data):** owns persistent appearance choices and schema version; lifetime is save/profile lifetime.
-- **Customization service (pure domain):** validates choices and emits a versioned customization description; lifetime is creator/session scope.
-- **Creator renderer (engine adapter):** owns creator-only materials, lights, and preview render targets; lifetime is creator scene/session.
-- **Bake service (engine adapter behind interface):** converts a validated description plus content version into a cached gameplay appearance asset; lifetime is cache/content-version scope.
-- **Gameplay character view (engine adapter):** owns mesh, rig, runtime material instances, and animation bindings; lifetime is spawned character instance.
-- **Asset validator (build/content pipeline):** owns no runtime state; validates imported assets before they enter a build.
-- **Communication:** pure data and stable IDs flow from customization to bake; an interface returns a bake result/cache key; events notify presentation when an appearance asset is ready. Avoid direct bidirectional references between creator UI, character view, and bake implementation.
+### Measurements
+On an older mid-range Android target, record:
+- Device model, SoC/GPU, OS, resolution, and graphics API.
+- Average, 95th percentile, and worst sustained frame time after warm-up.
+- CPU and GPU frame time separately where tooling permits.
+- Draw calls/batches, material count, triangles/vertices, skinned mesh count.
+- Texture and render-target memory.
+- Transparent overdraw/fill-rate observations.
+- VFX and animation cost with all six characters active.
+- Thermal behavior after a sustained run, not only a short cold start.
 
-## Prototype and falsification plan
+Do not invent universal pass thresholds before the device floor and target frame rate are chosen. First collect a baseline and identify the dominant bottleneck; then set explicit acceptance budgets.
 
-Do not implement the full pipeline yet. Use one representative player character and one representative creature/NPC.
+## Ownership and communication
 
-1. **Silhouette board:** render 1:3, 1:4, and elongated variants at actual mobile gameplay scale; include front/side/three-quarter and action poses.
-2. **Material board:** compare painterly hand-painted runtime material, vertex-color/low-poly treatment, and the creator-only PBR presentation using the same character.
-3. **Bake proof:** prove that a small set of customization parameters deterministically produces a simplified 3D gameplay character with preserved animation and equipment. Measure bake time, atlas dimensions, memory, and cache hit behavior.
-4. **Outline proof:** compare no outline, per-character outline, and a restrained screen-space treatment at phone scale; reject any option that outlines busy background detail or shimmers during camera motion.
-5. **Gauntlet proof:** test emissive-mask states in daylight, overcast, dusk, and low-brightness display conditions.
-6. **Device profiling:** profile worst-case character count, foliage, transparency, and combat VFX on a low/mid-tier target device before setting frame-rate claims.
+- **Character/Creature Definition:** pure versioned data; persistent save/content lifetime.
+- **Customization validator:** pure logic; invoked when choices change or a character is loaded.
+- **Creator presentation adapter:** owns preview camera, lighting, and UI-only state; creator session lifetime.
+- **Gameplay character view:** owns spawned render/animation objects; actor lifetime.
+- **Asset validator:** build/content pipeline; no runtime ownership.
+- **Communication:** data transfer and narrow interfaces/events. The definition is authoritative; presentation never writes gameplay state back into it.
 
-### Acceptance gates
+## Decisions intentionally deferred
 
-- Character facing, pose, equipment, and action remain readable at mobile battle distance.
-- The gameplay character remains animatable and visually coherent under camera rotation.
-- The bake is deterministic, cached, and does not introduce recurring scene-entry stalls.
-- Creator-only rendering resources are not loaded into normal gameplay scenes.
-- Runtime asset validation distinguishes creator assets from gameplay assets and reports actionable failures.
-- Performance targets are demonstrated on actual target hardware; they are not inferred from shader category names.
+- Exact head/body proportions and species-specific rig taxonomy.
+- Unity render pipeline, shader implementation, and graphics API.
+- Texture dimensions, compression formats, material-slot caps, and normal-map policy.
+- Outline implementation and whether outlines are needed at all.
+- Emissive Gauntlet/ancient-tech treatment.
+- Device floor, frame-rate target, and numeric performance budgets.
+- Total launch creature count and animation counts.
+- Any bake/atlas conversion; reconsider only with measured evidence.
 
-## Decision boundary
-
-This proposal does not approve:
-- A 1:3 or 1:4 proportion as canonical.
-- Runtime on-device baking or a specific atlas resolution.
-- True SSS, high-poly creator meshes, or any specific PBR shader.
-- Full-screen edge detection or a specific outline implementation.
-- A blanket ban on dynamic shadows or a 60 FPS guarantee.
-- A Unity render pipeline, shader language, device tier, or final texture budget.
-- A final palette or the supplied hex colors as universal material constants.
-
-The art comparison board and prototype results should decide which techniques earn adoption. Keep this work parallel to, and subordinate to, the canonical battle-system milestone.
+The next decision should come from the six-combatant mobile prototype, not from further style taxonomy. Keep this art work parallel to, and subordinate to, the battle-rules milestone.
