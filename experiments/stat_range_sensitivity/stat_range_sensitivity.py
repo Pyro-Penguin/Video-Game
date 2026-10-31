@@ -77,8 +77,12 @@ def pokemon_gen9_base(level: int, power: int, attack: int, defense: int) -> int:
 
 
 def candidate_damage(name: str, power: int, attack: int, defense: int, level: int, offset: int = 100) -> Fraction:
+    aliases = {
+        "C_direct_level": "C_level_scaled",
+        "D_bounded_share": "D_bounded_offense_share",
+    }
     try:
-        candidate = RAW_CANDIDATES[name]
+        candidate = RAW_CANDIDATES[aliases.get(name, name)]
     except KeyError as exc:
         raise ValueError(f"unknown candidate: {name}") from exc
     return calibrated_damage(
@@ -121,7 +125,7 @@ def single_stat_ttk_shift_table() -> list[dict]:
     """Isolated floored-TTK shifts versus baseline, by stat and perturbation size."""
     rows = []
     for profile, (attack, defense) in ATTACKERS.items():
-        for name in RAW_CANDIDATES:
+        for name in ("A_direct_ratio", "B_offset_ratio", "C_direct_level", "D_bounded_share"):
             offsets = B_OFFSETS if name == "B_offset_ratio" else (100,)
             for offset in offsets:
                 base_damage = max(1, floor_fraction(candidate_damage(name, REFERENCE_POWER, attack, defense, REFERENCE_LEVEL, offset)))
