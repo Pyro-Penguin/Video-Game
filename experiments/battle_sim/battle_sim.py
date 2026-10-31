@@ -5,7 +5,7 @@ All combat values are synthetic test fixtures, not approved game rules.
 from __future__ import annotations
 
 from dataclasses import dataclass, replace
-from typing import Iterable, Mapping, Optional, Tuple
+from typing import Iterable, Mapping, Optional, Protocol, Tuple
 
 ACTIVE = "active"
 RESERVE = "reserve"
@@ -76,6 +76,25 @@ class TurnResult:
 
 class BattleValidationError(ValueError):
     """Raised when setup or a complete turn command set is invalid."""
+
+
+class DamageModel(Protocol):
+    """Pure damage seam; production formula and rounding are intentionally absent."""
+
+    def calculate_damage(
+        self, actor: UnitState, target: UnitState, move: MoveDefinition
+    ) -> int:
+        ...
+
+
+@dataclass(frozen=True)
+class FixedDamageFixture:
+    """Returns synthetic fixed damage stored on each fixture move."""
+
+    def calculate_damage(
+        self, actor: UnitState, target: UnitState, move: MoveDefinition
+    ) -> int:
+        return move.fixture_damage
 
 
 def validate_state(state: BattleState, rules: BattleRules) -> None:
@@ -182,8 +201,13 @@ def _finish_if_commander_defeated(
 class BattleResolver:
     """Pure turn resolver. Returns a new state and never mutates its input."""
 
-    def __init__(self, rules: BattleRules = BattleRules()) -> None:
+    def __init__(
+        self,
+        rules: BattleRules = BattleRules(),
+        damage_model: Optional[DamageModel] = None,
+    ) -> None:
         self._rules = rules
+        self._damage_model = damage_model if damage_model is not None else FixedDamageFixture()
 
     def resolve_turn(
         self,
@@ -226,7 +250,10 @@ class BattleResolver:
                 continue
 
             move = moves[command.move_id]
-            actual_damage = min(move.fixture_damage, target.vitality)
+            calculated_damage = self._damage_model.calculate_damage(actor, target, move)
+            if not isinstance(calculated_damage, int) or calculated_damage <= 0:
+                raise BattleValidationError("damage model must return a positive integer")
+            actual_damage = min(calculated_damage, target.vitality)
             remaining = target.vitality - actual_damage
             units[target.unit_id] = replace(
                 target,
