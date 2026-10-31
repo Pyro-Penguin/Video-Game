@@ -45,17 +45,12 @@ def run_demo_scenario() -> Dict[str, Any]:
         "B-M1": "A-M1",
         "B-M2": "A-M2",
     }
-    turn_one = resolver.resolve_turn(
-        state,
-        _commands(state, turn_one_targets, {"A-C": "finisher"}),
-        moves,
-    )
+    turn_one_commands = _commands(state, turn_one_targets, {"A-C": "finisher"})
+    turn_one = resolver.resolve_turn(state, turn_one_commands, moves)
     state = turn_one.state
     turns.append({
         "turn": 1,
-        "commands": [asdict(c) for c in _commands(
-            make_test_battle(), turn_one_targets, {"A-C": "finisher"}
-        )],
+        "commands": [asdict(c) for c in turn_one_commands],
         "events": [asdict(event) for event in turn_one.events],
         "state_after": asdict(state),
     })
@@ -68,15 +63,12 @@ def run_demo_scenario() -> Dict[str, Any]:
         "B-M2": "A-M2",
         "B-R1": "A-M1",
     }
-    turn_two = resolver.resolve_turn(
-        state,
-        _commands(state, turn_two_targets),
-        moves,
-    )
+    turn_two_commands = _commands(state, turn_two_targets)
+    turn_two = resolver.resolve_turn(state, turn_two_commands, moves)
     state = turn_two.state
     turns.append({
         "turn": 2,
-        "commands": [asdict(c) for c in _commands(state, turn_two_targets)],
+        "commands": [asdict(c) for c in turn_two_commands],
         "events": [asdict(event) for event in turn_two.events],
         "state_after": asdict(state),
     })
