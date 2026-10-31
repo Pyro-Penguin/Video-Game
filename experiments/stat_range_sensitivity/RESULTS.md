@@ -42,6 +42,32 @@ Corrected gate: 2:1 specialization is evaluated for each of the five pre-registe
 
 The ratio range is calculated from integer-floored specialized and equal-stat damage at every pre-registered Defense coordinate (200, 250, 275, 300, 350). The five coordinates are explicitly distinct in code and covered by a regression test. Both extrema must satisfy the 1.40×–1.80× gate. All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. This is screening evidence, not a selection.
 
+## Hypothetical 85–100% roll-pacing diagnostic
+
+**Status:** Diagnostic only. The 85–100% range is not a selected RNG model and does not replace D-022's deterministic neutral TTK gate. For each registered Defense coordinate, the experiment applies each fixed percentage to exact candidate damage, floors the resulting damage once, and computes deterministic hits-to-KO. The guaranteed containment result passes only when every roll at every Defense coordinate remains within 4–6 hits.
+
+At the existing 60-damage reference calibration, the actual candidate implementation produces these per-Defense TTK ranges:
+
+| Candidate | D200 | D250 | D275 | D300 | D350 | Full-band aggregate | Guaranteed 4–6 |
+|---|---:|---:|---:|---:|---:|---:|---|
+| A — direct ratio | 5–5 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| B — c=0 | 5–5 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| B — c=25 | 5–6 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| B — c=50 | 5–6 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| B — c=71 | 5–6 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| B — c=100 | 5–6 | 6–7 | 6–7 | 7–8 | 7–9 | 5–9 | Fail |
+| B — c=143 | 5–6 | 6–7 | 6–7 | 7–8 | 7–9 | 5–9 | Fail |
+| B — c=200 | 5–6 | 6–7 | 6–7 | 7–8 | 7–8 | 5–8 | Fail |
+| B — c=400 | 6–7 | 6–7 | 6–7 | 7–8 | 7–8 | 6–8 | Fail |
+| C — direct level | 5–6 | 6–7 | 6–7 | 7–8 | 8–9 | 5–9 | Fail |
+| D — bounded share | 6–7 | 6–7 | 6–7 | 7–8 | 7–8 | 6–8 | Fail |
+
+The reference Defense 275 result for Candidate A is 6–7; it must not be confused with the aggregate range across the entire Defense band. At anchor 60, every candidate/offset fails the full-band 4–6 containment diagnostic, although individual profiles can pass.
+
+The result does **not** establish that no anchor can satisfy the band. A regression-tested counterexample is Candidate B c=100 recalibrated diagnostically to 84 damage at the reference point: its per-Defense ranges are D200 4–4, D250 4–5, D275 5–5, D300 5–6, and D350 5–6, giving a full-band aggregate of **4–6**. This is not a proposed or selected calibration; it demonstrates that formula shape and calibration jointly determine whether the interval can be met. Anchor 60 remains the comparison calibration pending an explicit design decision.
+
+`mean_fixed_roll_ttk` is the arithmetic mean of the deterministic TTK values obtained by fixing one roll percentage for the whole calculation. At Candidate A's reference profile it is 6.5. This is not the expected stopping time under independent per-hit rolls and is not used as a pass/fail gate.
+
 ### c=400 reconciliation audit — commit 4dd9fd3
 
 The original RESULTS.md value of 1.429× was not the minimum across the registered Defense band. It numerically corresponds to the single-point raw ratio at Defense 300. The audit found a second defect: the source at commit 4dd9fd3 aliased DEFENDERS to ATTACKERS, so its five named profiles contained only four distinct Defense values (200, 250, 275, 350, 350); Defense 300 was missing. It also calculated specialization from raw Fraction damage rather than floored per-hit damage, contrary to D-022. The defender sweep is now independent and explicitly covers 200, 250, 275, 300, and 350.
