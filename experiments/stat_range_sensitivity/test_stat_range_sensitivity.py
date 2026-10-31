@@ -194,6 +194,40 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertFalse(reference["passes"])
         self.assertFalse(gate["guaranteed_ttk_gate_pass"])
 
+    def test_report_roll_pacing_ranges_match_every_live_candidate_offset(self):
+        report = run_experiment()["pacing_gate"]["candidate_results"]
+        expected = {
+            "A_direct_ratio": {
+                "100": [(5, 5), (6, 7), (6, 7), (7, 8), (8, 9)],
+            },
+            "B_offset_ratio": {
+                "0": [(5, 5), (6, 7), (6, 7), (7, 8), (8, 9)],
+                "25": [(5, 6), (6, 7), (6, 7), (7, 8), (8, 9)],
+                "50": [(5, 6), (6, 7), (6, 7), (7, 8), (8, 9)],
+                "71": [(5, 6), (6, 7), (6, 7), (7, 8), (8, 9)],
+                "100": [(5, 6), (6, 7), (6, 7), (7, 8), (7, 9)],
+                "143": [(5, 6), (6, 7), (6, 7), (7, 8), (7, 9)],
+                "200": [(5, 6), (6, 7), (6, 7), (7, 8), (7, 8)],
+                "400": [(6, 7), (6, 7), (6, 7), (7, 8), (7, 8)],
+            },
+            "C_direct_level": {
+                "100": [(5, 6), (6, 7), (6, 7), (7, 8), (8, 9)],
+            },
+            "D_bounded_share": {
+                "100": [(6, 7), (6, 7), (6, 7), (7, 8), (7, 8)],
+            },
+        }
+        for candidate, offsets in expected.items():
+            for offset, ranges in offsets.items():
+                gate = report[candidate][offset]
+                actual = [
+                    (gate["per_defense"][defense]["fewest_hits"],
+                     gate["per_defense"][defense]["most_hits"])
+                    for defense in DEFENSE_BAND
+                ]
+                self.assertEqual(actual, ranges, (candidate, offset))
+                self.assertFalse(gate["guaranteed_ttk_gate_pass"], (candidate, offset))
+
     def test_live_candidate_b_c100_band_result_is_not_the_prior_estimate(self):
         gate = pacing_gate_over_defense_band("B_offset_ratio", 100)
         self.assertEqual((gate["worst_fewest_hits"], gate["worst_most_hits"]), (5, 9))
