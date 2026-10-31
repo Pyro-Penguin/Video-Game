@@ -16,6 +16,19 @@ Questions are grouped in the canonical project-wide priority order defined only 
 
 See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
 
+
+### Current provisional damage decisions (2026-10-31)
+
+D-022 records the 4–6-hit neutral pacing gate, 1.40×–1.80× 2:1 specialization envelope (evaluated across the full tested Defense band), ordinary-power no-full-health-OHKO screen, monotonicity, floored pass/fail behavior, and the synthetic working envelope Attack 200–400 / Defense 200–350 / Vitality 250–500. D-023 records derived-stat/Vitality-only level treatment and Level-100 competitive normalization. D-024 records c≈143 as the preferred Candidate B narrowing point, with c=100 retained as the stronger-specialization comparison. All three are **Provisional**; no final equation or offset is selected.
+
+Remaining Priority 1 work is deliberately narrow:
+1. Reconcile the apparent c=400 full-Defense-band discrepancy: the review supplied with the 2026-10-31 direction says it fails at Defense 200/250, while the current regenerated RESULTS.md reports 1.429× and labels it passing. Identify whether these refer to different formula/calibration definitions or a stale calculation. Do not prune by assumption.
+2. Decide whether c=200 is retained as a softer comparison alongside c=100/143, or whether the first narrow comparison is only c=100 versus c=143. No broad sensitivity sweep.
+3. Build a small playable CLI fixture only after a small set of real creature stat spreads and move definitions are available. Use 3–5 representative creatures and 2–3 moves each; use the existing pure battle harness and injected DamageModel seam. This is not Unity/C# runtime work.
+4. Run a bounded set of manual battles and all-pairs creature matchup checks. Treat the 4–6-hit gate as a provisional hypothesis until playtest; synthetic ranges do not prove real roster representativeness.
+
+The 4,125 pairwise relation count is dimensionally reproducible as 75 matchup/Vitality coordinates × 55 candidate/offset pairs. The separate 2,775 figure is C(75,2) comparisons for one offset comparison. Log-space interaction residuals remain a mathematical diagnostic, not a formula-quality score.
+
 ## Priority 2 — Battle Structure and Resolution
 1. D-021's current effectiveness field is caller-supplied and only models a single action/target ratio. Its semantics remain unresolved for non-damaging actions, multi-target actions (single value vs per-target vs aggregate), and actions targeting different units (whether cross-target comparison is meaningful). Decide whether effectiveness applies only to single-target damaging actions or define another explicit comparison contract. Do not change the comparator until decided.
 4. What is the final fallback if every user-defined criterion is equal?
