@@ -66,7 +66,7 @@ The reference Defense 275 result for Candidate A is 6–7; it must not be confus
 
 The result does **not** establish that no anchor can satisfy the band. A regression-tested counterexample is Candidate B c=100 recalibrated diagnostically to 84 damage at the reference point: its per-Defense ranges are D200 4–4, D250 4–5, D275 5–5, D300 5–6, and D350 5–6, giving a full-band aggregate of **4–6**. This is not a proposed or selected calibration; it demonstrates that formula shape and calibration jointly determine whether the interval can be met. Anchor 60 remains the comparison calibration pending an explicit design decision.
 
-`mean_fixed_roll_ttk` is the arithmetic mean of the deterministic TTK values obtained by fixing one roll percentage for the whole calculation. At Candidate A's reference profile it is 6.5. This is not the expected stopping time under independent per-hit rolls and is not used as a pass/fail gate.
+`mean_fixed_roll_ttk` is the arithmetic mean of the deterministic TTK values obtained by fixing one roll percentage for the whole calculation. At Candidate A's reference profile it is 6.875 (14 of the 16 fixed percentages produce 7 hits; two produce 6). This is not the expected stopping time under independent per-hit rolls and is not used as a pass/fail gate.
 
 ### c=400 reconciliation audit — commit 4dd9fd3
 
