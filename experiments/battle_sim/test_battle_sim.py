@@ -293,7 +293,7 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertTrue(terminal_state.is_finished)
         self.assertTrue(terminal_state.is_draw)
         self.assertIsNone(terminal_state.winner_side_id)
-        self.assertEqual(events[0].detail, "draw: both commanders defeated")
+        self.assertEqual(events[0].detail, "draw:A:commander_defeated; B:commander_defeated")
 
     def test_monster_knockouts_alone_do_not_end_battle(self):
         units = tuple(
