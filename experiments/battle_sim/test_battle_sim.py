@@ -164,6 +164,46 @@ class BattleSimulationTests(unittest.TestCase):
             for e in result.events if e.event_type == "ActionSkipped"
         ))
 
+    def test_multi_target_action_continues_after_one_target_is_defeated(self):
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M1", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C"
+            else replace(command, additional_target_ids=("B-M2",))
+            if command.actor_id == "A-M1" else command
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(state, commands, self.moves)
+        self.assertTrue(any(
+            event.event_type == "ActionSkipped"
+            and event.actor_id == "A-M1"
+            and event.target_id == "B-M1"
+            and event.detail == "target_not_active_at_resolution"
+            for event in result.events
+        ))
+        self.assertTrue(any(
+            event.event_type == "DamageApplied"
+            and event.actor_id == "A-M1"
+            and event.target_id == "B-M2"
+            for event in result.events
+        ))
+
+    def test_multi_target_command_rejects_duplicate_targets(self):
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        commands = [
+            replace(command, additional_target_ids=(command.target_id,))
+            if command.actor_id == "A-M1" else command
+            for command in commands_for(self.state, targets)
+        ]
+        with self.assertRaises(BattleValidationError):
+            self.resolver.resolve_turn(self.state, commands, self.moves)
+
     def test_reserve_deploys_only_after_all_locked_actions_resolve(self):
         units = tuple(
             replace(u, vitality=20) if u.unit_id == "B-M1" else u
