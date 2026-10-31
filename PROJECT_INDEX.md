@@ -32,6 +32,13 @@ After these, use the task-specific references below.
 - [Mechanic Integration Review](docs/inspiration/MECHANIC_INTEGRATION_REVIEW.md) — synthesis of supplied Unciv, OpenRCT2, A Dark Room, Monument Valley, customization, Disco Elysium, Fable, and Shenmue research; reference analysis only.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
 - [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — drop visual reference images into this folder and document source, attribution, and the design qualities being studied.
+  - [Character & NPC](docs/inspiration/art-direction-references/Character%20%26%20NPC/README.md)
+  - [Creature](docs/inspiration/art-direction-references/Creature/README.md)
+  - [Armor & Weapons](docs/inspiration/art-direction-references/Armor%20%26%20Weapons/README.md)
+  - [Environment](docs/inspiration/art-direction-references/Environment/README.md)
+  - [Lighting](docs/inspiration/art-direction-references/Lighting/README.md)
+  - [VFX](docs/inspiration/art-direction-references/VFX/README.md)
+  - [UI](docs/inspiration/art-direction-references/UI/README.md)
 - [Population, Professions & Mobilization](docs/world/POPULATION_PROFESSIONS_MOBILIZATION.md) — unresolved concept for persistent civilian roles, combat capability, availability, and mobilization; review only.
 - [Analytical Experiment Pipeline Team Review](docs/EXPERIMENT_PIPELINE_TEAM_REVIEW.md) — supplied audit findings and corrective checklist; source/test verification pending.
 - [Types and Villages](docs/world/TYPES_AND_VILLAGES.md) — candidate type inventory.
