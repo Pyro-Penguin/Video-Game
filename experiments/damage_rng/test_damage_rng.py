@@ -32,7 +32,8 @@ class ExactProbabilityTests(unittest.TestCase):
     def test_d028_anchor_60_is_100_percent_roll_not_expected_damage(self):
         outcomes = [calculate_damage(60, roll) for roll in SELECTED_MODEL.rolls()]
         self.assertEqual((min(outcomes), max(outcomes)), (51, 63))
-        self.assertEqual(Fraction(sum(outcomes), len(outcomes)), Fraction(57))
+        self.assertEqual(Fraction(60) * SELECTED_MODEL.theoretical_mean(), Fraction(57))
+        self.assertEqual(Fraction(sum(outcomes), len(outcomes)), Fraction(1189, 21))
 
     def test_per_hit_sampler_draws_only_allowed_integer_values(self):
         import random

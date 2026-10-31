@@ -46,12 +46,12 @@ Keep useful contrasting references, not just images that all share one look. Add
 
 Use the category folders below to keep references discoverable. Each folder contains an intake guide; place source images and attribution notes beside the references they describe.
 
-- [Character & NPC](Character%20%26%20NPC/)
-- [Creature](Creature/)
-- [Armor & Weapons](Armor%20%26%20Weapons/)
-- [Environment](Environment/)
-- [Lighting](Lighting/)
-- [VFX](VFX/)
-- [UI](UI/)
+- `Character & NPC/`
+- `Creature/`
+- `Armor & Weapons/`
+- `Environment/`
+- `Lighting/`
+- `VFX/`
+- `UI/`
 
 Keep the source, creator, rights status, and visual question being studied with every reference. References are research material, not cleared production content.
