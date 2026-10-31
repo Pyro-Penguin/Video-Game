@@ -77,6 +77,21 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertIn(-20, {r["requested_percent"] for r in rows})
         self.assertIn(20, {r["requested_percent"] for r in rows})
 
+    def test_log_space_interaction_residual_is_zero_for_factorized_candidate_a(self):
+        rows = combined_perturbations()
+        factorized = [
+            row for row in rows
+            if row["candidate"] == "A_direct_ratio"
+            and row["group"] in (
+                "attack_defense", "attack_vitality",
+                "defense_vitality", "attack_defense_vitality",
+            )
+            and row["requested_percent"] != 0
+        ]
+        self.assertTrue(factorized)
+        for row in factorized:
+            self.assertAlmostEqual(row["interaction_log_residual"], 0.0, places=7)
+
     def test_every_b_offset_is_independently_calibrated(self):
         for c in B_OFFSETS:
             self.assertEqual(candidate_damage("B_offset_ratio", 100, 300, 275, 100, c), Fraction(60))
