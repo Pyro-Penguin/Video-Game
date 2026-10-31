@@ -105,7 +105,7 @@ The README and first-playable checklist now reflect this correction and specify 
 
 ## 2026-10-31 Repository Audit and Art Reference Structure
 
-The seven requested art-direction category folders are now tracked under `docs/inspiration/art-direction-references/`: Character & NPC, Creature, Armor & Weapons, Environment, Lighting, VFX, and UI. Each currently contains a README with category guidance and reference-attribution fields. These are folder/index scaffolds, not populated image libraries or approved final art direction.
+The seven requested art-direction category folders are tracked under `docs/inspiration/art-direction-references/`: Character & NPC, Creature, Armor & Weapons, Environment, Lighting, VFX, and UI. Each contains a README with category guidance and reference-attribution fields. The Environment folder currently contains 66 image files; the other category folders are README-only at this audit. The image sources/attributions and selected design takeaways still need an inventory, and the references are not approved final art direction.
 
 The audit found that the documentation validator treated percent-encoded relative Markdown destinations as literal filesystem paths. This incorrectly rejected valid links to category folders whose names contain spaces and an ampersand. `tools/validate_docs.py` now URL-decodes relative link destinations before checking them, and `tools/test_validate_docs.py` includes a regression test for the encoded Character & NPC path. The fix preserves proper URL-encoded Markdown links and does not weaken broken-link validation.
 
