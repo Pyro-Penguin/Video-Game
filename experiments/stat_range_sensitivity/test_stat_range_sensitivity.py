@@ -3,6 +3,7 @@ from fractions import Fraction
 
 from stat_range_sensitivity import (
     ATTACKERS,
+    DEFENDERS,
     B_OFFSETS,
     candidate_damage,
     combined_perturbations,
@@ -30,6 +31,11 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 93 / 56, places=6)
         self.assertAlmostEqual(c100["specialization_best_case_ratio"], 100 / 56, places=6)
         self.assertTrue(c100["specialization_gate_pass"])
+
+    def test_defense_sweep_has_five_distinct_registered_coordinates(self):
+        self.assertEqual(len(DEFENDERS), 5)
+        self.assertEqual(set(DEFENDERS.values()), {200, 250, 275, 300, 350})
+        self.assertEqual(len(set(DEFENDERS.values())), 5)
 
     def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]

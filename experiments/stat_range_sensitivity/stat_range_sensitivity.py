@@ -21,7 +21,14 @@ ATTACKERS = {
     "high_pressure": (400, 200),
     "low_pressure": (200, 350),
 }
-DEFENDERS = ATTACKERS
+# Independent defender sweep: five distinct points spanning the working Defense band.
+DEFENDERS = {
+    "balanced": 275,
+    "offensive": 250,
+    "defensive": 350,
+    "high_pressure": 200,
+    "low_pressure": 300,
+}
 VITALITIES = (250, 350, 500)
 LEVELS = (1, 5, 10, 25, 50, 75, 100)
 POWERS = (40, 80, 100, 120, 160)
@@ -35,7 +42,7 @@ REFERENCE_DAMAGE = Fraction(60)
 B_OFFSETS = (0, 25, 50, 100, 200, 400, 71, 143)
 SPECIALIZATION_MIN = Fraction(14, 10)
 SPECIALIZATION_MAX = Fraction(18, 10)
-SPECIALIZATION_PROFILES = tuple((name, defense) for name, (_, defense) in DEFENDERS.items())
+SPECIALIZATION_PROFILES = tuple(DEFENDERS.items())
 
 
 def floor_fraction(x: Fraction) -> int:
@@ -101,7 +108,7 @@ def damage_pair(raw: Fraction) -> tuple[Fraction, int]:
 def make_matchups() -> list[dict]:
     rows = []
     for attacker, (attack, _) in ATTACKERS.items():
-        for defender, (_, defense) in DEFENDERS.items():
+        for defender, defense in DEFENDERS.items():
             for vitality in VITALITIES:
                 for name in ("A_direct_ratio", "B_offset_ratio", "C_direct_level", "D_bounded_share"):
                     offsets = B_OFFSETS if name == "B_offset_ratio" else (100,)

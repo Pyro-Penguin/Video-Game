@@ -39,13 +39,13 @@ Corrected gate: 2:1 specialization is evaluated for each of the five pre-registe
 | C — direct level | 6 | 1.964×–1.964× | Fail: too volatile |
 | D — bounded share | 6 | 1.333×–1.333× | Fail: too compressed |
 
-The ratio range is calculated from integer-floored specialized and equal-stat damage at every pre-registered Defense profile (200, 250, 275, 350, 350). Both extrema must satisfy the 1.40×–1.80× gate. All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. This is screening evidence, not a selection.
+The ratio range is calculated from integer-floored specialized and equal-stat damage at every pre-registered Defense coordinate (200, 250, 275, 300, 350). The five coordinates are explicitly distinct in code and covered by a regression test. Both extrema must satisfy the 1.40×–1.80× gate. All candidates pass neutral TTK and no-full-HP-one-hit checks at the named reference. This is screening evidence, not a selection.
 
 ### c=400 reconciliation audit — commit 4dd9fd3
 
-The original RESULTS.md value of 1.429× was not the minimum across the registered Defense band. It numerically corresponds to the single-point raw ratio at Defense 300, which is not one of the registered defender profiles. The source at commit 4dd9fd3 did sweep all five profiles, but calculated the specialization ratio from raw Fraction damage rather than floored per-hit damage, contrary to D-022.
+The original RESULTS.md value of 1.429× was not the minimum across the registered Defense band. It numerically corresponds to the single-point raw ratio at Defense 300. The audit found a second defect: the source at commit 4dd9fd3 aliased DEFENDERS to ATTACKERS, so its five named profiles contained only four distinct Defense values (200, 250, 275, 350, 350); Defense 300 was missing. It also calculated specialization from raw Fraction damage rather than floored per-hit damage, contrary to D-022. The defender sweep is now independent and explicitly covers 200, 250, 275, 300, and 350.
 
-Recomputing the same Candidate B c=400 inputs with the D-022 floored-ratio definition gives Defense 200: 77/57 = 1.351×; Defense 250: 80/57 = 1.404×; Defense 275: 81/57 = 1.421×; Defense 350: 84/57 = 1.474×. The worst case is 1.351×, so c=400 fails the 1.40× minimum. The earlier raw values 1.333× at Defense 200 and 1.385× at Defense 250 are also mathematically correct, but raw values are diagnostic rather than the gate.
+Recomputing the same Candidate B c=400 inputs with the D-022 floored-ratio definition across the corrected five-point band gives Defense 200: 77/57 = 1.351×; Defense 250: 80/57 = 1.404×; Defense 275: 81/57 = 1.421×; Defense 300: 82/57 = 1.439×; Defense 350: 84/57 = 1.474×. The worst case remains 1.351×, so c=400 fails the 1.40× minimum. The earlier raw values 1.333× at Defense 200 and 1.385× at Defense 250 are also mathematically correct, but raw values are diagnostic rather than the gate.
 
 The gate now floors specialized and equal-stat damage before taking their ratio. Regression coverage asserts the Defense-200 c=400 result and verifies that flooring changes the ratio from 4/3 to 77/57. This is a narrow gate/report correction, not a new experiment.
 
