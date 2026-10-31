@@ -61,9 +61,9 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 ## Verification Boundary
 - Main baseline before this work: `f0e7b0d3a2d5d9afc9d73d4a8d48da83a50cd751`; main has not been modified by this task.
 - Working branch: `experiment/defense-band-rng-ttk`.
-- Latest branch code/test commit: `db63f8b112ae11e86030b893e8008332bdd3a715`; all eight CI jobs passed in [run 41202594519](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202594519). The stat-range suite ran 26 tests, including all candidate/offset roll ranges and the alternate-anchor counterexample.
-- Latest branch head before this handoff refresh: `183ddfdd29fc10d89d95f83b747f67e41f298e94`; all eight CI jobs passed in [run 41202658964](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202658964), including documentation validation and the stat-range suite.
-- The report artifact from that run is [expanded-damage-sensitivity-report](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202658964/artifacts/13042853961). Historical harness CI runs and earlier implementation evidence remain recorded in the project status and decision log.
+- Latest branch code/test commit: `c7f0d347aa1e6e8e5b19e8f2038059bf0c77308b`; all eight CI jobs passed in [run 41202768719](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202768719). The stat-range suite ran 26 tests, including all candidate/offset roll ranges, exact reference-profile bounds, and the alternate-anchor counterexample.
+- Latest branch head before this handoff refresh: `caa08478e8e6269968e7206bcd3a447ec57c8b1d`; all eight CI jobs passed in [run 41202771407](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202771407), including documentation validation and the stat-range suite.
+- The report artifact from that run is [expanded-damage-sensitivity-report](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202771407/artifacts/13043198026). Historical harness CI runs and earlier implementation evidence remain recorded in the project status and decision log.
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
