@@ -318,6 +318,14 @@ class BattleResolver:
         _validate_moves(moves)
         locked_commands = _validate_commands(state, commands, moves)
         selections = {} if reserve_selections is None else dict(reserve_selections)
+        side_ids = {unit.side_id for unit in state.units}
+        unknown_sides = set(selections) - side_ids
+        if unknown_sides:
+            raise BattleValidationError(
+                f"reserve selections supplied for unknown side(s): {sorted(unknown_sides)}"
+            )
+        if selections and not self._rules.automatic_end_turn_replacement:
+            raise BattleValidationError("reserve selections are not valid when replacement is disabled")
 
         units = {unit.unit_id: unit for unit in state.units}
         start_units = dict(units)
@@ -388,12 +396,6 @@ class BattleResolver:
                     events.append(BattleEvent(
                         "ReserveDeployed", target_id=reserve.unit_id, detail=side_id,
                     ))
-            unused_selections = set(selections) - set({unit.side_id for unit in units.values()})
-            if unused_selections:
-                raise BattleValidationError(
-                    f"reserve selections supplied for unknown side(s): {sorted(unused_selections)}"
-                )
-
         next_state = replace(
             state,
             units=tuple(sorted(
