@@ -78,6 +78,35 @@ class BattleSimulationTests(unittest.TestCase):
         ]
         self.assertEqual(actors, sorted(actors))
 
+    def test_exact_speed_tie_prefers_greater_supplied_type_effectiveness(self):
+        tied_state = replace(
+            self.state,
+            units=tuple(replace(u, speed=50) if u.status == ACTIVE else u for u in self.state.units),
+        )
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        commands = [
+            replace(command, type_effectiveness=(2, 1)) if command.actor_id == "B-C"
+            else replace(command, type_effectiveness=(1, 1))
+            for command in commands_for(tied_state, targets)
+        ]
+        result = self.resolver.resolve_turn(tied_state, commands, self.moves)
+        first_damage = next(e for e in result.events if e.event_type == "DamageApplied")
+        self.assertEqual(first_damage.actor_id, "B-C")
+
+    def test_exact_speed_tie_uses_hp_percentage_before_raw_hp(self):
+        units = tuple(
+            replace(u, speed=50, vitality=50) if u.unit_id == "A-C"
+            else replace(u, speed=50) if u.status == ACTIVE else u
+            for u in self.state.units
+        )
+        tied_state = replace(self.state, units=units)
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        result = self.resolver.resolve_turn(tied_state, commands_for(tied_state, targets), self.moves)
+        first_damage = next(e for e in result.events if e.event_type == "DamageApplied")
+        self.assertEqual(first_damage.actor_id, "B-C")
+
     def test_priority_then_speed_orders_actions(self):
         moves = dict(self.moves)
         moves["quick_strike"] = MoveDefinition("quick_strike", 25, 1)
