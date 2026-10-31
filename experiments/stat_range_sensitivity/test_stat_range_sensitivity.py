@@ -4,9 +4,11 @@ from fractions import Fraction
 from stat_range_sensitivity import (
     ATTACKERS,
     DEFENDERS,
+    DEFENSE_BAND,
     B_OFFSETS,
     candidate_damage,
     combined_perturbations,
+    single_stat_ttk_shift_table,
     make_matchups,
     pokemon_gen9_base,
     rank_flip_audit,
@@ -33,8 +35,10 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertTrue(c100["specialization_gate_pass"])
 
     def test_defense_sweep_has_five_distinct_registered_coordinates(self):
+        self.assertEqual(DEFENSE_BAND, (200, 250, 275, 300, 350))
+        self.assertEqual(len(set(DEFENSE_BAND)), 5)
+        self.assertIn(300, DEFENSE_BAND)
         self.assertEqual(len(DEFENDERS), 5)
-        self.assertEqual(set(DEFENDERS.values()), {200, 250, 275, 300, 350})
         self.assertEqual(len(set(DEFENDERS.values())), 5)
 
     def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
@@ -109,6 +113,27 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
     def test_every_b_offset_is_independently_calibrated(self):
         for c in B_OFFSETS:
             self.assertEqual(candidate_damage("B_offset_ratio", 100, 300, 275, 100, c), Fraction(60))
+
+    def test_nonseparable_candidate_has_nonzero_log_interaction(self):
+        rows = combined_perturbations()
+        selected = [r for r in rows if r["candidate"] == "D_bounded_share"
+                    and r["group"] in ("attack_defense", "attack_defense_vitality")
+                    and r["requested_percent"] != 0]
+        self.assertTrue(selected)
+        self.assertTrue(any(r["interaction_log_residual"] != 0 for r in selected))
+
+    def test_ttk_interaction_field_name_is_explicit(self):
+        row = next(r for r in combined_perturbations()
+                   if r["group"] == "attack_defense" and r["requested_percent"] != 0)
+        self.assertIn("interaction_ttk_delta_vs_additive", row)
+        self.assertNotIn("interaction_ttk_residual_hits", row)
+
+    def test_single_stat_shift_table_is_separate_and_complete(self):
+        rows = single_stat_ttk_shift_table()
+        self.assertEqual(len(rows), 990)
+        self.assertEqual({r["size_percent"] for r in rows}, {5, 10, 20})
+        self.assertEqual({r["stat"] for r in rows}, {"attack", "defense", "vitality"})
+        self.assertTrue(all("delta_hits" in r for r in rows))
 
     def test_candidate_c_retains_attack_defense_sensitivity_after_global_calibration(self):
         base = candidate_damage("C_direct_level", 100, 300, 300, 100)

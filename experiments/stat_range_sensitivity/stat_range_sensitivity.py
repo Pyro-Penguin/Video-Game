@@ -13,6 +13,16 @@ from math import log
 from itertools import combinations
 from fractions import Fraction
 from pathlib import Path
+import sys
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from common.damage_candidates import B_OFFSETS, CANDIDATES as RAW_CANDIDATES, calibrated_damage
+
+CONFIG_PATH = Path(__file__).with_name("config.json")
+CONFIG = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
+DEFENSE_BAND = tuple(int(value) for value in CONFIG["defense_band"])
+if not DEFENSE_BAND or len(set(DEFENSE_BAND)) != len(DEFENSE_BAND):
+    raise ValueError("config defense_band must contain unique Defense values")
 
 ATTACKERS = {
     "balanced": (300, 275),
@@ -33,16 +43,15 @@ VITALITIES = (250, 350, 500)
 LEVELS = (1, 5, 10, 25, 50, 75, 100)
 POWERS = (40, 80, 100, 120, 160)
 PERTURBATIONS = (-20, -10, -5, 5, 10, 20)
-REFERENCE_LEVEL = 100
-REFERENCE_ATTACK = 300
-REFERENCE_DEFENSE = 275
-REFERENCE_POWER = 100
-REFERENCE_VITALITY = 350
-REFERENCE_DAMAGE = Fraction(60)
-B_OFFSETS = (0, 25, 50, 100, 200, 400, 71, 143)
-SPECIALIZATION_MIN = Fraction(14, 10)
-SPECIALIZATION_MAX = Fraction(18, 10)
-SPECIALIZATION_PROFILES = tuple(DEFENDERS.items())
+REFERENCE_LEVEL = int(CONFIG["reference_level"])
+REFERENCE_ATTACK = int(CONFIG["reference_attack"])
+REFERENCE_DEFENSE = int(CONFIG["reference_defense"])
+REFERENCE_POWER = int(CONFIG["reference_power"])
+REFERENCE_VITALITY = int(CONFIG["reference_vitality"])
+REFERENCE_DAMAGE = Fraction(str(CONFIG["reference_damage"]))
+SPECIALIZATION_MIN = Fraction(str(CONFIG["specialization_min"]))
+SPECIALIZATION_MAX = Fraction(str(CONFIG["specialization_max"]))
+SPECIALIZATION_PROFILES = tuple((f"defense_{value}", value) for value in DEFENSE_BAND)
 
 
 def floor_fraction(x: Fraction) -> int:
@@ -64,41 +73,21 @@ def pokemon_gen9_base(level: int, power: int, attack: int, defense: int) -> int:
         raise ValueError("level, power, attack and defense must be positive")
     level_term = (2 * level) // 5 + 2
     numerator = level_term * power * attack
-    return numerator // (50 * defense) + 2
-
-
-def raw_a(power: int, attack: int, defense: int) -> Fraction:
-    return Fraction(REFERENCE_DAMAGE) * Fraction(power, REFERENCE_POWER) * Fraction(attack * REFERENCE_DEFENSE, defense * REFERENCE_ATTACK)
-
-
-def raw_b(power: int, attack: int, defense: int, offset: int) -> Fraction:
-    anchor_ratio = Fraction(REFERENCE_ATTACK + offset, REFERENCE_DEFENSE + offset)
-    return REFERENCE_DAMAGE * Fraction(power, REFERENCE_POWER) * Fraction(attack + offset, defense + offset) / anchor_ratio
-
-
-def raw_d(power: int, attack: int, defense: int) -> Fraction:
-    anchor_share = Fraction(REFERENCE_ATTACK, REFERENCE_ATTACK + REFERENCE_DEFENSE)
-    return REFERENCE_DAMAGE * Fraction(power, REFERENCE_POWER) * Fraction(attack, attack + defense) / anchor_share
-
-
-def raw_c_direct(power: int, attack: int, defense: int, level: int) -> Fraction:
-    def core(lvl: int, atk: int, deff: int) -> Fraction:
-        return (Fraction(2 * lvl, 5) + 2) * power * atk / (50 * deff) + 2
-    anchor = core(REFERENCE_LEVEL, REFERENCE_ATTACK, REFERENCE_DEFENSE)
-    return REFERENCE_DAMAGE * core(level, attack, defense) / anchor
-
+    return (numerator // defense) // 50 + 2
 
 
 def candidate_damage(name: str, power: int, attack: int, defense: int, level: int, offset: int = 100) -> Fraction:
-    if name == "A_direct_ratio":
-        return raw_a(power, attack, defense)
-    if name == "B_offset_ratio":
-        return raw_b(power, attack, defense, offset)
-    if name == "C_direct_level":
-        return raw_c_direct(power, attack, defense, level)
-    if name == "D_bounded_share":
-        return raw_d(power, attack, defense)
-    raise ValueError(f"unknown candidate: {name}")
+    try:
+        candidate = RAW_CANDIDATES[name]
+    except KeyError as exc:
+        raise ValueError(f"unknown candidate: {name}") from exc
+    return calibrated_damage(
+        candidate, power, attack, defense, level,
+        anchor_damage=REFERENCE_DAMAGE, anchor_power=REFERENCE_POWER,
+        anchor_attack=REFERENCE_ATTACK, anchor_defense=REFERENCE_DEFENSE,
+        anchor_level=REFERENCE_LEVEL,
+        offset=offset if name == "B_offset_ratio" else 100,
+    )
 
 
 def damage_pair(raw: Fraction) -> tuple[Fraction, int]:
@@ -126,6 +115,46 @@ def make_matchups() -> list[dict]:
                             "floored_ttk": ceil_fraction(Fraction(vitality, floored)),
                         })
     return rows
+
+
+def single_stat_ttk_shift_table() -> list[dict]:
+    """Isolated floored-TTK shifts versus baseline, by stat and perturbation size."""
+    rows = []
+    for profile, (attack, defense) in ATTACKERS.items():
+        for name in RAW_CANDIDATES:
+            offsets = B_OFFSETS if name == "B_offset_ratio" else (100,)
+            for offset in offsets:
+                base_damage = max(1, floor_fraction(candidate_damage(name, REFERENCE_POWER, attack, defense, REFERENCE_LEVEL, offset)))
+                base_ttk = ceil_fraction(Fraction(REFERENCE_VITALITY, base_damage))
+                for size in (5, 10, 20):
+                    for stat in ("attack", "defense", "vitality"):
+                        for pct in (-size, size):
+                            values = {"attack": attack, "defense": defense, "vitality": REFERENCE_VITALITY}
+                            values[stat] = max(1, (values[stat] * (100 + pct)) // 100)
+                            damage = max(1, floor_fraction(candidate_damage(name, REFERENCE_POWER, values["attack"], values["defense"], REFERENCE_LEVEL, offset)))
+                            ttk = ceil_fraction(Fraction(values["vitality"], damage))
+                            rows.append({
+                                "profile": profile, "candidate": name,
+                                "offset_c": offset if name == "B_offset_ratio" else None,
+                                "size_percent": size, "stat": stat, "requested_percent": pct,
+                                "baseline_floored_ttk": base_ttk, "changed_floored_ttk": ttk,
+                                "delta_hits": ttk - base_ttk,
+                            })
+    return rows
+
+
+def single_stat_ttk_shift_summary(rows: list[dict]) -> list[dict]:
+    summary = []
+    for size in (5, 10, 20):
+        for stat in ("attack", "defense", "vitality"):
+            deltas = [r["delta_hits"] for r in rows if r["size_percent"] == size and r["stat"] == stat]
+            summary.append({
+                "size_percent": size, "stat": stat, "sample_count": len(deltas),
+                "nonzero_shift_count": sum(x != 0 for x in deltas),
+                "greater_than_one_hit_count": sum(abs(x) > 1 for x in deltas),
+                "maximum_absolute_shift_hits": max((abs(x) for x in deltas), default=0),
+            })
+    return summary
 
 
 def combined_perturbations() -> list[dict]:
@@ -168,7 +197,7 @@ def combined_perturbations() -> list[dict]:
     for row in rows:
         if row["group"].startswith("single_") or row["requested_percent"] == 0:
             row["interaction_log_residual"] = 0.0
-            row["interaction_ttk_residual_hits"] = 0
+            row["interaction_ttk_delta_vs_additive"] = 0
             continue
         dimensions = {
             "attack_defense": ("single_attack", "single_defense"),
@@ -205,7 +234,7 @@ def combined_perturbations() -> list[dict]:
         row["interaction_log_residual"] = round(
             log(float(combined_raw / baseline_raw)) - isolated_log_effects, 9
         )
-        row["interaction_ttk_residual_hits"] = (
+        row["interaction_ttk_delta_vs_additive"] = (
             row["floored_ttk"] - baseline_ttk
             - sum(x["floored_ttk"] - baseline_ttk for x in controls)
         )
@@ -408,6 +437,7 @@ def calibration_and_gates() -> dict:
 def run_experiment() -> dict:
     matchups = make_matchups()
     combined = combined_perturbations()
+    single_shifts = single_stat_ttk_shift_table()
     return {
         "experiment": "all_vs_all_combined_stat_damage_sensitivity_v2",
         "status": "synthetic investigation; no game rule selected",
@@ -427,7 +457,7 @@ def run_experiment() -> dict:
             "calibration": "A, B and D calibrated to 60 damage at Level 100, P100, A300, D275. Each B offset is separately calibrated to this same anchor. C direct-level path is calibrated to 60 at the same Level-100 anchor.",
             "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, RNG, multi-hit, simultaneous resolution, or damage application.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression.", "The damage interaction residual is computed in log space: log(combined damage ratio) minus the sum of isolated log ratios. Zero indicates multiplicatively independent effects; nonzero values measure interaction. The TTK residual remains a discrete, flooring-sensitive diagnostic."],
         },
-        "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "level_rows": len(level_sweep())},
+        "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "single_stat_ttk_shift_rows": len(single_shifts), "level_rows": len(level_sweep())},
         "gates": calibration_and_gates(),
         "all_vs_all": matchups,
         "raw_vs_floored_rank_audit": rank_flip_audit(matchups),
@@ -435,6 +465,8 @@ def run_experiment() -> dict:
         "candidate_b_offset_rank_audit": offset_rank_audit(matchups),
         "candidate_b_cross_matchup_rank_stability": offset_cross_matchup_rank_stability(matchups),
         "combined_perturbations": combined,
+        "single_stat_ttk_shifts": single_shifts,
+        "single_stat_ttk_shift_summary": single_stat_ttk_shift_summary(single_shifts),
         "level_sweep": level_sweep(),
     }
 
