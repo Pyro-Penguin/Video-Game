@@ -1,6 +1,6 @@
 # Team Review: Analytical Experiment Pipeline
 
-**Status:** Initial team findings have been re-audited against current main and corrective work is being applied. This document is an audit checklist, not an approved game-rule specification.
+**Status:** Initial team findings have been re-audited and the applicable corrections are implemented and CI-verified at commit c2251a5a661c3895135389dd3f2c090086922805 (run 41171803352). This document is an audit checklist, not an approved game-rule specification.
 
 ## Scope boundary
 
@@ -152,3 +152,10 @@ This file records the team's supplied review. The repository source, test suite,
 - Remaining separate review item: POWERS is still a declared report dimension but is not swept by the sensitivity harness. The README/report describe Power 100 as the ordinary reference, so this remains a coverage limitation, not a claimed power sensitivity sweep; resolve separately before claiming power sensitivity coverage.
 
 No damage formula, RNG model, stat range, or game rule is selected by these engineering corrections.
+
+
+### Verification result — 2026-10-31
+
+The corrected code passed all eight jobs in [CI run 41171803352](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352): shared candidate calibration tests, stat-range tests and report generation, damage-equation tests and report generation, the four-version RNG suite, battle-simulation tests, and documentation validation. The sensitivity artifact contains 825 matchup rows, 2,695 combined/single-control rows, 990 isolated single-stat shift rows, and 35 level rows. The isolated-shift summary is recorded in the stat-range RESULTS.md file.
+
+The Generation IX sequential-floor equivalence test confirms no output change over the sampled positive integer input grid. The claim that the previous denominator expression produced different results was not reproduced and is mathematically false for these integer divisions.

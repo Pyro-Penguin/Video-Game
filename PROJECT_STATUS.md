@@ -73,3 +73,14 @@ When engine work begins:
 - Do not assume an installed Unity version or existing Unity project folder.
 - Treat original project archives as immutable source material.
 - Experimental outputs are evidence, not approved balance rules.
+
+
+## 2026-10-31 Analytical Experiment Review Closure
+
+The supplied P0/P1/P2 analytical review was checked against current main rather than the older 9100eec snapshot. The Defense coordinate list was already corrected in a newer commit; this pass moved the gate band into explicit JSON configuration and added import-time uniqueness validation. Raw Candidate A–D functions and calibration are now centralized in experiments/common/damage_candidates.py; each experiment retains its own explicit calibration anchor, and both use the same Candidate B offset sample set. The sensitivity experiment now separates isolated single-stat floored-TTK shifts from combined-versus-additive interaction residuals. The interaction field was renamed accordingly.
+
+The Generation IX reference now spells out sequential integer floors. The claimed discrepancy was mathematically equivalent for positive integer inputs, so this was a clarity/test improvement rather than a numerical correction. Log-residual tests now encode the correct contract: zero for multiplicatively separable effects, nonzero for a non-separable interaction. Reference values and gate coordinates are in experiments/stat_range_sensitivity/config.json; root pyproject.toml and .gitignore were added.
+
+Commit c2251a5a661c3895135389dd3f2c090086922805 passed all eight CI jobs in [run 41171803352](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352). The regenerated sensitivity report contains 825 matchup rows, 2,695 combined-stat rows, 990 isolated single-stat TTK-shift rows, and 35 level rows. Isolated shift summaries and interpretation are in experiments/stat_range_sensitivity/RESULTS.md.
+
+No damage formula, offset, RNG model, stat band, or other game rule was selected by this maintenance pass. The remaining declared POWERS dimension is still not swept by the sensitivity harness; the report treats Power 100 as its reference move power, so no full power-sensitivity claim is made.

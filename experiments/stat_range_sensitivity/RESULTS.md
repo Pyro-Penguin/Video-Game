@@ -1,6 +1,6 @@
 # Expanded Damage Sensitivity — Results
 
-**Evidence:** Artifact digests, when recorded, are immutable snapshot metadata for the exact CI artifact and source commit, not live assertions. Regenerate the artifact and refresh this evidence line whenever the report changes. Current code and CI evidence are tracked in PROJECT_STATUS.md and HANDOFF.md.
+**Evidence:** Code commit c2251a5a661c3895135389dd3f2c090086922805 passed all eight CI jobs in [run 41171803352](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352). The regenerated expanded-damage-sensitivity-report artifact is [13031008966](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352/artifacts/13031008966). Artifact digests are immutable snapshot metadata for that exact artifact and commit, not live assertions; refresh them whenever the artifact changes.
 
 **Design status:** Synthetic evidence only. No formula, stat band, level policy, or TTK rule has been selected. Current human preferences remain provisional in the Damage Equation Decision Brief; they are not Decision Log entries.
 
@@ -13,6 +13,7 @@
 | Attacker × defender pairs | 25 |
 | All-vs-all rows | 825 |
 | Single + combined perturbation rows | 2,695 |
+| Isolated single-stat TTK-shift rows | 990 |
 | Level sweep rows | 35 |
 | Raw/floored pairwise candidate comparisons | 4,125 |
 | Candidate B matchup-pair comparisons per offset | 2,775 |
@@ -101,9 +102,28 @@ c=143 is the most stable alternative to c=100 in floored matchup ordering. c=400
 
 The earlier screening language's ±1-hit concept must be scoped carefully. The experiment specification required any ±1-hit tolerance to use floored TTK, but did not establish ±1 as a numeric acceptance gate. The expanded combined-stat residuals reach 2 hits. A blanket ±1 rule across combined perturbations would therefore be exceeded; whether ±1 is adopted for isolated-stat screening, and what separate tolerance governs combined interactions, are design-review decisions.
 
-The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates a log-space raw-damage interaction residual and a floored-TTK combined-versus-additive interaction (interaction_ttk_delta_vs_additive) against corresponding single-stat controls. This TTK interaction is not an isolated stat shift. A separate single_stat_ttk_shifts table reports each Attack, Defense, and Vitality perturbation against baseline. The log residual is `log(combined damage ratio) − sum(log(isolated damage ratios))`; zero means the effects are multiplicatively separable (for example, a direct Attack/Defense ratio), while nonzero values indicate interaction. The ratios are calculated from exact `Fraction` values before the logarithm is evaluated. Combined TTK interaction values remain discrete and threshold-sensitive. Isolated TTK changes are reported separately by stat and perturbation size; neither table establishes a ±1-hit acceptance gate.
+The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. The TTK interaction field is named interaction_ttk_delta_vs_additive to distinguish it from isolated stat shifts. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates a log-space raw-damage interaction residual and a floored-TTK combined-versus-additive interaction (interaction_ttk_delta_vs_additive) against corresponding single-stat controls. This TTK interaction is not an isolated stat shift. A separate single_stat_ttk_shifts table reports each Attack, Defense, and Vitality perturbation against baseline. The log residual is `log(combined damage ratio) − sum(log(isolated damage ratios))`; zero means the effects are multiplicatively separable (for example, a direct Attack/Defense ratio), while nonzero values indicate interaction. The ratios are calculated from exact `Fraction` values before the logarithm is evaluated. Combined TTK interaction values remain discrete and threshold-sensitive. Isolated TTK changes are reported separately by stat and perturbation size; neither table establishes a ±1-hit acceptance gate.
 
 Across the combined-stat portion, **1,320 interaction residuals** were evaluated (5 profiles × 11 candidate/offset variants × 4 combined groups × 6 nonzero perturbations). **120/1,320 log-space damage residuals were nonzero**; the largest absolute residual was **0.012399 natural-log units**. **724/1,320 floored-TTK residuals were nonzero**; the largest absolute residual was **2 hits**. By interaction: Attack×Defense had 60 nonzero log residuals (max 0.012399) / 201 nonzero TTK residuals (max 2 hits); Attack×Vitality had 0 log residuals / 156 nonzero TTK residuals (max 1 hit); Defense×Vitality had 0 log residuals / 157 nonzero TTK residuals (max 1 hit); Attack×Defense×Vitality had 60 nonzero log residuals (max 0.012399) / 210 nonzero TTK residuals (max 2 hits). The log-space damage residual alongside a floored-TTK maximum (2 hits) remains threshold-sensitive: integer flooring can amplify modest response differences when they cross KO breakpoints, rather than representing two unrelated effects. These are descriptive findings, not a pass/fail result: the pre-registration required reporting but did **not** define a numeric residual tolerance. The design review must set or explicitly decline such a tolerance before using it as a gate.
+
+### Isolated single-stat TTK shifts
+
+This is the table to consult when evaluating an isolated-stat hit-count change. It contains 990 rows: five synthetic attacker profiles × eleven candidate/offset variants × three stats × three perturbation sizes × two directions. Each result compares the perturbed floored TTK with that profile/candidate's unperturbed baseline. Counts are directional observations, not independent game-balance samples.
+
+| Perturbation size | Stat | Nonzero TTK shifts | Shifts greater than 1 hit | Maximum absolute shift |
+|---:|---|---:|---:|---:|
+| ±5% | Attack | 36/110 (32.7%) | 0/110 | 1 hit |
+| ±5% | Defense | 36/110 (32.7%) | 0/110 | 1 hit |
+| ±5% | Vitality | 36/110 (32.7%) | 0/110 | 1 hit |
+| ±10% | Attack | 50/110 (45.5%) | 1/110 | 2 hits |
+| ±10% | Defense | 56/110 (50.9%) | 1/110 | 2 hits |
+| ±10% | Vitality | 66/110 (60.0%) | 1/110 | 2 hits |
+| ±20% | Attack | 86/110 (78.2%) | 22/110 (20.0%) | 3 hits |
+| ±20% | Defense | 83/110 (75.5%) | 20/110 (18.2%) | 3 hits |
+| ±20% | Vitality | 100/110 (90.9%) | 33/110 (30.0%) | 3 hits |
+
+The isolated-shift table does not establish a ±1-hit acceptance gate. It provides the correctly scoped evidence for a future decision about isolated-stat sensitivity. The combined-versus-additive TTK interaction table above answers a different question and must not be used as a proxy for isolated shifts.
+
 
 ## Level treatment and Pokémon reference harness
 
