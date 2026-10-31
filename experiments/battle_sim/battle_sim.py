@@ -426,6 +426,7 @@ class BattleResolver:
             )),
         )
         events = [BattleEvent("TurnStarted", detail=str(state.turn_number))]
+        events.append(BattleEvent("PhaseStarted", detail="action_resolution"))
 
         for command in ordered:
             actor = units[command.actor_id]
@@ -463,6 +464,8 @@ class BattleResolver:
                     "UnitDefeated", actor_id=actor.unit_id, target_id=target.unit_id,
                 ))
 
+        events.append(BattleEvent("PhaseCompleted", detail="action_resolution"))
+        events.append(BattleEvent("PhaseStarted", detail="end_of_turn_replacement"))
         if self._rules.automatic_end_turn_replacement:
             for side_id in sorted({unit.side_id for unit in units.values()}):
                 active_count = sum(
@@ -486,6 +489,8 @@ class BattleResolver:
                     events.append(BattleEvent(
                         "ReserveDeployed", target_id=reserve.unit_id, detail=side_id,
                     ))
+        events.append(BattleEvent("PhaseCompleted", detail="end_of_turn_replacement"))
+        events.append(BattleEvent("PhaseStarted", detail="victory_check"))
         next_state = replace(
             state,
             units=tuple(sorted(
@@ -496,6 +501,7 @@ class BattleResolver:
         )
         next_state, finish_events = _apply_victory_policy(next_state, self._victory_policy)
         events.extend(finish_events)
+        events.append(BattleEvent("PhaseCompleted", detail="victory_check"))
         if not next_state.is_finished:
             events.append(BattleEvent("TurnCompleted", detail=str(state.turn_number)))
         return TurnResult(next_state, tuple(events))
