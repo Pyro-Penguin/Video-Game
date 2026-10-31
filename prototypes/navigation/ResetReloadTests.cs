@@ -17,6 +17,7 @@ public sealed class ResetReloadTests
         var host = Object.FindFirstObjectByType<NavigationHost>();
         Assert.IsNotNull(host);
         Assert.IsNotNull(host.Runtime);
+        var oldRuntime = host.Runtime;
 
         host.Runtime.SetLinkerAngle(1, 90f);
         host.Runtime.RebuildState();
@@ -34,7 +35,7 @@ public sealed class ResetReloadTests
         var newHost = Object.FindFirstObjectByType<NavigationHost>();
         Assert.IsNotNull(newHost);
         Assert.IsNotNull(newHost.Runtime);
-        Assert.AreNotSame(host.Runtime, newHost.Runtime, "Runtime must be reconstructed on reload.");
+        Assert.AreNotSame(oldRuntime, newHost.Runtime, "Runtime must be reconstructed on reload.");
 
         var newPath = new int[8];
         Assert.IsFalse(newHost.Runtime.Pathfinder.TryFindPath(
