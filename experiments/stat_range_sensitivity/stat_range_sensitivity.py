@@ -222,22 +222,39 @@ def rank_flip_audit(matchups: list[dict]) -> dict:
 
 def pairwise_rank_flip_audit(matchups: list[dict]) -> dict:
     details = []
+    comparison_count = 0
     for attacker in ATTACKERS:
         for defender in DEFENDERS:
             for vitality in VITALITIES:
-                subset = [r for r in matchups if r["attacker"] == attacker and r["defender"] == defender and r["vitality"] == vitality]
-                for i, left in enumerate(subset):
-                    for right in subset[i + 1:]:
-                        raw_relation = (left["raw_ttk"] > right["raw_ttk"]) - (left["raw_ttk"] < right["raw_ttk"])
-                        floor_relation = (left["floored_ttk"] > right["floored_ttk"]) - (left["floored_ttk"] < right["floored_ttk"])
-                        if raw_relation != floor_relation:
-                            details.append({
-                                "attacker": attacker, "defender": defender, "vitality": vitality,
-                                "left_candidate": left["candidate"], "left_c": left["offset_c"],
-                                "right_candidate": right["candidate"], "right_c": right["offset_c"],
-                                "raw_relation": raw_relation, "floored_relation": floor_relation,
-                            })
-    return {"pairwise_comparisons": sum(len(rows) * (len(rows) - 1) // 2 for rows in [[r for r in matchups if r["attacker"] == attacker and r["defender"] == defender and r["vitality"] == vitality] for attacker in ATTACKERS for defender in DEFENDERS for vitality in VITALITIES]), "rank_flips_or_tie_changes": len(details), "details": details}
+                subset = [
+                    row for row in matchups
+                    if row["attacker"] == attacker
+                    and row["defender"] == defender
+                    and row["vitality"] == vitality
+                ]
+                comparison_count += len(subset) * (len(subset) - 1) // 2
+                for left, right in combinations(subset, 2):
+                    raw_relation = (
+                        (left["raw_ttk"] > right["raw_ttk"])
+                        - (left["raw_ttk"] < right["raw_ttk"])
+                    )
+                    floor_relation = (
+                        (left["floored_ttk"] > right["floored_ttk"])
+                        - (left["floored_ttk"] < right["floored_ttk"])
+                    )
+                    if raw_relation != floor_relation:
+                        details.append({
+                            "attacker": attacker, "defender": defender,
+                            "vitality": vitality,
+                            "left_candidate": left["candidate"], "left_c": left["offset_c"],
+                            "right_candidate": right["candidate"], "right_c": right["offset_c"],
+                            "raw_relation": raw_relation, "floored_relation": floor_relation,
+                        })
+    return {
+        "pairwise_comparisons": comparison_count,
+        "rank_flips_or_tie_changes": len(details),
+        "details": details,
+    }
 
 
 def offset_rank_audit(matchups: list[dict]) -> dict:
