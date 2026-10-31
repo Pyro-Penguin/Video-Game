@@ -62,10 +62,19 @@ This is a user-authorized, bounded parallel prototype, not a change to the canon
 
 **Navigation next action:** obtain the actual domain source and a Unity test scene/project, compile the candidate, and add/run a Play Mode regression test that observes transform.position inside Arrived. The test must be demonstrated to fail against the pre-fix implementation and pass against the corrected one, then execute the remaining checklist. The reset test also requires a real FirstPlayable scene, NavigationHost, NodeId/domain API, and FakeQuestProvider.SetOpen(bool). Do not claim Unity verification until those checks are run.
 
+
+
+### Original creature roster draft and agent workflow
+
+- Five original creature concepts and direct stat/move inputs are in `docs/creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md` and `fixtures/original_creatures_draft.json`. Roles: physical bulwark, fast physical striker, fast special attacker, special-defense anchor, mixed disruptor.
+- The draft uses the current CLI fixture schema and placeholder 40/80/120 moves. Candidate affinity names do not define types or matchups. The commander stats are also a pipeline placeholder.
+- The CLI now accepts a display name for each fixture. The original draft was smoke-tested through all three scenarios at Candidate B c=100 and c=143. This validates pipeline compatibility only; it does not establish balance.
+- Root `AGENTS.md`, Python path-scoped instructions, `docs/PROJECT_MANAGEMENT_AGENT_WORKFLOW_REVIEW.md`, and the revised milestone plan are committed. No provider quotas, generated vendor adapter, tool-specific hooks, skills, or Unity path instructions were added.
+
 ## Highest-Priority Next Work
 1. Keep Playtest A's JSON fixture and CLI runner stable as an engineering scaffold. Replace the fixture's creature section only when original game creature data is approved; preserve the schema and runner contract.
-2. Complete Priority 1 damage-model narrowing under D-022–D-025: compare c=100 and c=143 using the existing full-band floored gates; retain c=200 only if it adds useful information. Do not broaden the sweep or select a formula from synthetic evidence alone.
-3. Prepare Playtest B inputs from 3–5 original game creatures and 2–3 representative moves each. The current creature-design inventory contains no validated roster; the Light/Shadow draft is not a valid substitute. The user must supply or approve original creature stats/moves before balance conclusions can be drawn.
+2. Complete Priority 1 damage-model narrowing under D-022–D-025: after reviewing the original-creature draft, compare c=100 and c=143 using the same fixture and existing full-band floored gates; retain c=200 only if it adds useful information. Do not broaden the sweep or select a formula from synthetic evidence alone.
+3. Review or revise the five provisional original creatures in `docs/creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md` and `fixtures/original_creatures_draft.json`. The fixture is schema/pipeline-tested at c=100 and c=143, but is not human-approved or balance evidence. Obtain explicit acceptance before using its matchup outputs to support balance conclusions.
 4. Run bounded manual battles and all-pairs creature matchup checks through the existing runner once valid inputs exist. Record neutral pacing, matchup outliers, and observed decisions.
 5. After Priority 1, resolve the D-021 comparator contract (non-damaging, multi-target, cross-target semantics and final fallback), then decide simultaneous-resolution/mutual-KO semantics before expanding the action model.
 6. Do not begin village economy, NPC simulation, puzzle engine, Unity project creation, or C# runtime work until the battle-core priority and explicit authorization allow it.
