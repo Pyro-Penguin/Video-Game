@@ -18,6 +18,7 @@ After these, use the task-specific references below.
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md) — battle format, timers, clauses, and conflicts.
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md) — separate roster, active field, player, and reserve decisions.
 - [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) — actionable blocking, important, and deferred rules decisions.
+- [Battle Engine Gap Analysis](docs/battle/BATTLE_ENGINE_GAP_ANALYSIS.md) — current harness boundaries, unresolved correctness risks, domain ownership, and staged engine roadmap.
 - [Battle Simulation Harness](experiments/battle_sim/README.md) — pure-Python deterministic turn-resolution prototype with synthetic fixtures; not final game rules or Unity runtime.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
 - [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
@@ -27,6 +28,7 @@ After these, use the task-specific references below.
 - [Proposed Endgame Stat-Range Sensitivity Experiment](experiments/stat_range_sensitivity/README.md) — tests the team's proposed endgame stat bands against damage, KO pacing, and stat sensitivity; synthetic only.
 - [Stat-Range Sensitivity Results](experiments/stat_range_sensitivity/RESULTS.md) — human-readable summary of the expanded all-vs-all, combined-stat, offset-sweep, level-treatment, and integer-floor results.
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md) — stat ownership, normalization questions, and next experiment.
+- [Mechanic Integration Review](docs/inspiration/MECHANIC_INTEGRATION_REVIEW.md) — synthesis of supplied Unciv, OpenRCT2, A Dark Room, Monument Valley, customization, Disco Elysium, Fable, and Shenmue research; reference analysis only.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
 - [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — drop visual reference images into this folder and document source, attribution, and the design qualities being studied.
 - [Population, Professions & Mobilization](docs/world/POPULATION_PROFESSIONS_MOBILIZATION.md) — unresolved concept for persistent civilian roles, combat capability, availability, and mobilization; review only.
