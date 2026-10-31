@@ -59,6 +59,25 @@ class BattleSimulationTests(unittest.TestCase):
             40,
         )
 
+    def test_exact_speed_tie_uses_fixture_unit_id_fallback(self):
+        tied_state = replace(
+            self.state,
+            units=tuple(
+                replace(unit, speed=50) if unit.status == ACTIVE else unit
+                for unit in self.state.units
+            ),
+        )
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        result = self.resolver.resolve_turn(
+            tied_state, commands_for(tied_state, targets), self.moves
+        )
+        actors = [
+            event.actor_id for event in result.events
+            if event.event_type == "DamageApplied"
+        ]
+        self.assertEqual(actors, sorted(actors))
+
     def test_priority_then_speed_orders_actions(self):
         moves = dict(self.moves)
         moves["quick_strike"] = MoveDefinition("quick_strike", 25, 1)
@@ -210,6 +229,9 @@ class BattleSimulationTests(unittest.TestCase):
             for event in first_events
         ))
         self.assertEqual(trace["status"], "synthetic deterministic fixture; not an approved game ruleset")
+
+    def test_demo_scenario_is_replay_deterministic(self):
+        self.assertEqual(run_demo_scenario(), run_demo_scenario())
 
     def test_finished_battle_rejects_more_turns(self):
         moves = {"strike": MoveDefinition("strike", 40, 0), "finisher": MoveDefinition("finisher", 120, 0)}
