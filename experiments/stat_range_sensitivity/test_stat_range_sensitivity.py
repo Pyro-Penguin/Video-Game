@@ -9,6 +9,8 @@ from stat_range_sensitivity import (
     make_matchups,
     pokemon_gen9_base,
     rank_flip_audit,
+    offset_cross_matchup_rank_stability,
+    calibration_and_gates,
     run_experiment,
 )
 
@@ -20,11 +22,32 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
             for c in offsets:
                 self.assertEqual(candidate_damage(name, 100, 300, 275, 100, c), Fraction(60))
 
-    def test_specialization_gate_uses_exact_two_to_one_ratio(self):
-        from stat_range_sensitivity import calibration_and_gates
+    def test_specialization_gate_sweeps_all_pre_registered_defenses(self):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
-        self.assertAlmostEqual(gates["100"]["two_to_one_damage_ratio"], 1.75)
-        self.assertTrue(gates["100"]["specialization_gate_pass"])
+        c100 = gates["100"]
+        self.assertEqual(set(c100["specialization_ratio_by_profile"]), set(ATTACKERS))
+        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["balanced"], 650 / 375)
+        self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 500 / 300)
+        self.assertAlmostEqual(c100["specialization_best_case_ratio"], 800 / 450)
+        self.assertTrue(c100["specialization_gate_pass"])
+
+    def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
+        gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
+        self.assertAlmostEqual(
+            gates["400"]["specialization_ratio_by_profile"]["high_pressure"],
+            4 / 3,
+        )
+        self.assertFalse(gates["400"]["specialization_gate_pass"])
+        self.assertFalse(gates["400"]["combined_numeric_gates_pass"])
+
+    def test_cross_matchup_audit_rejects_missing_coordinate(self):
+        rows = make_matchups()
+        rows.remove(next(
+            row for row in rows
+            if row["candidate"] == "B_offset_ratio" and row["offset_c"] == 143
+        ))
+        with self.assertRaisesRegex(ValueError, "matchup key mismatch"):
+            offset_cross_matchup_rank_stability(rows)
 
     def test_generation_nine_reference_core_known_fixtures(self):
         self.assertEqual(pokemon_gen9_base(100, 100, 100, 100), 86)
