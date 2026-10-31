@@ -536,6 +536,7 @@ def run_experiment() -> dict:
             "story_levels": list(LEVELS), "attacker_profiles": list(ATTACKERS),
             "defender_profiles": list(DEFENDERS), "matchup_pairs": 25,
             "vitalities": list(VITALITIES), "powers": list(POWERS),
+            "hypothetical_roll_percentages": list(ROLL_PERCENTS),
             "combined_groups": ["attack_defense", "attack_vitality", "defense_vitality", "attack_defense_vitality"],
             "perturbations_percent": list(PERTURBATIONS),
             "b_offsets": list(B_OFFSETS),
@@ -545,7 +546,8 @@ def run_experiment() -> dict:
         "method": {
             "arithmetic": "Exact rational arithmetic for candidate equations; floor applied explicitly for gameplay damage.",
             "calibration": "A, B and D calibrated to 60 damage at Level 100, P100, A300, D275. Each B offset is separately calibrated to this same anchor. C direct-level path is calibrated to 60 at the same Level-100 anchor.",
-            "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, RNG, multi-hit, simultaneous resolution, or damage application.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression.", "The damage interaction residual is computed in log space: log(combined damage ratio) minus the sum of isolated log ratios. Zero indicates multiplicatively independent effects; nonzero values measure interaction. The TTK residual remains a discrete, flooring-sensitive diagnostic."],
+            "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, selected RNG model, multi-hit, simultaneous resolution, or damage application.",
+                "The separate 85–100% fixed-roll sensitivity diagnostic does not model independent per-hit roll accumulation and is not a selected damage pipeline.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression.", "The damage interaction residual is computed in log space: log(combined damage ratio) minus the sum of isolated log ratios. Zero indicates multiplicatively independent effects; nonzero values measure interaction. The TTK residual remains a discrete, flooring-sensitive diagnostic."],
         },
         "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "single_stat_ttk_shift_rows": len(single_shifts), "level_rows": len(level_sweep())},
         "gates": calibration_and_gates(),
