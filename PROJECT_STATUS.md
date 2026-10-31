@@ -75,6 +75,10 @@ When engine work begins:
 - Experimental outputs are evidence, not approved balance rules.
 
 
+## 2026-10-31 Hypothetical Roll-Pacing Diagnostic
+
+A separate, explicitly unselected 85–100% fixed-roll sensitivity diagnostic now evaluates every candidate/offset across the five Defense coordinates. It applies each percentage to exact candidate damage, floors once, computes per-profile fewest/most hits, and aggregates worst-case bounds. At the existing 60-damage comparison anchor, every candidate/offset fails the full-band guaranteed [4, 6] containment diagnostic; Candidate A spans [5, 9], Candidate B c=100 spans [5, 9], Candidate B c=400 spans [6, 8], and Candidate D spans [6, 8]. The reference Defense 275 result remains distinct from the full-band aggregate. A regression-tested alternate-anchor counterexample (Candidate B c=100 at diagnostic anchor 84) passes [4, 6] across the band, so the evidence does not support claiming that no calibration can pass. Anchor 60 and the absence of a selected RNG model are unchanged. The mean of fixed-roll deterministic TTKs is explicitly labeled `mean_fixed_roll_ttk`, not expected stopping time. Code/test commit `db63f8b112ae11e86030b893e8008332bdd3a715` passed all eight CI jobs in [run 41202594519](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202594519). Work is on branch `experiment/defense-band-rng-ttk`; main has not been changed.
+
 ## 2026-10-31 Analytical Experiment Review Closure
 
 The supplied P0/P1/P2 analytical review was checked against current main rather than the older 9100eec snapshot. The Defense coordinate list was already corrected in a newer commit; this pass moved the gate band into explicit JSON configuration and added import-time uniqueness validation. Raw Candidate A–D functions and calibration are now centralized in experiments/common/damage_candidates.py; each experiment retains its own explicit calibration anchor, and both use the same Candidate B offset sample set. The sensitivity experiment now separates isolated single-stat floored-TTK shifts from combined-versus-additive interaction residuals. The interaction field was renamed accordingly.
