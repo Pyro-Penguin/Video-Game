@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from itertools import combinations
 from fractions import Fraction
 from pathlib import Path
 
@@ -31,6 +32,9 @@ REFERENCE_POWER = 100
 REFERENCE_VITALITY = 350
 REFERENCE_DAMAGE = Fraction(60)
 B_OFFSETS = (0, 25, 50, 100, 200, 400, 71, 143)
+SPECIALIZATION_MIN = Fraction(14, 10)
+SPECIALIZATION_MAX = Fraction(18, 10)
+SPECIALIZATION_PROFILES = tuple((name, defense) for name, (_, defense) in DEFENDERS.items())
 
 
 def floor_fraction(x: Fraction) -> int:
@@ -211,7 +215,7 @@ def pairwise_rank_flip_audit(matchups: list[dict]) -> dict:
                                 "right_candidate": right["candidate"], "right_c": right["offset_c"],
                                 "raw_relation": raw_relation, "floored_relation": floor_relation,
                             })
-    return {"pairwise_comparisons": 75 * 55, "rank_flips_or_tie_changes": len(details), "details": details}
+    return {"pairwise_comparisons": sum(len(rows) * (len(rows) - 1) // 2 for rows in [[r for r in matchups if r["attacker"] == attacker and r["defender"] == defender and r["vitality"] == vitality] for attacker in ATTACKERS for defender in DEFENDERS for vitality in VITALITIES]), "rank_flips_or_tie_changes": len(details), "details": details}
 
 
 def offset_rank_audit(matchups: list[dict]) -> dict:
@@ -231,29 +235,43 @@ def offset_rank_audit(matchups: list[dict]) -> dict:
 
 
 def offset_cross_matchup_rank_stability(matchups: list[dict]) -> dict:
-    """Compare the ordering of all 75 matchup coordinates against c=100."""
-    base_rows = [r for r in matchups if r["candidate"] == "B_offset_ratio" and r["offset_c"] == 100]
-    key = lambda r: (r["attacker"], r["defender"], r["vitality"])
-    baseline = {key(r): r for r in base_rows}
+    """Compare each B-offset ordering against c=100 across all matchup coordinates."""
+    def coordinate(row: dict) -> tuple[str, str, int]:
+        return row["attacker"], row["defender"], row["vitality"]
+
+    base_rows = [
+        row for row in matchups
+        if row["candidate"] == "B_offset_ratio" and row["offset_c"] == 100
+    ]
+    baseline = {coordinate(row): row for row in base_rows}
     comparisons = []
     for c in B_OFFSETS:
         if c == 100:
             continue
-        current = {key(r): r for r in matchups if r["candidate"] == "B_offset_ratio" and r["offset_c"] == c}
+        current = {
+            coordinate(row): row for row in matchups
+            if row["candidate"] == "B_offset_ratio" and row["offset_c"] == c
+        }
+        if set(current) != set(baseline):
+            missing = sorted(set(baseline) - set(current))
+            unexpected = sorted(set(current) - set(baseline))
+            raise ValueError(
+                f"offset c={c} matchup key mismatch: missing={missing}, unexpected={unexpected}"
+            )
+
         changed_raw = 0
         changed_floored = 0
         total = 0
-        for i, left_key in enumerate(baseline):
-            for right_key in list(baseline)[i + 1:]:
-                b_left, b_right = baseline[left_key], baseline[right_key]
-                c_left, c_right = current[left_key], current[right_key]
-                base_raw = (b_left["raw_ttk"] > b_right["raw_ttk"]) - (b_left["raw_ttk"] < b_right["raw_ttk"])
-                now_raw = (c_left["raw_ttk"] > c_right["raw_ttk"]) - (c_left["raw_ttk"] < c_right["raw_ttk"])
-                base_floor = (b_left["floored_ttk"] > b_right["floored_ttk"]) - (b_left["floored_ttk"] < b_right["floored_ttk"])
-                now_floor = (c_left["floored_ttk"] > c_right["floored_ttk"]) - (c_left["floored_ttk"] < c_right["floored_ttk"])
-                changed_raw += base_raw != now_raw
-                changed_floored += base_floor != now_floor
-                total += 1
+        for left_key, right_key in combinations(baseline.keys(), 2):
+            b_left, b_right = baseline[left_key], baseline[right_key]
+            c_left, c_right = current[left_key], current[right_key]
+            base_raw = (b_left["raw_ttk"] > b_right["raw_ttk"]) - (b_left["raw_ttk"] < b_right["raw_ttk"])
+            now_raw = (c_left["raw_ttk"] > c_right["raw_ttk"]) - (c_left["raw_ttk"] < c_right["raw_ttk"])
+            base_floor = (b_left["floored_ttk"] > b_right["floored_ttk"]) - (b_left["floored_ttk"] < b_right["floored_ttk"])
+            now_floor = (c_left["floored_ttk"] > c_right["floored_ttk"]) - (c_left["floored_ttk"] < c_right["floored_ttk"])
+            changed_raw += base_raw != now_raw
+            changed_floored += base_floor != now_floor
+            total += 1
         comparisons.append({
             "c": c, "matchup_pair_comparisons": total,
             "raw_order_changes_vs_c100": changed_raw,
@@ -261,8 +279,12 @@ def offset_cross_matchup_rank_stability(matchups: list[dict]) -> dict:
             "raw_fraction_changed": round(changed_raw / total, 6),
             "floored_fraction_changed": round(changed_floored / total, 6),
         })
-    return {"baseline_c": 100, "matchup_coordinates": len(baseline), "pair_comparisons_per_offset": 2775, "offsets": comparisons}
-
+    return {
+        "baseline_c": 100,
+        "matchup_coordinates": len(baseline),
+        "pair_comparisons_per_offset": len(baseline) * (len(baseline) - 1) // 2,
+        "offsets": comparisons,
+    }
 
 def level_sweep() -> list[dict]:
     rows = []
@@ -297,22 +319,38 @@ def calibration_and_gates() -> dict:
         all_gates[name] = {}
         for c in offsets:
             neutral = candidate_damage(name, 100, 300, 275, 100, c)
-            specialized = candidate_damage(name, 100, 600, 300, 100, c)
-            equal_stat = candidate_damage(name, 100, 300, 300, 100, c)
-            ratio_2to1 = specialized / equal_stat
+            profile_ratios = {
+                profile: candidate_damage(name, 100, 2 * defense, defense, 100, c)
+                / candidate_damage(name, 100, defense, defense, 100, c)
+                for profile, defense in SPECIALIZATION_PROFILES
+            }
+            worst_case_ratio = min(profile_ratios.values())
+            best_case_ratio = max(profile_ratios.values())
             ttk = ceil_fraction(Fraction(350, max(1, floor_fraction(neutral))))
+            specialization_pass = (
+                worst_case_ratio >= SPECIALIZATION_MIN
+                and best_case_ratio <= SPECIALIZATION_MAX
+            )
             all_gates[name][str(c)] = {
                 "neutral_floored_ttk": ttk,
-                "two_to_one_damage_ratio": round(float(ratio_2to1), 6),
+                "two_to_one_damage_ratio": round(float(profile_ratios["balanced"]), 6),
+                "specialization_ratio_by_profile": {
+                    profile: round(float(ratio), 6)
+                    for profile, ratio in profile_ratios.items()
+                },
+                "specialization_worst_case_ratio": round(float(worst_case_ratio), 6),
+                "specialization_best_case_ratio": round(float(best_case_ratio), 6),
                 "full_vitality_one_hit_ko": floor_fraction(neutral) >= 350,
-                "specialization_gate_pass": Fraction(14, 10) <= ratio_2to1 <= Fraction(18, 10),
+                "specialization_gate_pass": specialization_pass,
                 "neutral_ttk_gate_pass": 4 <= ttk <= 6,
                 "one_hit_gate_pass": floor_fraction(neutral) < 350,
-                "combined_numeric_gates_pass": 4 <= ttk <= 6 and Fraction(14, 10) <= ratio_2to1 <= Fraction(18, 10) and floor_fraction(neutral) < 350,
+                "combined_numeric_gates_pass": 4 <= ttk <= 6 and specialization_pass and floor_fraction(neutral) < 350,
             }
     return {
         "neutral_reference": {"level": 100, "attack": 300, "defense": 275, "power": 100, "vitality": 350, "target_floored_ttk": [4, 6]},
-        "specialization_target": [1.4, 1.8],
+        "specialization_target": [float(SPECIALIZATION_MIN), float(SPECIALIZATION_MAX)],
+        "specialization_defense_profiles": {profile: defense for profile, defense in SPECIALIZATION_PROFILES},
+        "specialization_gate_policy": "Every pre-registered defender profile must remain inside the target ratio band; both worst-case minimum and maximum are gated.",
         "candidate_gate_results": all_gates,
         "candidate_b_offset_values": list(B_OFFSETS),
         "candidate_b_scale_relative_offsets": {"0.25x_mean_reference_stat": 71, "0.50x_mean_reference_stat": 143},
