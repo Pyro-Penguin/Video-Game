@@ -24,7 +24,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 | Selection | All commands validate against the same turn-start state | Exercises simultaneous selection |
 | Resolution | Priority descending, then Speed descending | Broad direction; exact ties unresolved |
 | Exact tie | Greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat | D-021 is implemented as an ordering comparator. Callers may supply an exact positive effectiveness ratio per action; when either value is undefined or values are equal, comparison advances to the next criterion. HP percentage uses exact cross-multiplication. Unit ID ascending is fixture-only. Multi-target action semantics remain unsupported. |
-| Targeting | One opposing active unit | Simplifies core sequencing; no ally/area/self targeting |
+| Targeting | One or more explicitly listed opposing active units; each target is revalidated at resolution, and a defeated target is skipped while later targets continue | Multi-target execution is a harness capability only; targeting patterns, per-target modifiers, redirection, and D-021 effectiveness semantics remain unresolved |
 | Damage | Positive integer supplied by an injected DamageModel; current FixedDamageFixture reads MoveDefinition fixture damage | Placeholder fixture value, not the damage formula |
 | Invalidated actor/target | Queued action is skipped; no retarget | Matches current D-006 direction for defeated actors/targets |
 | Replacement | At end of turn, auto-deploy all eligible reserves when there are no more reserves than vacancies; if reserves outnumber vacancies, caller must provide an explicit selection for each vacancy | Implements D-019 through an injected pure `ReserveSelector`; selection input is caller-owned. Voluntary switching remains separate |
@@ -66,7 +66,8 @@ No third-party dependencies are required. The package is compatible with Python 
 - Priority/Speed ordering and the explicit fixture-only exact-tie fallback.
 - Repeatable identical two-turn trace for deterministic replay.
 - Defeated actor loses its queued action.
-- Defeated target is not automatically retargeted.
+- A defeated single target is not retargeted; for a multi-target command, that target is skipped and remaining listed targets continue resolving.
+- Multi-target commands reject duplicate, inactive, unknown, or allied targets at command lock.
 - Single legal reserve auto-deploys after all locked actions resolve.
 - Multiple legal reserves require an explicit valid selection; selected reserve deploys and unselected reserves remain in reserve.
 - Missing, duplicate, ineligible, unnecessary, and unknown-side reserve selections are rejected.
@@ -79,6 +80,6 @@ No third-party dependencies are required. The package is compatible with Python 
 
 ## Deliberately not implemented
 
-Final damage math (the interface seam exists, but no production implementation), type effectiveness, RNG, status, shields, switching, protection, interruption/redirection, move targeting patterns, turn clocks, preview, online authority, Unity integration, and content progression.
+Final damage math (the interface seam exists, but no production implementation), type effectiveness, RNG, status, shields, switching, protection, interruption/redirection, move targeting patterns beyond explicit target lists, per-target multi-hit/modifier semantics, turn clocks, preview, online authority, Unity integration, and content progression.
 
 Passing tests means the encoded fixture behaves consistently; it does not mean the fixture has been accepted as the game rules.
