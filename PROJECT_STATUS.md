@@ -23,17 +23,19 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Human-readable [Stat-Range Sensitivity Results](experiments/stat_range_sensitivity/RESULTS.md), numeric screening gates, and sequenced review questions added. Flooring audit of the CI JSON found the 247 changed rows distributed A=40, B=48, C=91, D=68; 60 rows change by more than one hit, all in Candidate C. Aggregate mean-TTK order is unchanged (B, D, A, C), but individual pairwise ordering changes in some scenario coordinates. Future pass/fail checks must use floored results.
 - Expanded all-vs-all / combined-stat damage experiment added. Historical CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs; its artifact contained 825 matchup rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise comparisons. The shared Level-100 calibration is 60 damage at the named Vitality-350 reference. A subsequent code review found that the specialization gate was evaluated at only one Defense coordinate; that result is superseded. The gate is now corrected to sweep all five pre-registered defender profiles, gate on both worst-case ratio bounds, and regression-test Candidate B c=400 failing at Defense 200 (4/3). Source, tests, README, and RESULTS were updated. Corrected code/test commit `e2201bc831b38a6d2ee175c934461aad7299ff05` passed all seven CI jobs in [run 41160522573](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41160522573), including the stat-range unit tests and JSON report smoke test. The status and handoff now reflect the corrected gate and revised next actions. No formula selected.
 - Handoff verification freshness rule recorded as D-015; protocol and decision log now agree.
+- A bounded pure-Python battle simulation harness was added under `experiments/battle_sim/`. It implements immutable battle snapshots, complete command validation, simultaneous command locking, priority/Speed ordering, deterministic fixture tie-breaking, invalidated-action handling, knockout application, end-of-turn reserve deployment, and commander-defeat/draw outcomes. Ten tests cover the current fixture contract. All values and unresolved semantics are explicitly marked as test assumptions; no final damage formula, type chart, RNG model, tie-break, roster interpretation, or encounter rule is selected. CI verification is pending.
 - Pokémon final-stage baseline data audit added under `docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md`. The Gen I–IX CSV yields 546 identified final-stage entries (mean BST 509.2) and 456 after excluding sublegendary/legendary/mythical entries (mean BST 491.2); simplified Level-100 comparisons show the proposed synthetic bands are elevated relative to ordinary final-stage medians. This is research evidence only; no stat band or transformation rule selected.
 
 ## Current Experiments
 - [Damage RNG Experiment](experiments/damage_rng/README.md) compares six RNG models. It does not select a final game rule.
 - [Damage Equation Comparison](experiments/damage_equation/README.md) compares four base-equation families on synthetic inputs.
 - [Stat-Range Sensitivity](experiments/stat_range_sensitivity/README.md) translates the team's proposed endgame bands into synthetic damage, KO-pacing, and sensitivity tests.
+- [Battle Simulation Harness](experiments/battle_sim/README.md) tests deterministic turn sequencing with synthetic fixed-damage fixtures; it is not a production engine or approved ruleset.
 
 ## Canonical Project Priorities
 This is the single authoritative project-wide priority list. [Open Questions](docs/OPEN_QUESTIONS.md) groups unresolved questions in this order; it does not establish a separate priority hierarchy.
 
-1. **Damage equation design resolution.** Immediate subtask: verify the corrected profile-wide specialization gate in CI, then consolidate experiment parameters and inspect the regenerated report before the design review. Define the deterministic damage pipeline, stat inputs, modifier order, immunity, and rounding boundaries. Treat RNG distribution/placement as a separate decision. This sequencing does not authorize selecting a final formula or RNG model.
+1. **Damage equation design resolution.** The corrected profile-wide gate is verified. Consolidate experiment parameters and inspect the regenerated report, then complete the damage design review: deterministic base equation, stat inputs, modifier order, immunity, and rounding boundaries. RNG distribution/placement remains a separate decision. A bounded turn-resolution harness is now authorized in parallel as a rules-discovery tool; it must not embed a selected formula or promote fixture assumptions to rules.
 2. **Battle structure and resolution.** Resolve side composition, roster/selection/active/reserve counts, player role, turn phases, action economy, targeting, priority/speed/ties, invalidated actions, and knockout timing.
 3. **Replacement and victory.** Define replacement timing and victory conditions, including simultaneous defeat and encounter-specific player defeat.
 4. **Stats and progression.** Define stat ownership, Level 100 normalization, allocation, and relationship-effect boundaries.
@@ -45,7 +47,7 @@ The damage-equation-first ordering is a project sequencing decision, not a claim
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
-- Battle simulation or damage engine for the game.
+- Production battle engine, final damage resolver, or Unity/C# runtime. The Python harness is a test instrument only.
 - Creature capture, progression, world traversal, puzzle, or story systems.
 - Online PvP, matchmaking, or server authority.
 
