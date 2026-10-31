@@ -163,7 +163,8 @@ def run_pipeline(fixture_path: Path = DEFAULT_FIXTURE, offset_c: int = 100, batt
                         "turns": turns, "final_state": asdict(state)})
     return {
         "schema_version": 1,
-        "status": "Playtest A pipeline validation only; not balance evidence or an approved game ruleset",
+        "fixture_name": fixture.get("display_name", "PLAYTEST A"),
+        "status": "Pipeline validation only; not balance evidence or an approved game ruleset",
         "fixture_comment": fixture["_comment"],
         "damage_model": {"adapter": "Candidate B formula behind the existing DamageModel seam",
                          "offset_c": offset_c, "purpose": "pipeline exercise only; not a formula or offset selection",
@@ -173,7 +174,7 @@ def run_pipeline(fixture_path: Path = DEFAULT_FIXTURE, offset_c: int = 100, batt
 
 
 def format_trace(payload: Mapping[str, Any]) -> str:
-    lines = ["PIPELINE VALIDATION — PLAYTEST A (NOT A BALANCE PLAYTEST)",
+    lines = [f"PIPELINE VALIDATION — {payload.get('fixture_name', 'PLAYTEST A')} (NOT A BALANCE PLAYTEST)",
              f"Damage adapter: Candidate B scaffold, c={payload['damage_model']['offset_c']}; neutral effectiveness"]
     for battle in payload["battles"]:
         lines.extend(["", f"Battle {battle['battle']}: {battle['name']} | A={','.join(battle['teams']['A'])} vs B={','.join(battle['teams']['B'])}"])
