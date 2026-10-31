@@ -50,6 +50,10 @@ This is a battle-rule decision, not an implementation detail.
 
 D-021 is implemented for supplied effectiveness ratios, but its meaning is not settled for non-damaging actions, multi-target actions, or actions targeting different units. The current single effectiveness value is attached to the whole command, not each target. The Open Questions document already records this. Do not silently redefine the comparator.
 
+**Additional implementation risk found in source review:** `_compare_action_commands` compares effectiveness only when both commands provide a value; if either value is `None`, it falls through to HP percentage. Pairwise omission can make the comparator non-transitive, which violates the ordering contract required by `sorted(..., key=cmp_to_key(...))`. Example with equal priority and Speed: A has effectiveness 1 and 75% HP; B has undefined effectiveness and 50% HP; C has effectiveness 2 and 25% HP. Pairwise comparison yields A before B, B before C, but C before A. The resulting sort order can depend on input ordering or sorting implementation details.
+
+Do not patch this with an arbitrary numeric sentinel. First decide when effectiveness is meaningfully comparable under D-021; then implement a total, transitive ordering contract (or explicitly omit effectiveness for action classes/target relationships where it is not comparable) and add permutation/transitivity regression tests. This is a harness correctness issue, not a new game-rule decision.
+
 ### 5. Battle-state validation and terminal semantics need a formal contract
 
 The current fixture validates unique IDs, two sides, one commander per side, vitality bounds, and active/reserve/defeated status. It does not yet define all invariants needed for production content, such as which entity types may occupy active slots; whether commander commands are mandatory and which commands are legal; how a finished state encodes winner/draw and whether terminal states can be re-evaluated; whether a unit can be removed, revived, or change side; and whether status/cooldown/field durations tick before or after replacement and victory evaluation.
