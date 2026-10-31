@@ -101,3 +101,14 @@ This scoped prototype update does not create a Unity project, promote a game rul
 PathWalker.cs was updated in commit `fdbae4a7f8e3e2982ff45f97e97e4bb7a96efc1f`. On every completed edge, the transform is snapped to the destination node before the traversal cursor advances. On final completion, the Arrived delegate is copied locally, the graph reference is cleared, and the callback is invoked only after the transform is at the destination. The empty-path contract is documented: an empty SetPath is a no-op; the controller owns the already-at-destination case.
 
 The README and first-playable checklist now reflect this correction and specify a Play Mode regression test that must observe the final transform from inside Arrived and be shown to fail against the pre-fix source. The code remains uncompiled and unverified in Unity. No navigation domain files were reconstructed or added in this update.
+
+
+## 2026-10-31 Repository Audit and Art Reference Structure
+
+The seven requested art-direction category folders are now tracked under `docs/inspiration/art-direction-references/`: Character & NPC, Creature, Armor & Weapons, Environment, Lighting, VFX, and UI. Each currently contains a README with category guidance and reference-attribution fields. These are folder/index scaffolds, not populated image libraries or approved final art direction.
+
+The audit found that the documentation validator treated percent-encoded relative Markdown destinations as literal filesystem paths. This incorrectly rejected valid links to category folders whose names contain spaces and an ampersand. `tools/validate_docs.py` now URL-decodes relative link destinations before checking them, and `tools/test_validate_docs.py` includes a regression test for the encoded Character & NPC path. The fix preserves proper URL-encoded Markdown links and does not weaken broken-link validation.
+
+The validator change (commit `200670a0b840663449c657e1a4466e38d2f11b54`) and regression test (commit `636b986fb2386028ea6e636d5fe511ae27cbad78`) were read back from GitHub. Exact main HEAD `636b986fb2386028ea6e636d5fe511ae27cbad78` passed all eight GitHub Actions jobs in [run 41217122730](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41217122730): documentation validation, shared/stat-range sensitivity tests, damage-equation tests, battle-simulation and deterministic CLI replay, and damage RNG tests on Python 3.10–3.13.
+
+This repository audit does not change the canonical project priority order. Playtest B remains blocked on approval of original creature stats and moves. The navigation C# candidates remain uncompiled and untested because the Unity project and frozen navigation domain source are absent.
