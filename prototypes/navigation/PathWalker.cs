@@ -30,6 +30,11 @@ public sealed class PathWalker : MonoBehaviour
         _activePath = new int[_initialCapacity];
     }
 
+    /// <summary>
+    /// Starts walking. Caller must not pass an empty path; the controller handles the
+    /// "already at destination" case before calling SetPath. Passing empty is a no-op
+    /// that leaves IsWalking false and never fires Arrived.
+    /// </summary>
     public void SetPath(NavigationGraph graph, ReadOnlySpan<int> edgePath, NodeId from)
     {
         if (graph == null) throw new ArgumentNullException(nameof(graph));
@@ -71,13 +76,17 @@ public sealed class PathWalker : MonoBehaviour
 
         if (_t >= 1f)
         {
+            // Snap before advancing state or notifying listeners. Arrived subscribers
+            // must observe the transform at the final destination node.
+            transform.position = ToUnity(_graph.GetNode(to).Position);
             _currentStart = to;
             _currentEdgeSlot++;
             _t = 0f;
             if (_currentEdgeSlot >= _activePathLength)
             {
+                var callback = Arrived;
                 _graph = null;
-                Arrived?.Invoke();
+                callback?.Invoke();
                 return;
             }
 
