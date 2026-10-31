@@ -4,11 +4,12 @@
 Canonical navigation for the Video Game project repository.
 
 ## Mandatory Start Here
-1. [Collaboration Protocol](COLLABORATION_PROTOCOL.md) — startup sequence, authority, decision fidelity, verification, and handoff rules.
-2. [Project Status](PROJECT_STATUS.md) — current stage, verified progress, and canonical project priorities.
-3. [Developer Handoff](HANDOFF.md) — current work state and next action.
-4. [Decision Log](docs/DECISION_LOG.md) — durable decisions and their status.
-5. [Open Questions](docs/OPEN_QUESTIONS.md) — unresolved questions grouped by canonical project priority.
+1. [Agent Instructions](AGENTS.md) — portable agent entry point for repository boundaries and validation.
+2. [Collaboration Protocol](COLLABORATION_PROTOCOL.md) — startup sequence, authority, decision fidelity, verification, and handoff rules.
+3. [Project Status](PROJECT_STATUS.md) — current stage, verified progress, and canonical project priorities.
+4. [Developer Handoff](HANDOFF.md) — current work state and next action.
+5. [Decision Log](docs/DECISION_LOG.md) — durable decisions and their status.
+6. [Open Questions](docs/OPEN_QUESTIONS.md) — unresolved questions grouped by canonical project priority.
 
 After these, use the task-specific references below.
 
@@ -48,7 +49,8 @@ After these, use the task-specific references below.
 - [Pokémon Final-Stage Baseline Data Audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md) — Gen I–IX final-stage stat distribution, simplified Level-100 comparison, primary-type signatures, and separate transformation-layer implications; research only.
 - [Player Character and Classes](docs/player/PLAYER_CHARACTER_AND_CLASSES.md) — player combat role and class concepts.
 - [Exploration and Capture](docs/world/EXPLORATION_AND_CAPTURE.md) — Portal Gauntlet, traversal, puzzles, and capture ideas.
-- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) — milestones and exit criteria.
+- [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) — current milestone gates and exit criteria.
+- [Project Management and Agent Workflow Review](docs/PROJECT_MANAGEMENT_AGENT_WORKFLOW_REVIEW.md) — evaluation of the free-agent operating model and recommended adoption sequence.
 - [Navigation First Playable Prototype](prototypes/navigation/README.md) — hand-authored navigation JSON, Unity-side PathWalker candidate, reset test candidate, and first-playable acceptance checklist; not compiled or playtested.
 
 ## Documentation Rules
