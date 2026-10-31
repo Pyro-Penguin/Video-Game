@@ -5,6 +5,9 @@ from stat_range_sensitivity import (
     ATTACKERS,
     DEFENDERS,
     DEFENSE_BAND,
+    ROLL_PERCENTS,
+    rolled_ttks_at,
+    pacing_gate_over_defense_band,
     B_OFFSETS,
     candidate_damage,
     combined_perturbations,
@@ -160,6 +163,65 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertEqual(report["sample_counts"]["combined_perturbation_rows"], len(report["combined_perturbations"]))
         self.assertEqual(report["sample_counts"]["level_rows"], len(report["level_sweep"]))
         self.assertEqual(report["status"], "synthetic investigation; no game rule selected")
+
+
+    def test_hypothetical_roll_pacing_gate_aggregates_full_defense_band(self):
+        gate = run_experiment()["pacing_gate"]["candidate_results"]["A_direct_ratio"]["100"]
+        profiles = gate["per_defense"]
+        self.assertEqual(set(profiles), set(DEFENSE_BAND))
+        self.assertEqual(len(profiles), 5)
+        self.assertEqual(
+            gate["worst_fewest_hits"],
+            min(row["fewest_hits"] for row in profiles.values()),
+        )
+        self.assertEqual(
+            gate["worst_most_hits"],
+            max(row["most_hits"] for row in profiles.values()),
+        )
+        self.assertEqual(
+            gate["guaranteed_ttk_gate_pass"],
+            all(row["passes"] for row in profiles.values()),
+        )
+        for row in profiles.values():
+            self.assertEqual(
+                row["passes"],
+                row["fewest_hits"] >= 4 and row["most_hits"] <= 6,
+            )
+        self.assertEqual((gate["worst_fewest_hits"], gate["worst_most_hits"]), (5, 9))
+        self.assertEqual(gate["failing_profiles"], [250, 275, 300, 350])
+        self.assertFalse(gate["guaranteed_ttk_gate_pass"])
+
+    def test_live_candidate_b_c100_band_result_is_not_the_prior_estimate(self):
+        gate = pacing_gate_over_defense_band("B_offset_ratio", 100)
+        self.assertEqual((gate["worst_fewest_hits"], gate["worst_most_hits"]), (5, 9))
+        self.assertEqual(gate["per_defense"][200]["fewest_hits"], 5)
+        self.assertEqual(gate["per_defense"][350]["most_hits"], 9)
+
+    def test_reference_profile_anchor_70_is_a_diagnostic_only(self):
+        ttks = rolled_ttks_at(
+            "A_direct_ratio", 100, 300, 275, 100,
+            anchor_damage=Fraction(70),
+        )
+        self.assertEqual((min(ttks), max(ttks)), (5, 6))
+
+    def test_candidate_b_c100_has_an_alternate_anchor_band_counterexample(self):
+        # This disproves an "impossible at any anchor" claim; 84 is not selected.
+        gate = pacing_gate_over_defense_band(
+            "B_offset_ratio", 100, anchor_damage=Fraction(84)
+        )
+        self.assertEqual((gate["worst_fewest_hits"], gate["worst_most_hits"]), (4, 6))
+        self.assertTrue(gate["guaranteed_ttk_gate_pass"])
+        self.assertEqual(gate["failing_profiles"], [])
+
+    def test_mean_fixed_roll_ttk_is_labeled_as_a_diagnostic(self):
+        report = run_experiment()
+        self.assertEqual(ROLL_PERCENTS, tuple(range(85, 101)))
+        self.assertEqual(
+            report["mean_fixed_roll_ttk_diagnostic"]["A_direct_ratio"]["100"],
+            6.5,
+        )
+        self.assertIn("mean_fixed_roll_ttk_diagnostic", report)
+        self.assertNotIn("expected_ttk", report["mean_fixed_roll_ttk_diagnostic"])
 
     def test_attackers_are_the_five_pre_registered_profiles(self):
         self.assertEqual(len(ATTACKERS), 5)
