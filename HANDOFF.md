@@ -28,7 +28,7 @@ The pure-Python harness under experiments/battle_sim/ now exercises:
 - Skipping an action if its actor or target is defeated before resolution.
 - Immediate knockout application, end-of-turn automatic reserve deployment, and commander-defeat outcomes. A pre-existing dual-commander-defeat state is classified as a draw, but sequential single-target actions cannot generate mutual KO while defeated actors lose queued actions.
 
-The fixture is one commander, two active monsters, and one reserve per side. Damage is fixed test data, not the damage formula. Automatic replacement, commander defeat, and unit-ID tie-breaking are explicit test assumptions. The harness does not implement five-to-three team preview, final target rules, types, RNG, status, switching, or Unity.
+The fixture matches confirmed D-003 competitive counts: five registered monsters are represented as three selected monsters (two active, one reserve), with one commander separate, per side. Damage is fixed test data, not the damage formula. Automatic replacement, commander defeat, and unit-ID tie-breaking are explicit test assumptions. The harness does not implement five-to-three team preview, final target rules, types, RNG, status, switching, or Unity.
 
 Decision D-017 authorizes this bounded harness in parallel with the damage-equation review. It does not approve any of its fixture rules. D-014 remains in force: damage-equation design resolution is still the formal first project priority.
 
@@ -47,7 +47,7 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 6. Only after the rules contract is stable, port the agreed pure-domain contract to C# with differential test vectors. Do not create a Unity project until its baseline/version is explicitly established.
 
 ## Verification Boundary
-The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The first harness CI pass found and corrected terminal-test fixture omissions and an impossible mutual-KO expectation under sequential action invalidation. The current injectable damage seam, two-turn trace, exact-tie fallback, replay determinism, and roster documentation reconciliation must be checked against the latest exact-commit CI run before marking them Tested.
+The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The first harness CI pass found and corrected terminal-test fixture omissions and an impossible mutual-KO expectation under sequential action invalidation. The current 14-test harness, injectable damage seam, two-turn trace, exact-tie fallback, replay determinism, roster documentation reconciliation, and all existing experiment suites passed all eight CI jobs in [run 41162480306](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41162480306), testing commit `3d6448c39e1d68043dfd6af2825ad04ab7d091cc`. The subsequent status/handoff documentation commits require the D-015 exact-commit check.
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
