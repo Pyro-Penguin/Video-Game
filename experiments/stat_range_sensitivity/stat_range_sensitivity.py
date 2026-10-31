@@ -174,12 +174,30 @@ def combined_perturbations() -> list[dict]:
             for group in dimensions
         ]
         baseline_ttk = lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]["floored_ttk"]
-        combined_ratio = row["raw_damage"] / lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]["raw_damage"]
-        isolated_log_effects = sum(
-            log(x["raw_damage"] / lookup[(row["profile"], row["candidate"], row["offset_c"], group, 0)]["raw_damage"])
-            for group, x in zip(dimensions, controls)
+        base_row = lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]
+        offset = row["offset_c"] or 100
+        baseline_raw = candidate_damage(
+            row["candidate"], 100, base_row["attack"], base_row["defense"], 100, offset
         )
-        row["interaction_log_residual"] = round(log(combined_ratio) - isolated_log_effects, 9)
+        combined_raw = candidate_damage(
+            row["candidate"], 100, row["attack"], row["defense"], 100, offset
+        )
+        isolated_log_effects = 0.0
+        for group, control in zip(dimensions, controls):
+            control_base = lookup[
+                (row["profile"], row["candidate"], row["offset_c"], group, 0)
+            ]
+            isolated_raw = candidate_damage(
+                row["candidate"], 100, control["attack"], control["defense"], 100, offset
+            )
+            isolated_baseline = candidate_damage(
+                row["candidate"], 100, control_base["attack"],
+                control_base["defense"], 100, offset
+            )
+            isolated_log_effects += log(float(isolated_raw / isolated_baseline))
+        row["interaction_log_residual"] = round(
+            log(float(combined_raw / baseline_raw)) - isolated_log_effects, 9
+        )
         row["interaction_ttk_residual_hits"] = (
             row["floored_ttk"] - baseline_ttk
             - sum(x["floored_ttk"] - baseline_ttk for x in controls)
