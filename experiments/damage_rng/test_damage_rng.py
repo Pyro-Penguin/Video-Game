@@ -3,6 +3,9 @@ from fractions import Fraction
 
 from damage_rng import (
     MODELS,
+    SELECTED_MODEL,
+    SELECTED_MODEL_NAME,
+    sample_roll,
     build_report,
     calculate_damage,
     exact_ko_probability,
@@ -19,6 +22,24 @@ class ExactProbabilityTests(unittest.TestCase):
         "uniform_85_105_raw": (Fraction(6, 21), Fraction(11, 21), Fraction(1)),
         "uniform_85_105_normalized": (Fraction(11, 21), Fraction(15, 21), Fraction(1)),
     }
+
+    def test_d029_selected_model_is_raw_uniform_integer_85_to_105(self):
+        self.assertEqual(SELECTED_MODEL_NAME, "uniform_85_105_raw")
+        self.assertEqual(SELECTED_MODEL.rolls(), tuple(range(85, 106)))
+        self.assertEqual(SELECTED_MODEL.normalization, Fraction(1))
+        self.assertEqual(SELECTED_MODEL.theoretical_mean(), Fraction(19, 20))
+
+    def test_d028_anchor_60_is_100_percent_roll_not_expected_damage(self):
+        outcomes = [calculate_damage(60, roll) for roll in SELECTED_MODEL.rolls()]
+        self.assertEqual((min(outcomes), max(outcomes)), (51, 63))
+        self.assertEqual(Fraction(sum(outcomes), len(outcomes)), Fraction(57))
+
+    def test_per_hit_sampler_draws_only_allowed_integer_values(self):
+        import random
+        rng = random.Random(20261031)
+        draws = [sample_roll(SELECTED_MODEL, rng) for _ in range(500)]
+        self.assertTrue(all(85 <= roll <= 105 for roll in draws))
+        self.assertGreater(len(set(draws)), 1)
 
     def test_sequential_integer_floors_match_combined_denominator_floor(self):
         for level in (1, 5, 10, 25, 50, 75, 100):
@@ -55,6 +76,9 @@ class ExactProbabilityTests(unittest.TestCase):
         self.assertEqual(len(report["models"]), 6)
         self.assertIn("limitations", report)
         self.assertIn("modifier_configuration", report)
+        self.assertEqual(report["selected_model"], SELECTED_MODEL_NAME)
+        self.assertEqual(report["selected_sampling_contract"]["probability_per_roll"], "1/21")
+        self.assertEqual(report["anchor_60_reference"]["integer_damage_range"], [51, 63])
 
 
 if __name__ == "__main__":

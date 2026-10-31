@@ -40,3 +40,18 @@ Do not assume that an image found online is licensed for reuse. These images are
 ## Curation rule
 
 Keep useful contrasting references, not just images that all share one look. Add a note about the specific quality being studied; do not treat a reference as an accepted direction until it has been reviewed and recorded in the relevant design document.
+
+
+## Folder structure
+
+Use the category folders below to keep references discoverable. Each folder contains an intake guide; place source images and attribution notes beside the references they describe.
+
+- [Character & NPC](Character%20%26%20NPC/)
+- [Creature](Creature/)
+- [Armor & Weapons](Armor%20%26%20Weapons/)
+- [Environment](Environment/)
+- [Lighting](Lighting/)
+- [VFX](VFX/)
+- [UI](UI/)
+
+Keep the source, creator, rights status, and visual question being studied with every reference. References are research material, not cleared production content.

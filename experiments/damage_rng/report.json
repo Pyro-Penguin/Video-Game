@@ -1,4 +1,5 @@
 {
+  "status": "Historical snapshot predating D-029; regenerate with damage_rng.py for the selected-model sampling contract.",
   "experiment": "damage_rng_model_comparison",
   "pre_rng_damage": 100,
   "modifier_configuration": {

@@ -39,6 +39,9 @@ MODELS = (
     RNGModel("uniform_85_105_normalized", "uniform_integer", tuple(range(85, 106)), normalization=Fraction(95, 100), description="Uniform integer percentage roll from 85 through 105 inclusive, divided by 0.95."),
 )
 
+SELECTED_MODEL_NAME = "uniform_85_105_raw"
+SELECTED_MODEL = next(model for model in MODELS if model.name == SELECTED_MODEL_NAME)
+
 
 def floor_fraction(value: Fraction) -> int:
     return value.numerator // value.denominator
@@ -90,6 +93,12 @@ def exact_ko_probability(
     return Fraction(successful, sum(outcomes.values()))
 
 
+def sample_roll(model: RNGModel, rng: random.Random) -> int:
+    """Draw one roll; callers invoke this once per damaging hit."""
+    rolls = model.rolls()
+    return rolls[rng.randrange(len(rolls))]
+
+
 def percentile(sorted_values: list[int], p: Fraction) -> int:
     """Nearest-rank percentile: rank = ceil(p*n), one-indexed."""
     if not sorted_values:
@@ -111,13 +120,12 @@ def simulate_hits_to_ko(
     if trials < 1 or target_hp < 1:
         raise ValueError("trials and target_hp must be positive")
     rng = random.Random(seed)
-    rolls = model.rolls()
     hit_counts: list[int] = []
     for _ in range(trials):
         remaining = target_hp
         hits = 0
         while remaining > 0:
-            roll = rolls[rng.randrange(len(rolls))]
+            roll = sample_roll(model, rng)
             damage = calculate_damage(
                 pre_rng_damage, roll, stab=stab, effectiveness=effectiveness,
                 normalization=model.normalization,
@@ -186,6 +194,23 @@ def build_report(
     return {
         "experiment": "damage_rng_model_comparison",
         "pre_rng_damage": 100,
+        "selected_model": SELECTED_MODEL_NAME,
+        "selected_sampling_contract": {
+            "distribution": "uniform_integer",
+            "roll_percentages": list(SELECTED_MODEL.rolls()),
+            "probability_per_roll": "1/21",
+            "sampling_cadence": "independent draw per damaging hit (i.i.d.)",
+            "normalization_divisor": fraction_text(SELECTED_MODEL.normalization),
+            "mean_multiplier": fraction_text(SELECTED_MODEL.theoretical_mean()),
+            "flooring": "exact rational multiplication followed by one final integer floor in this isolated experiment",
+            "production_modifier_order": "not selected by this experiment",
+        },
+        "anchor_60_reference": {
+            "meaning": "damage at the 100% roll, not expected or maximum damage",
+            "expected_damage_before_floor": "57",
+            "integer_damage_range": [51, 63],
+            "pacing_gate": "not evaluated at this experiment-parity anchor; D-026 requires a separate gameplay anchor",
+        },
         "modifier_configuration": {
             "stab": fraction_text(stab),
             "type_effectiveness": fraction_text(effectiveness),
@@ -204,7 +229,8 @@ def build_report(
             "The experiment does not model defenses, stat stages, move power, abilities, status, shields, or turn economy.",
             "STAB and type effectiveness are configurable inputs, not finalized game rules.",
             "Simulation summaries are seed-dependent estimates; exact single-hit probabilities are enumerated.",
-            "No RNG model is selected or recommended as the final game rule.",
+            "D-029 selects uniform integer 85–105 rolls, independently sampled per hit without normalization; this experiment does not finalize the production modifier order or damage formula.",
+            "The 60-damage experiment-parity anchor is not a D-026 pacing gate; gameplay pacing requires a separately selected anchor and representative original creature/move inputs.",
         ],
     }
 
