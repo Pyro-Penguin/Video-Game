@@ -95,7 +95,7 @@ The five-creature draft is a pipeline-ready input proposal, not a balance conclu
 
 ## Recommended milestone gates
 
-### M0 — Repository and agent operating baseline
+### M0 — Repository and agent operating baseline (complete)
 **Done when:** current project status, handoff, decision authority, CI commands, and agent entry instructions agree. No duplicate project-management source of truth.
 
 ### M1 — Original-creature input review and damage-model narrowing
