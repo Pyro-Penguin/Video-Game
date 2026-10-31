@@ -42,12 +42,12 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 1. Verify CI for the current battle-harness commits, including all battle simulation tests and documentation validation. Read back the exact files and inspect failures before proceeding.
 2. Fix any implementation/test issues found by CI. Add regression tests for state invariants or event-order edge cases if needed.
 3. Review the two-turn scenario trace artifact; expand into a longer scripted match only after the phase and outcome assumptions are reviewed.
-4. Reconcile unresolved battle decisions with worked examples: commander defeat, simultaneous commander knockout, no reserve remaining, multiple knockouts, and target invalidation. Keep recommendations separate from accepted rules.
+4. Resolve the remaining blocking rules with worked examples: exact tie fallback, legal target categories, commander action set, replacement timing, no-reserve behavior, and victory timing. Keep recommendations separate from accepted rules. True simultaneous damage remains a separate open question because the current sequential action model cancels a defeated actor's queued action.
 5. Continue the damage-equation review and shared experiment-configuration work as a parallel track. Do not block state-machine correctness on final formula selection, but keep damage behind a replaceable pure interface.
 6. Only after the rules contract is stable, port the agreed pure-domain contract to C# with differential test vectors. Do not create a Unity project until its baseline/version is explicitly established.
 
 ## Verification Boundary
-The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The first harness CI pass found and corrected terminal-test fixture omissions and an impossible mutual-KO expectation under sequential action invalidation. The current injectable damage seam and two-turn trace must be checked against the latest exact-commit CI run before marking them Tested.
+The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The first harness CI pass found and corrected terminal-test fixture omissions and an impossible mutual-KO expectation under sequential action invalidation. The current injectable damage seam, two-turn trace, exact-tie fallback, replay determinism, and roster documentation reconciliation must be checked against the latest exact-commit CI run before marking them Tested.
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
