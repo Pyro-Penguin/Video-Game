@@ -43,6 +43,7 @@ VITALITIES = (250, 350, 500)
 LEVELS = (1, 5, 10, 25, 50, 75, 100)
 POWERS = (40, 80, 100, 120, 160)
 PERTURBATIONS = (-20, -10, -5, 5, 10, 20)
+ROLL_PERCENTS = tuple(range(85, 101))
 REFERENCE_LEVEL = int(CONFIG["reference_level"])
 REFERENCE_ATTACK = int(CONFIG["reference_attack"])
 REFERENCE_DEFENSE = int(CONFIG["reference_defense"])
@@ -76,7 +77,10 @@ def pokemon_gen9_base(level: int, power: int, attack: int, defense: int) -> int:
     return (numerator // defense) // 50 + 2
 
 
-def candidate_damage(name: str, power: int, attack: int, defense: int, level: int, offset: int = 100) -> Fraction:
+def candidate_damage(
+    name: str, power: int, attack: int, defense: int, level: int,
+    offset: int = 100, *, anchor_damage: Fraction | None = None,
+) -> Fraction:
     aliases = {
         "C_direct_level": "C_level_scaled",
         "D_bounded_share": "D_bounded_offense_share",
@@ -87,11 +91,67 @@ def candidate_damage(name: str, power: int, attack: int, defense: int, level: in
         raise ValueError(f"unknown candidate: {name}") from exc
     return calibrated_damage(
         candidate, power, attack, defense, level,
-        anchor_damage=REFERENCE_DAMAGE, anchor_power=REFERENCE_POWER,
+        anchor_damage=REFERENCE_DAMAGE if anchor_damage is None else Fraction(anchor_damage),
+        anchor_power=REFERENCE_POWER,
         anchor_attack=REFERENCE_ATTACK, anchor_defense=REFERENCE_DEFENSE,
         anchor_level=REFERENCE_LEVEL,
         offset=offset if name == "B_offset_ratio" else 100,
     )
+
+
+
+def rolled_ttks_at(
+    name: str, c: int, attack: int, defense: int, level: int,
+    vitality: int = REFERENCE_VITALITY, *,
+    anchor_damage: Fraction = REFERENCE_DAMAGE,
+) -> list[int]:
+    """Deterministic TTK for each hypothetical 85–100% fixed damage roll.
+
+    Each percentage is applied to the unrounded candidate damage, then damage
+    is integer-floored once. This is a sensitivity model, not a selected RNG rule.
+    """
+    raw_damage = candidate_damage(
+        name, REFERENCE_POWER, attack, defense, level, c,
+        anchor_damage=anchor_damage,
+    )
+    return [
+        ceil_fraction(Fraction(vitality, max(1, floor_fraction(
+            raw_damage * Fraction(percent, 100)
+        ))))
+        for percent in ROLL_PERCENTS
+    ]
+
+
+def pacing_gate_over_defense_band(
+    name: str, c: int, *, anchor_damage: Fraction = REFERENCE_DAMAGE,
+) -> dict:
+    """Evaluate guaranteed 4–6-hit containment at every registered Defense."""
+    per_defense = {}
+    for defense in DEFENSE_BAND:
+        ttks = rolled_ttks_at(
+            name, c, REFERENCE_ATTACK, defense, REFERENCE_LEVEL,
+            anchor_damage=anchor_damage,
+        )
+        per_defense[defense] = {
+            "fewest_hits": min(ttks),
+            "most_hits": max(ttks),
+            "mean_fixed_roll_ttk": round(sum(ttks) / len(ttks), 6),
+            "passes": min(ttks) >= 4 and max(ttks) <= 6,
+        }
+
+    worst_fewest = min(row["fewest_hits"] for row in per_defense.values())
+    worst_most = max(row["most_hits"] for row in per_defense.values())
+    return {
+        "per_defense": per_defense,
+        "worst_fewest_hits": worst_fewest,
+        "worst_most_hits": worst_most,
+        "guaranteed_ttk_gate_pass": all(
+            row["passes"] for row in per_defense.values()
+        ),
+        "failing_profiles": [
+            defense for defense, row in per_defense.items() if not row["passes"]
+        ],
+    }
 
 
 def damage_pair(raw: Fraction) -> tuple[Fraction, int]:
@@ -442,6 +502,32 @@ def run_experiment() -> dict:
     matchups = make_matchups()
     combined = combined_perturbations()
     single_shifts = single_stat_ttk_shift_table()
+    candidate_offsets = {
+        "A_direct_ratio": (100,),
+        "B_offset_ratio": B_OFFSETS,
+        "C_direct_level": (100,),
+        "D_bounded_share": (100,),
+    }
+    pacing_gate = {
+        name: {
+            str(c): pacing_gate_over_defense_band(name, c)
+            for c in offsets
+        }
+        for name, offsets in candidate_offsets.items()
+    }
+    mean_fixed_roll_ttk = {
+        name: {
+            str(c): round(sum(rolled_ttks_at(
+                name, c, REFERENCE_ATTACK, REFERENCE_DEFENSE, REFERENCE_LEVEL
+            )) / len(ROLL_PERCENTS), 6)
+            for c in offsets
+        }
+        for name, offsets in candidate_offsets.items()
+    }
+    # Diagnostic counterexample only: this alternate calibration is not selected.
+    candidate_b_c100_anchor84 = pacing_gate_over_defense_band(
+        "B_offset_ratio", 100, anchor_damage=Fraction(84)
+    )
     return {
         "experiment": "all_vs_all_combined_stat_damage_sensitivity_v2",
         "status": "synthetic investigation; no game rule selected",
@@ -463,6 +549,15 @@ def run_experiment() -> dict:
         },
         "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "single_stat_ttk_shift_rows": len(single_shifts), "level_rows": len(level_sweep())},
         "gates": calibration_and_gates(),
+        "pacing_gate": {
+            "status": "hypothetical 85-100% roll sensitivity diagnostic; RNG model unselected",
+            "roll_percentages": list(ROLL_PERCENTS),
+            "roll_order": "apply percentage to exact candidate damage, then floor damage once",
+            "calibration_anchor_damage": str(REFERENCE_DAMAGE),
+            "candidate_results": pacing_gate,
+            "candidate_b_c100_anchor84_counterexample": candidate_b_c100_anchor84,
+        },
+        "mean_fixed_roll_ttk_diagnostic": mean_fixed_roll_ttk,
         "all_vs_all": matchups,
         "raw_vs_floored_rank_audit": rank_flip_audit(matchups),
         "pairwise_rank_flip_audit": pairwise_rank_flip_audit(matchups),
