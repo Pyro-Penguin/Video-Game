@@ -22,17 +22,15 @@ The current notes mix roster size, active field size, player participation, and 
 | C. Commander + 2 active monsters + 1 reserve | 1 player/commander, 2 active monsters, 1 reserve | Gives player strategic identity and supports switching | Is this called 2v2 or 3v3? |
 | D. Three monsters only | 3 selected monsters; player absent or noncombat | Familiar creature-battler structure | Conflicts with player-as-combatant pillar |
 
-## Separate Decisions Required
-1. **Roster size:** How many monsters are registered before preview?
-2. **Selection size:** How many monsters are locked for the match?
-3. **Active monster count:** How many monsters can act simultaneously?
-4. **Player role:** Is the player a field unit, a commander outside the field, or both?
-5. **Reserve:** How many selected monsters wait off-field?
-6. **Replacement:** Is replacement automatic, chosen, or triggered by a knockout?
-7. **Defeat:** Does player-character defeat immediately end the match?
-8. **Targeting:** Can attacks target the player, monsters, or either?
-9. **Action economy:** Does the player receive one action, multiple actions, or issue commands to companions?
-10. **Terminology:** Does the format name count all active units or monsters only?
+## Remaining Design Decisions
+
+The competitive roster arithmetic is confirmed. The remaining battle-format questions concern behavior rather than counts:
+1. Does commander defeat immediately end every competitive match, and what encounter-specific exceptions exist?
+2. Which legal actions and target categories are available to commanders and monsters?
+3. Does a replacement enter immediately, at end of turn, or at the next turn boundary?
+4. Who chooses the reserve when multiple reserves are available in story encounters?
+5. Which story encounters use different active-unit and reserve counts?
+6. What exact tie-break and final fallback determine action order?
 
 ## Confirmed Competitive Target (D-003)
 
@@ -48,7 +46,7 @@ Therefore, the per-side match composition is one commander, two active monsters,
 This is a confirmed competitive target. It does not force every story encounter to use the same composition; the engine must accept configurable encounter compositions.
 
 ## Team Preview and Timer Notes
-The notes specify bringing five monsters and selecting three, with a 64-second preview. That can coexist with the prototype above only if the player is separate from the three selected monsters and the selected roster contains two active monsters plus one reserve. It does not naturally coexist with a three-monster active field plus player.
+The five-to-three preview is consistent with the confirmed structure: the player/commander is separate; the three selected monsters comprise two active monsters and one reserve. The 64-second preview remains an unconfirmed timer proposal.
 
 Timer proposals:
 - Preview: 64 seconds.
@@ -58,8 +56,8 @@ Timer proposals:
 
 Define clock precedence before implementation. A practical rules spec must state whether move time also consumes player clock, when clocks pause, and the outcome on timeout.
 
-## Prototype Exit Criteria
-Do not begin a battle-engine implementation until a one-page rules sheet specifies:
+## Production Resolver Exit Criteria
+The test harness can evolve while decisions are resolved. Before treating the resolver as production behavior, specify:
 - Exact per-side roster and field diagram.
 - Player participation and defeat condition.
 - Reserve and replacement behavior.
