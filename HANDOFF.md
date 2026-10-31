@@ -24,9 +24,9 @@ The pure-Python harness under experiments/battle_sim/ now exercises:
 - Injectable pure DamageModel interface; fixed damage remains a test-only implementation.
 - Validation that every active unit submits exactly one legal command.
 - Simultaneous command locking against the turn-start state.
-- Priority then Speed ordering, with a deterministic unit-ID tie fallback used only as a fixture.
+- Priority then effective Speed ordering. The confirmed exact-Speed-tie hierarchy is ability tie advantage → greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat → greater Champion relationship → hardware/tap input-registration priority. The current unit-ID fallback remains fixture-only; the hierarchy is recorded in D-018 but is not yet implemented in the harness.
 - Skipping an action if its actor or target is defeated before resolution.
-- Immediate knockout application, end-of-turn automatic reserve deployment, and commander-defeat outcomes. A pre-existing dual-commander-defeat state is classified as a draw, but sequential single-target actions cannot generate mutual KO while defeated actors lose queued actions.
+- Immediate knockout application and end-of-turn reserve deployment. D-019 now requires auto-deploy when exactly one legal reserve exists and player selection when multiple legal reserves exist; the current fixture has exactly one reserve and therefore exercises only the automatic case. D-020 makes victory classification encounter-configurable; the current harness still implements only its commander-defeat fixture policy. A pre-existing dual-commander-defeat state is classified as a draw, but sequential single-target actions cannot generate mutual KO while defeated actors lose queued actions.
 
 The fixture matches confirmed D-003 competitive counts: five registered monsters are represented as three selected monsters (two active, one reserve), with one commander separate, per side. Damage is fixed test data, not the damage formula. Automatic replacement, commander defeat, and unit-ID tie-breaking are explicit test assumptions. The harness does not implement five-to-three team preview, final target rules, types, RNG, status, switching, or Unity.
 
