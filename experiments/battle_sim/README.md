@@ -44,6 +44,31 @@ The test fixture contains a commander plus three selected monsters per side (two
 7. Emit `PhaseStarted(victory_check)`, derive immutable `BattleFacts` (commander status and active/reserve monster counts) and pass them to the injected `VictoryPolicy`. The default fixture policy ends on commander defeat; team-wipe and combined-condition configurations are available. A state in which both sides meet an enabled terminal condition is a draw. The sequential single-target action loop cannot itself create mutual damage knockout because a defeated actor loses its queued action.
 8. Emit `PhaseCompleted(victory_check)` and return a new immutable state and ordered events. A non-terminal turn ends with `TurnCompleted`.
 
+## Playtest A: Pokémon scaffolding pipeline validation
+
+The repository-root `fixtures/creatures.json` is an engineering fixture, not game content. Its required `_comment` field explicitly states: "Scaffolding fixture. Not representative of final roster. Base stats used directly as game stats. Neutral type effectiveness. Replace with real creatures before design playtest." It contains Weavile, Snorlax, Machamp, Gengar, and Skarmory with their supplied base stats used directly (no level scaling and no `2*base+36` conversion), three moves each at Power 40/80/120, and neutral effectiveness. It also contains synthetic commander inputs and three deterministic battle scenarios.
+
+**Ownership and data flow**
+- The JSON fixture owns immutable test content. The CLI loads and validates it; it never writes back to the fixture.
+- The CLI owns each match's initial snapshot, unit-to-creature stat maps, move definitions, and per-turn commands.
+- `BattleResolver` owns no persistent match state. Each call receives the current immutable `BattleState` and complete commands, then returns a new snapshot and ordered events.
+- `CandidateBDamageModel` is scoped to one match and injected through the existing `DamageModel` protocol. Physical moves use Attack/Defense; special moves use Special Attack/Special Defense. Damage is floored per hit.
+- Communication remains command-in / snapshot-and-events-out through pure interfaces. No Unity objects, static service locators, or bidirectional component references are introduced.
+
+The Candidate B adapter and its `--offset` are replaceable integration scaffolding only. Default c=100 is not a selected equation or balance constant.
+
+Run from this directory:
+
+```bash
+python cli_runner.py --battles 3 --offset 100 --output /tmp/pipeline-trace.json
+```
+
+The CLI prints a readable event trace and optionally writes a deterministic JSON trace. CI runs the same three battles twice and compares both outputs byte-for-byte.
+
+**Playtest A acceptance:** three full battles complete; action, replacement, and victory phases are visible; the DamageModel seam is exercised; readable and JSON traces reproduce exactly. This validates only the engineering pipeline.
+
+**Playtest B is separate:** it must use actual game creatures and moves to evaluate pacing, matchup degeneracy, and c=100 versus c=143 (c=200 only if still informative). Pokémon base stats, Pokémon move vocabulary, and the neutral type assumption are not valid balance evidence. Playtest B does not block this CLI runner.
+
 ## Deterministic scenario trace
 
 Run `python demo_scenario.py --output battle-scenario-trace.json` to generate a two-turn JSON trace. Turn one demonstrates a queued action invalidated by a knockout and end-of-turn reserve deployment; turn two demonstrates the replacement acting in the next turn. CI publishes the trace as the `battle-simulation-scenario-trace` artifact.

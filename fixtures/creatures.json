@@ -1,0 +1,37 @@
+{
+  "_comment": "Scaffolding fixture. Not representative of final roster. Base stats used directly as game stats. Neutral type effectiveness. Replace with real creatures before design playtest.",
+  "schema_version": 1,
+  "fixture_kind": "pipeline_validation_only",
+  "stat_interpretation": "Pokémon base stats are used directly as game stats. No level scaling and no 2*base+36 conversion.",
+  "type_effectiveness": "neutral; the type chart is intentionally excluded from this fixture",
+  "commander": {
+    "stats": {"hp": 180, "attack": 100, "defense": 100, "special_attack": 100, "special_defense": 100, "speed": 80},
+    "moves": [
+      {"id": "commander_quick", "power": 40, "category": "physical"},
+      {"id": "commander_strike", "power": 80, "category": "physical"},
+      {"id": "commander_burst", "power": 120, "category": "special"}
+    ]
+  },
+  "creatures": [
+    {"id": "weavile", "name": "Weavile", "archetype": "fast_frail",
+     "stats": {"hp": 70, "attack": 120, "defense": 65, "special_attack": 45, "special_defense": 85, "speed": 125},
+     "moves": [{"id": "quick_cut", "power": 40, "category": "physical"}, {"id": "focused_slash", "power": 80, "category": "physical"}, {"id": "finishing_blade", "power": 120, "category": "physical"}]},
+    {"id": "snorlax", "name": "Snorlax", "archetype": "slow_tanky",
+     "stats": {"hp": 160, "attack": 110, "defense": 65, "special_attack": 65, "special_defense": 110, "speed": 30},
+     "moves": [{"id": "body_check", "power": 40, "category": "physical"}, {"id": "heavy_impact", "power": 80, "category": "physical"}, {"id": "special_burst", "power": 120, "category": "special"}]},
+    {"id": "machamp", "name": "Machamp", "archetype": "balanced",
+     "stats": {"hp": 90, "attack": 130, "defense": 80, "special_attack": 65, "special_defense": 85, "speed": 55},
+     "moves": [{"id": "jab", "power": 40, "category": "physical"}, {"id": "focused_blast", "power": 80, "category": "physical"}, {"id": "crushing_strike", "power": 120, "category": "physical"}]},
+    {"id": "gengar", "name": "Gengar", "archetype": "special_attacker",
+     "stats": {"hp": 60, "attack": 65, "defense": 60, "special_attack": 130, "special_defense": 75, "speed": 110},
+     "moves": [{"id": "arcane_pulse", "power": 40, "category": "special"}, {"id": "hex_bolt", "power": 80, "category": "special"}, {"id": "phantom_blast", "power": 120, "category": "special"}]},
+    {"id": "skarmory", "name": "Skarmory", "archetype": "physical_wall",
+     "stats": {"hp": 65, "attack": 80, "defense": 140, "special_attack": 40, "special_defense": 70, "speed": 70},
+     "moves": [{"id": "wing_strike", "power": 40, "category": "physical"}, {"id": "steel_wing", "power": 80, "category": "physical"}, {"id": "iron_dive", "power": 120, "category": "physical"}]}
+  ],
+  "pipeline_battles": [
+    {"name": "fast-vs-special", "side_a": ["weavile", "snorlax", "machamp"], "side_b": ["gengar", "skarmory", "weavile"]},
+    {"name": "special-vs-wall", "side_a": ["gengar", "snorlax", "skarmory"], "side_b": ["machamp", "weavile", "gengar"]},
+    {"name": "wall-vs-balanced", "side_a": ["skarmory", "machamp", "weavile"], "side_b": ["snorlax", "gengar", "machamp"]}
+  ]
+}
