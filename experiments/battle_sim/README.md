@@ -44,6 +44,10 @@ The test fixture contains a commander plus three selected monsters per side (two
 7. Check commander-defeat victory; a state in which both commanders are already defeated is classified as a draw. The sequential single-target action loop cannot itself create a mutual knockout because a defeated actor loses its queued action.
 8. Return a new immutable state and ordered events.
 
+## Deterministic scenario trace
+
+Run `python demo_scenario.py --output battle-scenario-trace.json` to generate a two-turn JSON trace. Turn one demonstrates a queued action invalidated by a knockout and end-of-turn reserve deployment; turn two demonstrates the replacement acting in the next turn. CI publishes the trace as the `battle-simulation-scenario-trace` artifact.
+
 ## Run tests
 
 From this directory:
@@ -55,6 +59,8 @@ No third-party dependencies are required. The package is compatible with Python 
 ## Test coverage
 
 - Fixture composition and validation.
+- Injectable damage-model substitution without changing turn sequencing.
+- Two-turn trace generation, invalidated-action event, and reserve deployment.
 - Immutable input-state behavior.
 - Priority/Speed ordering.
 - Defeated actor loses its queued action.
