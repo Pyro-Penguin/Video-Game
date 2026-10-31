@@ -91,7 +91,7 @@ The current project is still in design consolidation and Python mechanics resear
 | Unity baseline | Not present | Explicit project-creation authorization and editor/platform confirmation |
 | Art direction | Reference folders and Environment image uploads exist | Curate references with source/attribution and convert into approved visual constraints |
 
-The five-creature draft is a pipeline-ready input proposal, not a balance conclusion. Its type labels are identity prompts only; the type chart remains unresolved. The existing Pokémon fixture remains intact as Playtest A engineering scaffolding.
+The five-creature draft is a pipeline-ready input proposal, not a balance conclusion. Its type labels are identity prompts only; the type chart remains unresolved. The existing Pokémon fixture remains intact as Playtest A engineering scaffolding. A reproducible neutral Power-80 single-attacker screen covers all 25 pairs at c=100 and c=143; mean repeated-hit-to-KO is 7.68 and 7.76 respectively, with a 5–12 range. This narrow result does not resolve offset selection or match pacing.
 
 ## Recommended milestone gates
 
