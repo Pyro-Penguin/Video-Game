@@ -109,7 +109,7 @@ jobs:
           python cli_runner.py --battles 3 --offset 100 --output /tmp/pipeline-trace-b.json > /tmp/pipeline-readable-b.txt
           cmp /tmp/pipeline-trace-a.json /tmp/pipeline-trace-b.json
           cmp /tmp/pipeline-readable-a.txt /tmp/pipeline-readable-b.txt
-          python -c "import json; p=json.load(open('/tmp/pipeline-trace-a.json')); assert len(p['battles']) == 3; assert all(b['final_state']['is_finished'] for b in p['battles']); print('Three-battle deterministic pipeline validation passed')"
+          python -c "import json; p=json.load(open('/tmp/pipeline-trace-a.json')); assert len(p['battles']) == 3; assert all(b['final_state']['is_finished'] for b in p['battles']); assert all(any(e['event_type'] == 'ReserveDeployed' for t in b['turns'] for e in t['events']) for b in p['battles']); print('Three-battle deterministic pipeline and reserve validation passed')"
       - name: Publish deterministic pipeline trace
         uses: actions/upload-artifact@v4
         with:

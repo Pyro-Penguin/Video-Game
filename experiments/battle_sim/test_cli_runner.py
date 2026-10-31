@@ -40,6 +40,10 @@ class PipelineFixtureTests(unittest.TestCase):
         self.assertIn("not balance evidence", payload["status"])
         for battle in payload["battles"]:
             self.assertTrue(battle["final_state"]["is_finished"])
+            self.assertTrue(any(
+                event["event_type"] == "ReserveDeployed"
+                for turn in battle["turns"] for event in turn["events"]
+            ), f"{battle['name']} never exercised reserve deployment")
             self.assertEqual(len(battle["teams"]["A"]), 3)
             self.assertEqual(len(battle["teams"]["B"]), 3)
             for turn in battle["turns"]:
