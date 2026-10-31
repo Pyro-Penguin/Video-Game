@@ -27,6 +27,7 @@ After these, use the task-specific references below.
 - [Stat-Range Sensitivity Results](experiments/stat_range_sensitivity/RESULTS.md) — human-readable summary of the expanded all-vs-all, combined-stat, offset-sweep, level-treatment, and integer-floor results.
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md) — stat ownership, normalization questions, and next experiment.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
+- [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — drop visual reference images into this folder and document source, attribution, and the design qualities being studied.
 - [Population, Professions & Mobilization](docs/world/POPULATION_PROFESSIONS_MOBILIZATION.md) — unresolved concept for persistent civilian roles, combat capability, availability, and mobilization; review only.
 - [Analytical Experiment Pipeline Team Review](docs/EXPERIMENT_PIPELINE_TEAM_REVIEW.md) — supplied audit findings and corrective checklist; source/test verification pending.
 - [Types and Villages](docs/world/TYPES_AND_VILLAGES.md) — candidate type inventory.
