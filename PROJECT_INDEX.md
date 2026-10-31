@@ -18,6 +18,7 @@ After these, use the task-specific references below.
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md) — battle format, timers, clauses, and conflicts.
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md) — separate roster, active field, player, and reserve decisions.
 - [Battle Rules Decision Checklist](docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md) — actionable blocking, important, and deferred rules decisions.
+- [Battle Simulation Harness](experiments/battle_sim/README.md) — pure-Python deterministic turn-resolution prototype with synthetic fixtures; not final game rules or Unity runtime.
 - [Damage Model](docs/battle/DAMAGE_MODEL.md) — formula fragments and unresolved mechanics.
 - [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
 - [Damage Equation Design Review](docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md) — candidate equation families, mathematical checks, and experiment plan; no rule selected.
@@ -52,7 +53,7 @@ After these, use the task-specific references below.
 - `docs/world/` — story, villages, types, clans, and abilities.
 - `docs/creatures/` — creature concepts and stat records.
 - `docs/inspiration/` — visual, audio, and gameplay references.
-- `experiments/` — isolated executable mechanics investigations.
+- `experiments/` — isolated executable mechanics investigations, including the pure-Python battle simulation harness.
 - `tools/` — standard-library documentation validator and its tests.
 - `.github/workflows/` — automated validation for Python experiments and project documentation.
 - A Unity `Assets/`, `Packages/`, and `ProjectSettings/` structure will be added only after an engine project is deliberately created.
