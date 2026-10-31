@@ -179,4 +179,4 @@ At Balanced 300/275, Power 100, Vitality 350:
 
 ## Limitations
 
-No type/STAB, criticals, weather, status, abilities, items, equipment, stat stages, RNG variation, shields, multi-hit, simultaneous resolution, or final damage application. No actual creature/class data or stat-allocation model. Profiles are synthetic. The Pokémon harness is deliberately incomplete. The level-derived-only sweep holds battle stats constant. CI verifies implementation consistency, not game balance or human acceptance.
+No type/STAB, criticals, weather, status, abilities, items, equipment, stat stages, selected RNG model, independent per-hit roll accumulation, shields, multi-hit, simultaneous resolution, or final damage application. The isolated hypothetical fixed-roll sensitivity diagnostic above is not a selected damage pipeline. No actual creature/class data or stat-allocation model. Profiles are synthetic. The Pokémon harness is deliberately incomplete. The level-derived-only sweep holds battle stats constant. CI verifies implementation consistency, not game balance or human acceptance.
