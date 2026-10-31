@@ -57,7 +57,7 @@ The Gen I–IX CSV audit isolates 546 final-stage entries (mean BST 509.2) and 4
 - Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
 
 ## Highest-Priority Next Work
-1. Verify the corrected specialization gate and regression tests in CI. Treat the corrected profile-wide results as authoritative; the previous single-point gate is superseded.
+1. Corrected specialization gate and regression tests passed all seven CI jobs on the code/test commit cited above. This handoff refresh is a documentation-only follow-up; verify the workflow run for this exact handoff commit before marking the documentation snapshot Tested. Treat the corrected profile-wide results as authoritative; the previous single-point gate is superseded.
 2. Consolidate experiment parameters (profiles, offsets, powers, levels, Vitalities, and numeric gates) into one machine-readable configuration consumed by scripts and documentation. Keep this as a separate, reviewable change.
 3. Re-run the expanded report and inspect its artifact. Prune candidates only against the agreed provisional numeric criteria: neutral floored TTK 4–6 at Balanced / P100 / Vitality 350; 2:1 specialization 1.4×–1.8× across the full Defense band; no ordinary-power one-hit KO on full Vitality. Floored results govern.
 4. Once the experiment is internally consistent, hold the damage-equation design review. Do not treat passing a gate as selecting a formula or offset.
