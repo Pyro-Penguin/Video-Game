@@ -1,84 +1,56 @@
 # Developer Handoff
 
 ## Project
-Original creature-collecting RPG with tactical PvP ambitions. Long-term target platform is mobile (iOS/Android). No Unity project exists yet; current work is engine-independent design consolidation and mechanics experimentation.
+Original creature-collecting RPG with tactical PvP ambitions. Long-term target is mobile (iOS/Android). No Unity project or production C# runtime exists. Current work is engine-independent design and pure-Python mechanics validation.
 
 ## Mandatory Startup
-Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow its startup sequence. The repository is the shared project memory; conversations are temporary workspaces.
+Read COLLABORATION_PROTOCOL.md, then PROJECT_INDEX.md, PROJECT_STATUS.md, this handoff, docs/DECISION_LOG.md, and docs/OPEN_QUESTIONS.md before task-specific work.
 
-## Source of Truth
-- [Project Index](PROJECT_INDEX.md)
-- [Project Status](PROJECT_STATUS.md) — canonical project-wide priorities.
-- [Decision Log](docs/DECISION_LOG.md) — authoritative durable decisions.
-- [Open Questions](docs/OPEN_QUESTIONS.md) — unresolved questions grouped by canonical priority.
-- [Game Overview](docs/GAME_OVERVIEW.md)
-- [Battle Overview](docs/battle/BATTLE_OVERVIEW.md)
-- [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md)
-- [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md)
-- [Pokémon Final-Stage Baseline Data Audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md)
-- [Damage Model](docs/battle/DAMAGE_MODEL.md)
-- [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
-- [Damage Equation Comparison Experiment](experiments/damage_equation/README.md)
-- [Proposed Endgame Stat-Range Sensitivity Experiment](experiments/stat_range_sensitivity/README.md)
-- [Stat-Range Sensitivity Results](experiments/stat_range_sensitivity/RESULTS.md)
-- [Damage RNG Experiment](experiments/damage_rng/README.md)
-
-## Completed
-- Structured fragmented concepts into referenceable documents.
-- Preserved contradictions and unknowns rather than inventing resolutions.
-- Implemented the standalone Python damage RNG experiment with six models.
-- Recorded the prior local test result: 6 tests passed.
-- Added a GitHub Actions workflow to run the experiment tests on Python 3.10–3.13 and smoke-test JSON report generation. CI verified: all four Python-version jobs passed, including unit tests and JSON report generation.
-- Added battle-format decision framework and stat-system research plan.
-- Added collaboration protocol and reconciled the canonical priority order; see D-014.
+## Authoritative Battle Context
+- docs/battle/BATTLE_OVERVIEW.md
+- docs/battle/BATTLE_PROTOTYPE_SPEC.md
+- docs/battle/BATTLE_RULES_DECISION_CHECKLIST.md
+- docs/battle/BATTLE_FORMAT_DECISION.md
+- docs/battle/DAMAGE_MODEL.md
+- docs/battle/DAMAGE_EQUATION_DESIGN_REVIEW.md
+- docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md
+- experiments/battle_sim/README.md
 
 ## Current Work State
 
-**New review material:** [Population, Professions & Mobilization](docs/world/POPULATION_PROFESSIONS_MOBILIZATION.md) records an unresolved world-simulation concept for later team review. [Analytical Experiment Pipeline Team Review](docs/EXPERIMENT_PIPELINE_TEAM_REVIEW.md) records the team's supplied audit findings as pending independent source/test verification. Neither document changes game rules or the canonical priority order. The current repository remains a design/documentation workspace plus offline Python experiments; runtime/mobile hot-path concerns are future-facing only.
+### Battle simulation harness — first vertical slice committed
+The pure-Python harness under experiments/battle_sim/ now exercises:
+- Immutable battle-state snapshots and command-in / state-and-events-out ownership.
+- Validation that every active unit submits exactly one legal command.
+- Simultaneous command locking against the turn-start state.
+- Priority then Speed ordering, with a deterministic unit-ID tie fallback used only as a fixture.
+- Skipping an action if its actor or target is defeated before resolution.
+- Immediate knockout application, end-of-turn automatic reserve deployment, and commander-defeat / mutual-defeat draw handling.
 
-**Expanded damage experiment:** CI run [41094836607](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41094836607) passed all seven jobs. Its artifact was downloaded and inspected: 825 all-vs-all rows, 2,695 single/combined-stat rows, 35 level rows, and 4,125 raw/floored pairwise candidate comparisons. [RESULTS.md](experiments/stat_range_sensitivity/RESULTS.md) was updated from this artifact. Subsequent documentation, status, and index updates passed all seven jobs in [41095218936](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41095218936).
+The fixture is one commander, two active monsters, and one reserve per side. Damage is fixed test data, not the damage formula. Automatic replacement, commander defeat, and unit-ID tie-breaking are explicit test assumptions. The harness does not implement five-to-three team preview, final target rules, types, RNG, status, switching, or Unity.
 
-**Review-package verification:** CI run [41099538231](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41099538231) tested commit `a4656a11ca326d2328cfaf97d6254c27a3008784` and passed all seven jobs, including documentation validation, damage equation, stat-range sensitivity, and the four-version damage RNG matrix. This handoff refresh is documentation-only and triggers a follow-up CI run; check that run before marking this exact handoff commit Tested.
+Decision D-017 authorizes this bounded harness in parallel with the damage-equation review. It does not approve any of its fixture rules. D-014 remains in force: damage-equation design resolution is still the formal first project priority.
 
-## Pokémon baseline data audit
+### Damage experiment status
+- The profile-wide specialization gate correction is committed and passed all seven CI jobs in run 41160522573.
+- Candidate B c=400 correctly fails the 1.4x minimum at Defense 200 (4/3). c=100, 143, and 200 pass the corrected provisional gate; no offset is selected.
+- Pokémon Generation IX remains an audit-only reference harness, not a selectable candidate.
+- No damage formula, stat range, RNG model, or final numeric acceptance gate has been approved.
 
-The Gen I–IX CSV audit isolates 546 final-stage entries (mean BST 509.2) and 456 after excluding sublegendary/legendary/mythical entries (mean BST 491.2). On the simplified Level-100 transform, ordinary-cohort medians are Attack 216, Defense 194, Vitality 293; 90th percentiles are 286, 274, and 359. This suggests the synthetic bands Attack 200–400 / Defense 200–350 / Vitality 250–500 are elevated relative to an ordinary final-stage baseline, but may be appropriate for a deliberately normalized competitive roster. The CSV includes Mega names, not transformed stat lines. See [audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md). Research only; no rule selected.
+## Immediate Next Actions
+1. Verify CI for the current battle-harness commits, including all battle simulation tests and documentation validation. Read back the exact files and inspect failures before proceeding.
+2. Fix any implementation/test issues found by CI. Add regression tests for state invariants or event-order edge cases if needed.
+3. Add a small multi-turn scenario fixture and a deterministic trace artifact so the complete state progression can be reviewed, not just isolated turns.
+4. Reconcile unresolved battle decisions with worked examples: commander defeat, simultaneous commander knockout, no reserve remaining, multiple knockouts, and target invalidation. Keep recommendations separate from accepted rules.
+5. Continue the damage-equation review and shared experiment-configuration work as a parallel track. Do not block state-machine correctness on final formula selection, but keep damage behind a replaceable pure interface.
+6. Only after the rules contract is stable, port the agreed pure-domain contract to C# with differential test vectors. Do not create a Unity project until its baseline/version is explicitly established.
 
-## Expanded experiment findings
+## Verification Boundary
+The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The newly added battle harness and its current documentation have not yet been tested by CI; verify the workflow run for the exact latest commit before describing them as Tested.
 
-- The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target; D-016 records the corrected 60 anchor as Provisional, with explicit revisit conditions.
-- Under the corrected profile-wide specialization gate, B offsets c=100, 143, and 200 pass the current provisional neutral TTK, specialization, and no-full-HP-one-hit numeric gates. c=400 fails the 1.4× floor at the high-pressure Defense-200 profile (4/3); c=50 and c=71 exceed the 1.8× ceiling at one or more profiles. No offset is selected.
-- c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
-- Flooring changed 439/4,125 pairwise relations: 122 raw ties became strict floored relations, 317 strict raw relations became ties, and zero strict order reversals occurred.
-- Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. The Level-1 result is not a story prediction; it isolates sensitivity to the direct level term.
-- Combined-stat interaction residuals: 1,320 evaluated; 660 raw-damage residuals nonzero (max 5 percentage points); 721 floored-TTK residuals nonzero (max 2 hits). The ±1-hit concept was specified to use floored TTK but was not established as a numeric acceptance gate; if adopted as an isolated-stat screen, combined residuals require a separate tolerance. The 5 pp raw / 2-hit floored maxima are threshold-sensitive, not unrelated effects.
-- Flooring changed 439 pairwise relations: 122 ties split into strict orderings, 317 strict orderings merged into ties, zero strict reversals; flooring more often collapses distinctions in this sample.
-- The Generation IX deterministic base-damage implementation is a reference harness only, not a fifth candidate; it uses the integer level term (including at Level 1) and excludes external modifiers.
-- Provisional preferences and gates live in the Damage Equation Decision Brief. They are not game rules or Decision Log entries.
-
-## Highest-Priority Next Work
-1. Corrected specialization gate and regression tests passed all seven CI jobs on the code/test commit cited above. This handoff refresh is a documentation-only follow-up; verify the workflow run for this exact handoff commit before marking the documentation snapshot Tested. Treat the corrected profile-wide results as authoritative; the previous single-point gate is superseded.
-2. Consolidate experiment parameters (profiles, offsets, powers, levels, Vitalities, and numeric gates) into one machine-readable configuration consumed by scripts and documentation. Keep this as a separate, reviewable change.
-3. Re-run the expanded report and inspect its artifact. Prune candidates only against the agreed provisional numeric criteria: neutral floored TTK 4–6 at Balanced / P100 / Vitality 350; 2:1 specialization 1.4×–1.8× across the full Defense band; no ordinary-power one-hit KO on full Vitality. Floored results govern.
-4. Once the experiment is internally consistent, hold the damage-equation design review. Do not treat passing a gate as selecting a formula or offset.
-5. Carry historical maximum base Speed 150 into the separate pre-registered speed-tier review; it is not an accepted cap. Keep allocation assumptions and priority mechanics explicitly separate.
-6. After damage-equation resolution, continue battle structure/resolution. This experiment does not decide active/reserve, commander, simultaneous-selection, or turn-resolution rules.
-7. Do not create further game-rule Decision Log entries until the human explicitly accepts the decisions.
-
-No final damage formula, stat range, story-level scaling policy, TTK rule, or RNG model has been selected.
-
-## Engineering Guardrails
-- Keep authoritative rules in pure, testable C# where practical once engine implementation is authorized.
-- Unity components adapt input and presentation; they do not own core rules.
-- Prefer composition and explicit ownership.
-- Communicate across boundaries through commands, events, and narrow interfaces.
-- Keep balance-sensitive data outside resolver logic.
-- Avoid per-frame allocations and LINQ in hot paths.
-- Test match logic without loading a Unity scene.
-
-## Do Not Assume
-- Exact Unity version or that Unity has been installed.
-- That a complete Unity project exists.
-- That unresolved battle rules have been approved.
-- That any source archive may be modified.
-- That the RNG experiment selects a final damage model.
+## Guardrails
+- Repository is shared project memory; conversations are temporary.
+- Preserve decision statuses: Confirmed, Provisional, Unresolved, Superseded.
+- Test fixtures are not game rules. Do not add Decision Log entries for unaccepted mechanics.
+- No Unity/C# implementation, online authority, matchmaking, or production content work is implied by this Python harness.
+- Keep the battle domain independent of presentation, persistence, networking, and engine APIs.
