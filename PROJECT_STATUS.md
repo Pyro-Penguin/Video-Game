@@ -36,8 +36,8 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 This is the single authoritative project-wide priority list. [Open Questions](docs/OPEN_QUESTIONS.md) groups unresolved questions in this order; it does not establish a separate priority hierarchy.
 
 1. **Damage equation design resolution.** The corrected profile-wide gate is verified. Consolidate experiment parameters and inspect the regenerated report, then complete the damage design review: deterministic base equation, stat inputs, modifier order, immunity, and rounding boundaries. RNG distribution/placement remains a separate decision. A bounded turn-resolution harness is now authorized in parallel as a rules-discovery tool; it must not embed a selected formula or promote fixture assumptions to rules.
-2. **Battle structure and resolution.** Resolve side composition, roster/selection/active/reserve counts, player role, turn phases, action economy, targeting, priority/speed/ties, invalidated actions, and knockout timing.
-3. **Replacement and victory.** Define replacement timing and victory conditions, including simultaneous defeat and encounter-specific player defeat.
+2. **Battle structure and resolution.** Competitive roster accounting is confirmed in D-003: five registered monsters, select three, two active plus one reserve, with commander separate. Resolve turn phases, action economy, legal actions/targeting, priority/Speed/ties, invalidated actions, and knockout timing. The Python harness is a rules-discovery fixture, not final implementation.
+3. **Replacement and victory.** Define reserve replacement choice/timing, no-reserve behavior, and victory conditions, including simultaneous defeat and encounter-specific player defeat.
 4. **Stats and progression.** Define stat ownership, Level 100 normalization, allocation, and relationship-effect boundaries.
 5. **Types and competitive rules.** Reconcile the type inventory and seven-village structure; then define competitive clauses and timer policy.
 6. **Audit existing balance inputs.** Audit Light/Shadow stat drafts before using them as balance inputs.
