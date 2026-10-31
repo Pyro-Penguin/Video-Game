@@ -41,7 +41,7 @@ The test fixture contains a commander plus three selected monsters per side (two
 4. Resolve actions sequentially. A defeated actor cannot act; an unavailable target is not retargeted.
 5. Apply knockouts immediately to the working state.
 6. Deploy reserves into vacancies at end of turn.
-7. Check commander-defeat victory; simultaneous commander defeat produces a draw in this fixture.
+7. Check commander-defeat victory; a state in which both commanders are already defeated is classified as a draw. The sequential single-target action loop cannot itself create a mutual knockout because a defeated actor loses its queued action.
 8. Return a new immutable state and ordered events.
 
 ## Run tests
@@ -60,7 +60,8 @@ No third-party dependencies are required. The package is compatible with Python 
 - Defeated actor loses its queued action.
 - Defeated target is not automatically retargeted.
 - Reserve deployment occurs only after all locked actions resolve.
-- Mutual commander knockout.
+- Single commander knockout ends the match with the surviving side winning.
+- A pre-existing dual-commander-defeat terminal state is classified as a draw; simultaneous damage generation remains unresolved.
 - Monster knockouts alone do not end the match.
 - Invalid command set rejection.
 - Finished match cannot resolve another turn.
