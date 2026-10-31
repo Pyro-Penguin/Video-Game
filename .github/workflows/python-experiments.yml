@@ -7,6 +7,7 @@ on:
       - "fixtures/**"
       - "tools/**"
       - "docs/**"
+      - "AGENTS.md"
       - "COLLABORATION_PROTOCOL.md"
       - "PROJECT_INDEX.md"
       - "PROJECT_STATUS.md"
