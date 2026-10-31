@@ -1,0 +1,254 @@
+{
+  "_comment": "Scaffolding fixture. Not representative of final roster. Base stats used directly as game stats. Neutral type effectiveness. Replace with real creatures before design playtest.",
+  "schema_version": 1,
+  "fixture_kind": "pipeline_validation_only",
+  "display_name": "ORIGINAL ROSTER DRAFT",
+  "stat_interpretation": "Provisional original-game test values supplied for early Playtest B input review. Values are direct game-stat inputs, not approved species stats, derived Level-100 stats, or a final normalization model.",
+  "type_effectiveness": "neutral; the type chart is intentionally excluded from this fixture",
+  "affinity_status": "Candidate identity labels only. They do not establish the seven battle types, type matchups, STAB, immunities, or village assignments.",
+  "commander": {
+    "stats": {
+      "hp": 380,
+      "attack": 300,
+      "defense": 300,
+      "special_attack": 300,
+      "special_defense": 300,
+      "speed": 300
+    },
+    "moves": [
+      {
+        "id": "commanders_edge",
+        "power": 40,
+        "category": "physical"
+      },
+      {
+        "id": "focused_assault",
+        "power": 80,
+        "category": "physical"
+      },
+      {
+        "id": "aether_burst",
+        "power": 120,
+        "category": "special"
+      }
+    ]
+  },
+  "creatures": [
+    {
+      "id": "thornback",
+      "name": "Thornback",
+      "archetype": "physical_bulwark",
+      "candidate_affinity": "Plant (identity placeholder only)",
+      "design_intent": "A patient frontline guardian that controls space and absorbs pressure. Its lower speed and special attack are deliberate tradeoffs.",
+      "stats": {
+        "hp": 460,
+        "attack": 320,
+        "defense": 340,
+        "special_attack": 220,
+        "special_defense": 300,
+        "speed": 220
+      },
+      "moves": [
+        {
+          "id": "thorn_jab",
+          "name": "Thorn Jab",
+          "power": 40,
+          "category": "physical"
+        },
+        {
+          "id": "rootbreaker",
+          "name": "Rootbreaker",
+          "power": 80,
+          "category": "physical"
+        },
+        {
+          "id": "canopy_crash",
+          "name": "Canopy Crash",
+          "power": 120,
+          "category": "physical"
+        }
+      ]
+    },
+    {
+      "id": "zephyrkin",
+      "name": "Zephyrkin",
+      "archetype": "fast_physical_striker",
+      "candidate_affinity": "Air (identity placeholder only)",
+      "design_intent": "A high-tempo skirmisher that pressures priority and speed-sensitive decisions, but cannot safely absorb focused attacks.",
+      "stats": {
+        "hp": 280,
+        "attack": 380,
+        "defense": 220,
+        "special_attack": 280,
+        "special_defense": 230,
+        "speed": 390
+      },
+      "moves": [
+        {
+          "id": "gust_talon",
+          "name": "Gust Talon",
+          "power": 40,
+          "category": "physical"
+        },
+        {
+          "id": "crosswind_dive",
+          "name": "Crosswind Dive",
+          "power": 80,
+          "category": "physical"
+        },
+        {
+          "id": "sky_rend",
+          "name": "Sky Rend",
+          "power": 120,
+          "category": "physical"
+        }
+      ]
+    },
+    {
+      "id": "emberlynx",
+      "name": "Emberlynx",
+      "archetype": "fast_special_attacker",
+      "candidate_affinity": "Fire (identity placeholder only)",
+      "design_intent": "A special burst attacker with enough speed to threaten fragile targets, balanced by low physical durability.",
+      "stats": {
+        "hp": 300,
+        "attack": 220,
+        "defense": 230,
+        "special_attack": 390,
+        "special_defense": 300,
+        "speed": 340
+      },
+      "moves": [
+        {
+          "id": "ember_mote",
+          "name": "Ember Mote",
+          "power": 40,
+          "category": "special"
+        },
+        {
+          "id": "flare_pulse",
+          "name": "Flare Pulse",
+          "power": 80,
+          "category": "special"
+        },
+        {
+          "id": "sunburst",
+          "name": "Sunburst",
+          "power": 120,
+          "category": "special"
+        }
+      ]
+    },
+    {
+      "id": "tideforged",
+      "name": "Tideforged",
+      "archetype": "special_defensive_anchor",
+      "candidate_affinity": "Water (identity placeholder only)",
+      "design_intent": "A durable special-defense anchor with mixed offense and low speed; tests whether a slower defensive role remains useful.",
+      "stats": {
+        "hp": 430,
+        "attack": 250,
+        "defense": 330,
+        "special_attack": 290,
+        "special_defense": 350,
+        "speed": 210
+      },
+      "moves": [
+        {
+          "id": "current_strike",
+          "name": "Current Strike",
+          "power": 40,
+          "category": "physical"
+        },
+        {
+          "id": "undertow",
+          "name": "Undertow",
+          "power": 80,
+          "category": "special"
+        },
+        {
+          "id": "maelstrom",
+          "name": "Maelstrom",
+          "power": 120,
+          "category": "special"
+        }
+      ]
+    },
+    {
+      "id": "gloamantis",
+      "name": "Gloamantis",
+      "archetype": "mixed_disruptor",
+      "candidate_affinity": "Shadow (identity placeholder only)",
+      "design_intent": "A flexible mixed attacker with moderate bulk and speed; tests role compression without matching either specialist's peak stat.",
+      "stats": {
+        "hp": 350,
+        "attack": 330,
+        "defense": 260,
+        "special_attack": 340,
+        "special_defense": 270,
+        "speed": 310
+      },
+      "moves": [
+        {
+          "id": "dusk_claw",
+          "name": "Dusk Claw",
+          "power": 40,
+          "category": "physical"
+        },
+        {
+          "id": "umbral_wave",
+          "name": "Umbral Wave",
+          "power": 80,
+          "category": "special"
+        },
+        {
+          "id": "eclipse_cut",
+          "name": "Eclipse Cut",
+          "power": 120,
+          "category": "physical"
+        }
+      ]
+    }
+  ],
+  "pipeline_battles": [
+    {
+      "name": "speed-and-bulk",
+      "side_a": [
+        "zephyrkin",
+        "thornback",
+        "tideforged"
+      ],
+      "side_b": [
+        "emberlynx",
+        "gloamantis",
+        "thornback"
+      ]
+    },
+    {
+      "name": "special-pressure",
+      "side_a": [
+        "emberlynx",
+        "tideforged",
+        "gloamantis"
+      ],
+      "side_b": [
+        "thornback",
+        "zephyrkin",
+        "emberlynx"
+      ]
+    },
+    {
+      "name": "mixed-role-mirror",
+      "side_a": [
+        "thornback",
+        "zephyrkin",
+        "emberlynx"
+      ],
+      "side_b": [
+        "tideforged",
+        "gloamantis",
+        "thornback"
+      ]
+    }
+  ]
+}
