@@ -29,7 +29,7 @@ All profiles and values are synthetic test coordinates, not final creatures, cla
 
 The gates are applied before any candidate pruning and use integer-floored per-hit damage and floored TTK. Raw outputs are diagnostic only.
 
-- Neutral reference: Balanced attacker (300 Attack), Balanced defender (275 Defense), Vitality 350, Power 100, Level 100; target 4–6 hits.
+- Historical neutral reference: Balanced attacker (300 Attack), Balanced defender (275 Defense), Vitality 350, Power 100, Level 100. The former 4–6-hit target is superseded by D-026's competitive 2–3-hit pacing references.
 - 2:1 Attack/Defense specialization ratio: 1.4×–1.8× relative to equal stats, swept across every pre-registered defender profile. The gate requires both the worst-case minimum and best-case maximum to remain inside the band; a single Defense=300 coordinate is insufficient.
 - No ordinary Power-100 one-hit KO against the full-Vitality neutral reference.
 - Attack increases cannot reduce damage; Defense increases cannot increase damage; Vitality increases cannot reduce TTK.
@@ -64,3 +64,6 @@ This diagnostic does not select an RNG distribution, change the D-022 determinis
 - The five profiles are test coordinates, not validated play styles.
 - Passing tests establish implementation consistency, not game balance or human acceptance.
 - The raw-damage interaction residual uses a log-space multiplicative definition. The separately named interaction_ttk_delta_vs_additive is a combined-versus-additive TTK interaction, not an isolated single-stat shift. Use single_stat_ttk_shifts for isolated shifts. Sequential integer floors in the Generation IX reference are mathematically equivalent to the combined denominator floor for positive integer inputs.
+
+
+**Status note (2026-10-31):** The 4–6-hit pacing target and 85%–100% fixed-roll diagnostic documented here are historical and superseded for current design decisions by D-026 (competitive 2–3-hit pacing references) and D-027 (85%–105% inclusive RNG bounds). This experiment is retained as evidence; do not expand its matrix or treat its old gate as current acceptance criteria.
