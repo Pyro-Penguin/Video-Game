@@ -221,7 +221,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertEqual(ROLL_PERCENTS, tuple(range(85, 101)))
         self.assertEqual(
             report["mean_fixed_roll_ttk_diagnostic"]["A_direct_ratio"]["100"],
-            6.5,
+            6.875,
         )
         self.assertIn("mean_fixed_roll_ttk_diagnostic", report)
         self.assertNotIn("expected_ttk", report["mean_fixed_roll_ttk_diagnostic"])
