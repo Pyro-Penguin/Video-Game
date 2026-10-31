@@ -59,7 +59,11 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 6. Do not begin village economy, NPC simulation, puzzle engine, Unity project creation, or C# runtime work until the battle-core priority and explicit authorization allow it.
 
 ## Verification Boundary
-The latest verified code commit remains 33b352cac82520f2c6bfc0a3b151ae1b815b9e90; it passed all eight CI jobs in run [41169602974](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41169602974). The battle-simulation job ran 32 tests and executed three complete CLI battles twice; JSON and readable outputs were byte-identical, and each battle asserted reserve deployment. The pipeline trace artifact is available at [pokemon-scaffold-pipeline-trace](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41169363724/artifacts/13030750326). Documentation commits after that code commit do not change the verified code state. Refresh verification claims after the current documentation commit's CI completes; follow D-015. Historical harness CI runs and earlier implementation evidence remain recorded in the project status and decision log.
+- Main baseline before this work: `f0e7b0d3a2d5d9afc9d73d4a8d48da83a50cd751`; main has not been modified by this task.
+- Working branch: `experiment/defense-band-rng-ttk`.
+- Latest branch code/test commit: `db63f8b112ae11e86030b893e8008332bdd3a715`; all eight CI jobs passed in [run 41202594519](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202594519). The stat-range suite ran 26 tests, including all candidate/offset roll ranges and the alternate-anchor counterexample.
+- Latest branch head before this handoff refresh: `183ddfdd29fc10d89d95f83b747f67e41f298e94`; all eight CI jobs passed in [run 41202658964](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202658964), including documentation validation and the stat-range suite.
+- The report artifact from that run is [expanded-damage-sensitivity-report](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41202658964/artifacts/13042853961). Historical harness CI runs and earlier implementation evidence remain recorded in the project status and decision log.
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
