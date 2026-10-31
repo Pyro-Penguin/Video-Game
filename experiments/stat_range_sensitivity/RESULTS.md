@@ -4,6 +4,8 @@
 
 **Design status:** Synthetic evidence only. No formula, stat band, level policy, or TTK rule has been selected. Current human preferences remain provisional in the Damage Equation Decision Brief; they are not Decision Log entries.
 
+**Residual-method update:** The historical combined-stat residual counts and 5-percentage-point maximum below were produced by the superseded additive-percent diagnostic. The implementation now computes multiplicative interaction in log space using exact rational ratios before logarithm evaluation. The numeric interaction summary below must not be used as current evidence until regenerated from the updated CI artifact.
+
 ## Scope and calibration
 
 | Measure | Result |
