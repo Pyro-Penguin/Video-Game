@@ -38,6 +38,7 @@ public sealed class PathWalker : MonoBehaviour
     public void SetPath(NavigationGraph graph, ReadOnlySpan<int> edgePath, NodeId from)
     {
         if (graph == null) throw new ArgumentNullException(nameof(graph));
+        if (edgePath.IsEmpty) return;
         if (edgePath.Length > _activePath.Length) Grow(edgePath.Length);
         edgePath.CopyTo(_activePath);
         _activePathLength = edgePath.Length;
