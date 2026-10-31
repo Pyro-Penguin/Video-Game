@@ -83,6 +83,55 @@ class BattleValidationError(ValueError):
     """Raised when setup or a complete turn command set is invalid."""
 
 
+class ReserveSelector(Protocol):
+    """Pure policy seam for choosing reserves to fill end-of-turn vacancies."""
+
+    def select_reserves(
+        self,
+        side_id: str,
+        eligible_reserves: Tuple[UnitState, ...],
+        vacancies: int,
+        selections: Mapping[str, Tuple[str, ...]],
+    ) -> Tuple[UnitState, ...]:
+        ...
+
+
+@dataclass(frozen=True)
+class CommandReserveSelector:
+    """Auto-select when there is no meaningful choice; otherwise require caller input."""
+
+    def select_reserves(
+        self,
+        side_id: str,
+        eligible_reserves: Tuple[UnitState, ...],
+        vacancies: int,
+        selections: Mapping[str, Tuple[str, ...]],
+    ) -> Tuple[UnitState, ...]:
+        if vacancies <= 0 or not eligible_reserves:
+            if side_id in selections:
+                raise BattleValidationError(f"unexpected reserve selection for side {side_id}")
+            return ()
+
+        if len(eligible_reserves) <= vacancies:
+            if side_id in selections:
+                raise BattleValidationError(f"reserve selection is unnecessary for side {side_id}")
+            return eligible_reserves
+
+        requested = selections.get(side_id)
+        if requested is None:
+            raise BattleValidationError(
+                f"side {side_id} must select {vacancies} reserve unit(s)"
+            )
+        if len(requested) != vacancies or len(set(requested)) != len(requested):
+            raise BattleValidationError(
+                f"side {side_id} must select exactly {vacancies} unique reserve unit(s)"
+            )
+        eligible_by_id = {unit.unit_id: unit for unit in eligible_reserves}
+        if any(unit_id not in eligible_by_id for unit_id in requested):
+            raise BattleValidationError(f"side {side_id} selected an ineligible reserve")
+        return tuple(eligible_by_id[unit_id] for unit_id in requested)
+
+
 class DamageModel(Protocol):
     """Pure damage seam; production formula and rounding are intentionally absent."""
 
@@ -250,21 +299,25 @@ class BattleResolver:
         self,
         rules: BattleRules = BattleRules(),
         damage_model: Optional[DamageModel] = None,
+        reserve_selector: Optional[ReserveSelector] = None,
     ) -> None:
         self._rules = rules
         self._damage_model = damage_model if damage_model is not None else FixedDamageFixture()
+        self._reserve_selector = reserve_selector if reserve_selector is not None else CommandReserveSelector()
 
     def resolve_turn(
         self,
         state: BattleState,
         commands: Iterable[ActionCommand],
         moves: Mapping[str, MoveDefinition],
+        reserve_selections: Optional[Mapping[str, Tuple[str, ...]]] = None,
     ) -> TurnResult:
         validate_state(state, self._rules)
         if state.is_finished:
             raise BattleValidationError("cannot resolve a finished battle")
         _validate_moves(moves)
         locked_commands = _validate_commands(state, commands, moves)
+        selections = {} if reserve_selections is None else dict(reserve_selections)
 
         units = {unit.unit_id: unit for unit in state.units}
         start_units = dict(units)
@@ -327,11 +380,19 @@ class BattleResolver:
                     ),
                     key=lambda unit: (unit.roster_order, unit.unit_id),
                 )
-                for reserve in reserves[:vacancies]:
+                selected_reserves = self._reserve_selector.select_reserves(
+                    side_id, tuple(reserves), vacancies, selections
+                )
+                for reserve in selected_reserves:
                     units[reserve.unit_id] = replace(reserve, status=ACTIVE)
                     events.append(BattleEvent(
                         "ReserveDeployed", target_id=reserve.unit_id, detail=side_id,
                     ))
+            unused_selections = set(selections) - set({unit.side_id for unit in units.values()})
+            if unused_selections:
+                raise BattleValidationError(
+                    f"reserve selections supplied for unknown side(s): {sorted(unused_selections)}"
+                )
 
         next_state = replace(
             state,
