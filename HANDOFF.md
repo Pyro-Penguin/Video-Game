@@ -68,14 +68,14 @@ This is a user-authorized, bounded parallel prototype, not a change to the canon
 
 - Five original creature concepts and direct stat/move inputs are in `docs/creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md` and `fixtures/original_creatures_draft.json`. Roles: physical bulwark, fast physical striker, fast special attacker, special-defense anchor, mixed disruptor.
 - The draft uses the current CLI fixture schema and placeholder 40/80/120 moves. Candidate affinity names do not define types or matchups. The commander stats are also a pipeline placeholder.
-- The CLI now accepts a display name for each fixture. The original draft was smoke-tested through all three scenarios at Candidate B c=100 and c=143. This validates pipeline compatibility only; it does not establish balance.
+- The CLI now accepts a display name for each fixture. The original draft was smoke-tested through all three scenarios at Candidate B c=100 and c=143. `experiments/battle_sim/draft_roster_screen.py` also computes 25 neutral Power-80 single-attacker matchups at both offsets using the same damage adapter: mean repeated-hit-to-KO is 7.68 at c=100 and 7.76 at c=143 (range 5–12). This is not match TTK or a balance verdict; Tideforged averages 8.8 hits and deserves review for passivity.
 - Root `AGENTS.md`, Python path-scoped instructions, `docs/PROJECT_MANAGEMENT_AGENT_WORKFLOW_REVIEW.md`, and the revised milestone plan are committed. No provider quotas, generated vendor adapter, tool-specific hooks, skills, or Unity path instructions were added.
 
 ## Highest-Priority Next Work
 1. Keep Playtest A's JSON fixture and CLI runner stable as an engineering scaffold. Replace the fixture's creature section only when original game creature data is approved; preserve the schema and runner contract.
 2. Complete Priority 1 damage-model narrowing under D-022–D-025: after reviewing the original-creature draft, compare c=100 and c=143 using the same fixture and existing full-band floored gates; retain c=200 only if it adds useful information. Do not broaden the sweep or select a formula from synthetic evidence alone.
 3. Review or revise the five provisional original creatures in `docs/creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md` and `fixtures/original_creatures_draft.json`. The fixture is schema/pipeline-tested at c=100 and c=143, but is not human-approved or balance evidence. Obtain explicit acceptance before using its matchup outputs to support balance conclusions.
-4. Run bounded manual battles and all-pairs creature matchup checks through the existing runner once valid inputs exist. Record neutral pacing, matchup outliers, and observed decisions.
+4. After human review of the draft, run bounded manual battles and extend the neutral 25-pair screen into a documented matchup review. The existing Power-80 screen is only a single-attacker repeated-hit diagnostic; record matchup outliers and observed decisions without treating it as match pacing.
 5. After Priority 1, resolve the D-021 comparator contract (non-damaging, multi-target, cross-target semantics and final fallback), then decide simultaneous-resolution/mutual-KO semantics before expanding the action model.
 6. Do not begin village economy, NPC simulation, puzzle engine, Unity project creation, or C# runtime work until the battle-core priority and explicit authorization allow it.
 
