@@ -97,7 +97,8 @@ class BattleSimulationTests(unittest.TestCase):
     def test_exact_speed_tie_uses_hp_percentage_before_raw_hp(self):
         units = tuple(
             replace(u, speed=50, vitality=50) if u.unit_id == "A-C"
-            else replace(u, speed=50) if u.status == ACTIVE else u
+            else replace(u, speed=50) if u.unit_id == "B-C"
+            else replace(u, speed=1) if u.status == ACTIVE else u
             for u in self.state.units
         )
         tied_state = replace(self.state, units=units)
