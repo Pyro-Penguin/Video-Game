@@ -20,6 +20,15 @@ class ExactProbabilityTests(unittest.TestCase):
         "uniform_85_105_normalized": (Fraction(11, 21), Fraction(15, 21), Fraction(1)),
     }
 
+    def test_sequential_integer_floors_match_combined_denominator_floor(self):
+        for level in (1, 5, 10, 25, 50, 75, 100):
+            term=(2*level)//5+2
+            for power in (1,40,100,160):
+                for attack in (1,50,100,300,1000):
+                    for defense in (1,50,100,275,350,1000):
+                        numerator=term*power*attack
+                        self.assertEqual((numerator//defense)//50,numerator//(50*defense))
+
     def test_required_exact_probabilities(self):
         for model in MODELS:
             actual = tuple(exact_ko_probability(model, hp) for hp in (100, 95, 85))

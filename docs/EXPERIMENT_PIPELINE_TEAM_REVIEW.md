@@ -1,6 +1,6 @@
 # Team Review: Analytical Experiment Pipeline
 
-**Status:** Review findings supplied by the team; implementation and independent verification are pending. This document is an audit checklist, not an approved game-rule specification.
+**Status:** Initial team findings have been re-audited against current main and corrective work is being applied. This document is an audit checklist, not an approved game-rule specification.
 
 ## Scope boundary
 
@@ -139,3 +139,16 @@ A second team review endorsed the analytical diagnosis and prioritization, with 
 ## Verification status
 
 This file records the team's supplied review. The repository source, test suite, report artifacts, and CI results must be inspected before any finding is marked independently verified or any code change is made. No damage formula, stat range, RNG model, or game rule is selected by this review.
+
+
+## Follow-up audit against main at 178a7d3
+
+- P0 Defense band: The supplied report was stale relative to current main. DEFENDERS already contained five distinct values (200, 250, 275, 300, 350), including 300. The correction strengthens this with an explicit DEFENSE_BAND loaded from config, import-time uniqueness validation, and specialization coordinates generated independently of named matchup profiles.
+- Shared candidate functions: Both experiments use the same four mathematical families but had separate implementations and calibration anchors. This is a latent drift defect. The fix centralizes raw A-D functions and calibration in experiments/common/damage_candidates.py; each experiment supplies its own explicit anchor. Candidate B offsets are swept in both experiments.
+- TTK residual: interaction_ttk_residual_hits was a combined-versus-additive interaction, not an isolated single-stat shift. It is renamed interaction_ttk_delta_vs_additive; isolated shifts are emitted in a separate table.
+- Generation IX floor placement: The proposed sequential expression is mathematically equivalent to the existing combined denominator floor for positive integers: floor(floor(n / D) / 50) = floor(n / (50D)). The implementation is made explicit and regression-tested; no numerical correction is expected.
+- Log residual semantics: The supplied test description had its meaning reversed. A multiplicatively separable function produces zero log interaction residual; a non-separable function generally produces a nonzero residual. Tests discriminate those behaviors.
+- Configuration and project hygiene: Reference anchors, Defense band, specialization bounds, and Candidate B offsets are moved into configuration; root pyproject.toml and Python .gitignore are added.
+- Remaining separate review item: POWERS is still a declared report dimension but is not swept by the sensitivity harness. The README/report describe Power 100 as the ordinary reference, so this remains a coverage limitation, not a claimed power sensitivity sweep; resolve separately before claiming power sensitivity coverage.
+
+No damage formula, RNG model, stat range, or game rule is selected by these engineering corrections.

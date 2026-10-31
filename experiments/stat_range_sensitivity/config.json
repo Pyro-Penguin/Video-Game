@@ -1,0 +1,23 @@
+{
+  "reference_damage": 60,
+  "reference_level": 100,
+  "reference_attack": 300,
+  "reference_defense": 275,
+  "reference_power": 100,
+  "reference_vitality": 350,
+  "specialization_min": "1.40",
+  "specialization_max": "1.80",
+  "defense_band": [
+    200,
+    250,
+    275,
+    300,
+    350
+  ],
+  "_provenance": {
+    "reference_damage": "D-016 provisional comparison calibration",
+    "specialization_band": "D-022 provisional screening envelope",
+    "defense_band": "Synthetic full-band test coordinates; not an approved game stat band",
+    "candidate_b_offsets": "Sampled experiment coordinates; no offset selected"
+  }
+}

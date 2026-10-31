@@ -26,8 +26,8 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
     def test_specialization_gate_sweeps_all_pre_registered_defenses(self):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
         c100 = gates["100"]
-        self.assertEqual(set(c100["specialization_ratio_by_profile"]), set(ATTACKERS))
-        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["balanced"], 97 / 56, places=6)
+        self.assertEqual(set(c100["specialization_ratio_by_profile"]), {f"defense_{d}" for d in DEFENSE_BAND})
+        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["defense_275"], 97 / 56, places=6)
         self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 93 / 56, places=6)
         self.assertAlmostEqual(c100["specialization_best_case_ratio"], 100 / 56, places=6)
         self.assertTrue(c100["specialization_gate_pass"])
@@ -39,7 +39,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
 
     def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
-        self.assertAlmostEqual(gates["400"]["specialization_ratio_by_profile"]["high_pressure"], 77 / 57, places=6)
+        self.assertAlmostEqual(gates["400"]["specialization_ratio_by_profile"]["defense_200"], 77 / 57, places=6)
         self.assertAlmostEqual(gates["400"]["specialization_worst_case_ratio"], 77 / 57, places=6)
         self.assertAlmostEqual(gates["400"]["specialization_best_case_ratio"], 28 / 19, places=6)
         self.assertFalse(gates["400"]["specialization_gate_pass"])

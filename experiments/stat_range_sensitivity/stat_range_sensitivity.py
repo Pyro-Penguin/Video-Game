@@ -381,7 +381,7 @@ def calibration_and_gates() -> dict:
             )
             all_gates[name][str(c)] = {
                 "neutral_floored_ttk": ttk,
-                "two_to_one_damage_ratio": round(float(profile_ratios["balanced"]), 6),
+                "two_to_one_damage_ratio": round(float(profile_ratios[f"defense_{REFERENCE_DEFENSE}"]), 6),
                 "specialization_ratio_by_profile": {
                     profile: round(float(ratio), 6)
                     for profile, ratio in profile_ratios.items()

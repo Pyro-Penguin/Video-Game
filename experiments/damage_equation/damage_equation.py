@@ -12,14 +12,16 @@ import json
 from fractions import Fraction
 from pathlib import Path
 from typing import Callable
+import sys
 
 ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(ROOT.parent))
+from common.damage_candidates import B_OFFSETS, CANDIDATES as RAW_CANDIDATES, calibrated_damage
 BASELINE_DAMAGE = Fraction(50)
 BASELINE_POWER = 100
 BASELINE_ATTACK = 100
 BASELINE_DEFENSE = 100
 BASELINE_LEVEL = 50
-OFFSET_C = 100
 
 SYNTHETIC_SCALES = {
     "compact": (25, 250),
@@ -30,32 +32,29 @@ POWERS = (40, 80, 100, 120, 160)
 RATIOS = (Fraction(1, 4), Fraction(1, 2), Fraction(3, 4), Fraction(1), Fraction(4, 3), Fraction(2), Fraction(4))
 
 
-def _candidate_a(power: int, attack: int, defense: int, level: int) -> Fraction:
-    del level
-    return Fraction(1, 2) * power * Fraction(attack, defense)
+def candidate_damage(name: str, power: int, attack: int, defense: int, level: int, offset: int = 100) -> Fraction:
+    try:
+        candidate = RAW_CANDIDATES[name]
+    except KeyError as exc:
+        raise ValueError(f"unknown candidate: {name}") from exc
+    return calibrated_damage(
+        candidate, power, attack, defense, level,
+        anchor_damage=BASELINE_DAMAGE, anchor_power=BASELINE_POWER,
+        anchor_attack=BASELINE_ATTACK, anchor_defense=BASELINE_DEFENSE,
+        anchor_level=BASELINE_LEVEL,
+        offset=offset if name == "B_offset_ratio" else 100,
+    )
 
 
-def _candidate_b(power: int, attack: int, defense: int, level: int) -> Fraction:
-    del level
-    return Fraction(1, 2) * power * Fraction(attack + OFFSET_C, defense + OFFSET_C)
-
-
-def _candidate_c(power: int, attack: int, defense: int, level: int) -> Fraction:
-    raw = (Fraction(2 * level, 5) + 2) * power * attack / (50 * defense) + 2
-    calibration = Fraction(25, 23)  # Makes the defined baseline equal 50.
-    return calibration * raw
-
-
-def _candidate_d(power: int, attack: int, defense: int, level: int) -> Fraction:
-    del level
-    return power * Fraction(attack, attack + defense)
+def _wrapper(name: str) -> Callable[[int, int, int, int], Fraction]:
+    return lambda power, attack, defense, level: candidate_damage(name, power, attack, defense, level)
 
 
 CANDIDATES: dict[str, Callable[[int, int, int, int], Fraction]] = {
-    "A_direct_ratio": _candidate_a,
-    "B_offset_ratio_c100": _candidate_b,
-    "C_level_scaled": _candidate_c,
-    "D_bounded_offense_share": _candidate_d,
+    "A_direct_ratio": _wrapper("A_direct_ratio"),
+    "B_offset_ratio_c100": _wrapper("B_offset_ratio"),
+    "C_level_scaled": _wrapper("C_level_scaled"),
+    "D_bounded_offense_share": _wrapper("D_bounded_offense_share"),
 }
 
 
@@ -77,30 +76,36 @@ def run_experiment() -> dict:
             defense = max(1, int(Fraction(anchor, 1) / ratio))
             for level in LEVELS:
                 for power in POWERS:
-                    for name, equation in CANDIDATES.items():
-                        damage = equation(power, attack, defense, level)
-                        results.append({
-                            "scale": scale_name,
-                            "synthetic_range": [low, high],
-                            "attack": attack,
-                            "defense": defense,
-                            "target_attack_defense_ratio": f"{ratio.numerator}/{ratio.denominator}",
-                            "actual_attack_defense_ratio": f"{Fraction(attack, defense).numerator}/{Fraction(attack, defense).denominator}",
-                            "level": level,
-                            "power": power,
-                            "candidate": name,
-                            "damage": _number(damage),
-                        })
+                    for name in RAW_CANDIDATES:
+                        offsets = B_OFFSETS if name == "B_offset_ratio" else (100,)
+                        for offset in offsets:
+                            damage = candidate_damage(name, power, attack, defense, level, offset)
+                            results.append({
+                                "scale": scale_name,
+                                "synthetic_range": [low, high],
+                                "attack": attack,
+                                "defense": defense,
+                                "target_attack_defense_ratio": f"{ratio.numerator}/{ratio.denominator}",
+                                "actual_attack_defense_ratio": f"{Fraction(attack, defense).numerator}/{Fraction(attack, defense).denominator}",
+                                "level": level,
+                                "power": power,
+                                "candidate": name,
+                                "offset_c": offset if name == "B_offset_ratio" else None,
+                                "damage": _number(damage),
+                            })
 
     baseline = {
-        name: _number(equation(
-            BASELINE_POWER,
-            BASELINE_ATTACK,
-            BASELINE_DEFENSE,
-            BASELINE_LEVEL,
+        f"B_offset_ratio_c{offset}": _number(candidate_damage(
+            "B_offset_ratio", BASELINE_POWER, BASELINE_ATTACK,
+            BASELINE_DEFENSE, BASELINE_LEVEL, offset
         ))
-        for name, equation in CANDIDATES.items()
+        for offset in B_OFFSETS
     }
+    baseline.update({
+        name: _number(candidate_damage(name, BASELINE_POWER, BASELINE_ATTACK,
+                                       BASELINE_DEFENSE, BASELINE_LEVEL))
+        for name in ("A_direct_ratio", "C_level_scaled", "D_bounded_offense_share")
+    })
 
     return {
         "experiment": "damage_equation_candidate_sweep",
@@ -112,7 +117,7 @@ def run_experiment() -> dict:
                 name: {"minimum": bounds[0], "maximum": bounds[1]}
                 for name, bounds in SYNTHETIC_SCALES.items()
             },
-            "offset_c": OFFSET_C,
+            "candidate_b_offsets": list(B_OFFSETS),
             "levels": list(LEVELS),
             "move_powers": list(POWERS),
             "attack_defense_ratios": [

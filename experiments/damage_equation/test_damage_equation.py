@@ -7,6 +7,7 @@ from damage_equation import (
     BASELINE_LEVEL,
     BASELINE_POWER,
     CANDIDATES,
+    candidate_damage,
     run_experiment,
 )
 
@@ -18,6 +19,15 @@ class DamageEquationExperimentTests(unittest.TestCase):
                 equation(BASELINE_POWER, BASELINE_ATTACK, BASELINE_DEFENSE, BASELINE_LEVEL),
                 Fraction(50),
             )
+
+    def test_candidate_b_offset_sweep_uses_shared_anchor_calibration(self):
+        report = run_experiment()
+        rows = [r for r in report["results"]
+                if r["scale"] == "compact" and r["target_attack_defense_ratio"] == "1/1"
+                and r["level"] == 50 and r["power"] == 100 and r["candidate"] == "B_offset_ratio"]
+        self.assertEqual({r["offset_c"] for r in rows}, {0, 25, 50, 71, 100, 143, 200, 400})
+        for offset in (0, 25, 50, 71, 100, 143, 200, 400):
+            self.assertEqual(candidate_damage("B_offset_ratio",100,100,100,50,offset),Fraction(50))
 
     def test_power_is_monotonic_for_all_candidates(self):
         for equation in CANDIDATES.values():
