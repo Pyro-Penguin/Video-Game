@@ -44,6 +44,7 @@ After these, use the task-specific references below.
 - [Types and Villages](docs/world/TYPES_AND_VILLAGES.md) — candidate type inventory.
 - [Clans and Abilities](docs/world/CLANS_AND_ABILITIES.md) — current partial clan concepts.
 - [Creature Design](docs/creatures/CREATURE_DESIGN.md) — creature and progression ideas.
+- [Original Creature Roster Draft](docs/creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md) — five provisional original creatures and CLI-ready stat/move inputs; not approved balance data.
 - [Pokémon Final-Stage Baseline Data Audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md) — Gen I–IX final-stage stat distribution, simplified Level-100 comparison, primary-type signatures, and separate transformation-layer implications; research only.
 - [Player Character and Classes](docs/player/PLAYER_CHARACTER_AND_CLASSES.md) — player combat role and class concepts.
 - [Exploration and Capture](docs/world/EXPLORATION_AND_CAPTURE.md) — Portal Gauntlet, traversal, puzzles, and capture ideas.
