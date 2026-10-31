@@ -15,6 +15,7 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 - [Battle Overview](docs/battle/BATTLE_OVERVIEW.md)
 - [Battle Format Decision Framework](docs/battle/BATTLE_FORMAT_DECISION.md)
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md)
+- [Pokémon Final-Stage Baseline Data Audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md)
 - [Damage Model](docs/battle/DAMAGE_MODEL.md)
 - [Damage Equation Decision Brief](docs/battle/DAMAGE_EQUATION_DECISION_BRIEF.md)
 - [Damage Equation Comparison Experiment](experiments/damage_equation/README.md)
