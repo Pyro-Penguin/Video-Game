@@ -1,6 +1,6 @@
 # Battle Rules Decision Checklist
 
-**Status:** Open decision register. Recommendations are not approved rules.
+**Status:** Open decision register. Recommendations are not approved rules. A bounded pure-Python simulation harness now exists under `experiments/battle_sim/`; its assumptions are fixtures, not approved rules.
 **Purpose:** Resolve the minimum coherent ruleset for a standalone local battle simulator. This is not a Unity implementation plan.
 
 ## How to use this checklist
