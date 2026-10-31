@@ -19,7 +19,7 @@ See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experi
 
 ### Current provisional damage decisions (2026-10-31)
 
-D-022 records the 4–6-hit neutral pacing gate, 1.40×–1.80× 2:1 specialization envelope (evaluated across the full tested Defense band), ordinary-power no-full-health-OHKO screen, monotonicity, floored pass/fail behavior, and the synthetic working envelope Attack 200–400 / Defense 200–350 / Vitality 250–500. D-023 records derived-stat/Vitality-only level treatment and Level-100 competitive normalization. D-024 records c≈143 as the preferred Candidate B narrowing point, with c=100 retained as the stronger-specialization comparison. All three are **Provisional**; no final equation or offset is selected.
+D-022 records the 4–6-hit neutral pacing gate, 1.40×–1.80× 2:1 specialization envelope (evaluated across the full tested Defense band), ordinary-power no-full-health-OHKO screen, monotonicity, floored pass/fail behavior, and the synthetic working envelope Attack 200–400 / Defense 200–350 / Vitality 250–500. D-023 records derived-stat/Vitality-only level treatment and Level-100 competitive normalization. D-024 records c=143 as the exact sampled Candidate B starting point for narrowing, not a locked gameplay constant, with c=100 retained as the stronger-specialization comparison. All three are **Provisional**; no final equation or offset is selected.
 
 Remaining Priority 1 work is deliberately narrow:
 1. **Resolved by D-025:** Candidate B c=400 fails the provisional specialization gate. The original report's 1.429× value was not the full-band minimum, and the gate now uses floored damage ratios across the registered Defense profiles.

@@ -45,7 +45,7 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 2. Encode those approved creature/move inputs in a JSON fixture with explicit provenance and assumptions.
 3. Build the text-only CLI battle runner on the existing pure-Python harness and injected DamageModel seam. Keep it bounded; no Unity/C# runtime work.
 4. Run 10 manual CLI battles, record observations, and check all-pairs creature matchups for degenerate TTK outcomes.
-5. Use playtest evidence to confirm or revise D-022 gates and then decide whether c=100, c=143, or an optional c=200 best matches the intended specialization feel. No final formula selection before that evidence.
+5. Use playtest evidence to confirm or revise D-022 gates and then decide whether c=100, the c=143 starting point, or an optional c=200 best matches the intended specialization feel. Treat c=143 as a sampled starting point, not a locked constant. No final formula selection before that evidence.
 6. Keep commander-defeat and team-wipe as separate outcome flags under D-020. Do not expand runtime scope.
 
 ## Verification Boundary
