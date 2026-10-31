@@ -1,6 +1,8 @@
 import unittest
 from dataclasses import replace
 
+from demo_scenario import run_demo_scenario
+
 from battle_sim import (
     ACTIVE, DEFEATED, RESERVE, ActionCommand, BattleResolver,
     BattleValidationError, MoveDefinition, make_test_battle, make_test_moves,
@@ -195,6 +197,19 @@ class BattleSimulationTests(unittest.TestCase):
         )
         with self.assertRaises(BattleValidationError):
             self.resolver.resolve_turn(self.state, commands[:-1], self.moves)
+
+    def test_two_turn_scenario_trace_records_reserve_and_invalidated_action(self):
+        trace = run_demo_scenario()
+        self.assertEqual([turn["turn"] for turn in trace["turns"]], [1, 2])
+        self.assertEqual(trace["final_state"]["turn_number"], 3)
+        first_events = trace["turns"][0]["events"]
+        self.assertTrue(any(event["event_type"] == "ReserveDeployed" for event in first_events))
+        self.assertTrue(any(
+            event["event_type"] == "ActionSkipped"
+            and event["detail"] == "actor_defeated_before_resolution"
+            for event in first_events
+        ))
+        self.assertEqual(trace["status"], "synthetic deterministic fixture; not an approved game ruleset")
 
     def test_finished_battle_rejects_more_turns(self):
         moves = {"strike": MoveDefinition("strike", 40, 0), "finisher": MoveDefinition("finisher", 120, 0)}
