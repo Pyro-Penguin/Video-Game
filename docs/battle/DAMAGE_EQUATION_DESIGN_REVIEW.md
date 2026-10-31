@@ -21,8 +21,8 @@ Five profiles and Vitality values remain synthetic test coordinates, not accepte
 | Monotonicity | **0 violations**: Attack up cannot lower damage; Defense up cannot raise damage; Vitality up cannot lower TTK | Retain as a hard test invariant; confirm coverage before acceptance |
 | Strict pairwise reversal under flooring | **0 strict reversals** | Pass: 0/4,125. Separately, 122 raw ties became strict floored relations and 317 strict raw relations became ties |
 | Pairwise tie changes | Report count and direction; no numeric cap currently pre-registered | 439 total relation changes; decide whether tie creation/removal needs a bound |
-| Combined-stat raw interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 660 nonzero; maximum absolute residual 5 percentage points |
-| Combined-stat floored-TTK interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 721 nonzero; maximum absolute residual 2 hits |
+| Combined-stat log-space damage interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 120 nonzero; maximum absolute residual 0.012399 natural-log units. Defined as log(combined ratio) minus summed isolated log ratios. |
+| Combined-stat floored-TTK interaction residual | **No numeric tolerance was pre-registered** | 1,320 residuals; 724 nonzero; maximum absolute residual 2 hits |
 | Isolated-stat TTK screen | **±1 hit is a proposed screen, not a confirmed pre-registered numeric gate** | The brief pre-registered floored TTK for any such tolerance, but did not fix ±1 as the accepted limit. Team must accept/revise the proposed ±1 isolated-stat screen |
 | Combined-stat interaction TTK residual | **Separate tolerance required; no limit pre-registered** | Observed maximum residual is 2 hits, exceeding ±1 if someone were to apply that screen indiscriminately. Decide the combined-stat tolerance separately |
 | Matchup TTK variance | **No numeric acceptance bound pre-registered** | Do not infer a ±1-hit matchup-variance pass. Set a bound or leave descriptive |
