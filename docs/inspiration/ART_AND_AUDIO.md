@@ -10,6 +10,9 @@
 
 These are references for qualities and mood, not instructions to reproduce any artist's or game's protected style. The project needs its own visual identity.
 
+## Image Reference Library
+See [Art Direction Reference Library](art-direction-references/README.md). Add image references in that folder; record source/creator, rights status, what to study, and the original project application. Treat collected images as research references, not approved assets.
+
 ## Audio
 Adaptive music is a candidate feature:
 - Peaceful exploration music transitions into more energetic battle music.
