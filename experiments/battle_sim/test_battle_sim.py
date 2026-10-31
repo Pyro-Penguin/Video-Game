@@ -321,6 +321,37 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertEqual(outcome.winner_side_id, "A")
         self.assertIn("commander_defeated", outcome.reason)
 
+    def test_different_enabled_conditions_can_produce_a_draw(self):
+        units = tuple(
+            replace(u, vitality=0, status=DEFEATED)
+            if u.unit_id == "B-C" or (u.side_id == "A" and u.kind == "monster")
+            else u
+            for u in self.state.units
+        )
+        facts = build_battle_facts(replace(self.state, units=units))
+        outcome = ConfiguredVictoryPolicy(
+            commander_defeat=True, monster_team_wipe=True
+        ).evaluate(facts)
+        self.assertTrue(outcome.is_finished)
+        self.assertTrue(outcome.is_draw)
+        self.assertIsNone(outcome.winner_side_id)
+        self.assertIn("A:monster_team_wiped", outcome.reason)
+        self.assertIn("B:commander_defeated", outcome.reason)
+
+    def test_disabled_victory_conditions_do_not_end_battle(self):
+        units = tuple(
+            replace(u, vitality=0, status=DEFEATED)
+            if u.kind == "commander" or u.kind == "monster" else u
+            for u in self.state.units
+        )
+        facts = build_battle_facts(replace(self.state, units=units))
+        outcome = ConfiguredVictoryPolicy(
+            commander_defeat=False, monster_team_wipe=False
+        ).evaluate(facts)
+        self.assertFalse(outcome.is_finished)
+        self.assertFalse(outcome.is_draw)
+        self.assertIsNone(outcome.winner_side_id)
+
     def test_preexisting_dual_commander_defeat_state_classifies_as_draw(self):
         units = tuple(
             replace(u, vitality=0, status=DEFEATED)
