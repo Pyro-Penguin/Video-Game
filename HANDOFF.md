@@ -47,7 +47,7 @@ The Gen I–IX CSV audit isolates 546 final-stage entries (mean BST 509.2) and 4
 ## Expanded experiment findings
 
 - The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target; D-016 records the corrected 60 anchor as Provisional, with explicit revisit conditions.
-- Candidate B offsets c=100, 143, 200, and 400 pass the current provisional neutral TTK, 2:1 specialization, and no-full-HP-one-hit numeric gates. No offset is selected.
+- Under the corrected profile-wide specialization gate, B offsets c=100, 143, and 200 pass the current provisional neutral TTK, specialization, and no-full-HP-one-hit numeric gates. c=400 fails the 1.4× floor at the high-pressure Defense-200 profile (4/3); c=50 and c=71 exceed the 1.8× ceiling at one or more profiles. No offset is selected.
 - c=143 preserves c=100's floored matchup ordering most closely among tested alternatives (1.62% of matchup-pair orderings change); c=400 compresses more but changes ordering more (17.19%).
 - Flooring changed 439/4,125 pairwise relations: 122 raw ties became strict floored relations, 317 strict raw relations became ties, and zero strict order reversals occurred.
 - Direct level scaling causes severe low-level TTK when endgame derived stats are held constant. The Level-1 result is not a story prediction; it isolates sensitivity to the direct level term.
