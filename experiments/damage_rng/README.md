@@ -1,6 +1,6 @@
 # Damage RNG Experiment
 
-A standalone Python 3.10+ experiment comparing six damage randomization models. It uses only the Python standard library and does not choose a final game RNG rule.
+A standalone Python 3.10+ experiment comparing six damage randomization models. The game has confirmed inclusive 85%–105% damage-roll bounds (D-027), but this experiment does not select the distribution, granularity, draw cadence, normalization, or final damage pipeline.
 
 ## Requirements
 - macOS
@@ -43,3 +43,7 @@ Use `--stab 1 --effectiveness 1` for the required baseline single-hit comparison
 
 ## Limitations
 The experiment isolates damage RNG. It does not model the full battle damage formula, defense, move power, stat stages, abilities, status, shields, multi-hit moves, or turn economy. Repeated-hit simulations assume constant pre-RNG damage and independent rolls. Results are evidence about these models, not proof of balance, battle duration, or a final design choice.
+
+## Current design decision
+
+D-027 confirms the allowed damage RNG multiplier bounds as 85%–105%, inclusive. The `uniform_85_105_raw` and `uniform_85_105_normalized` variants are distinct hypotheses, not interchangeable implementations: normalization changes the effective multiplier bounds. The exact distribution, integer versus continuous sampling, per-hit/action/target cadence, and flooring order remain unresolved. Do not treat any one variant as selected until those details are explicitly decided.
