@@ -35,6 +35,7 @@ After these, use the task-specific references below.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
 - [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — visual research library and attribution guidance.
 - [Proposed Art Direction: Painterly Folklore with Diorama Skies](docs/inspiration/ART_DIRECTION_PROPOSAL.md) — provisional painterly-world / pixel-sky / travel-transition hypothesis and prototype tests.
+- [Five-Style Character Pipeline Integration](docs/inspiration/FIVE_STYLE_CHARACTER_PIPELINE.md) — provisional synthesis of creator-only PBR, gameplay baking, mobile-readable silhouettes, selective outlines, vertex-lighting strategies, Gauntlet emissives, AI content roles, and measurable validation gates.
   - [Character & NPC](docs/inspiration/art-direction-references/Character%20%26%20NPC/README.md)
   - [Creature](docs/inspiration/art-direction-references/Creature/README.md)
   - [Armor & Weapons](docs/inspiration/art-direction-references/Armor%20%26%20Weapons/README.md)

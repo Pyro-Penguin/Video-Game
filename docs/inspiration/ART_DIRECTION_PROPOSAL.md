@@ -1,6 +1,8 @@
 # Proposed Art Direction: Painterly Folklore with Diorama Skies
 
-**Status:** Proposed visual direction for review. Not yet human-accepted, production-approved, or a technical rendering specification.
+**Status:** Reference vocabulary only; superseded as a decision proposal by [Unified Runtime Art Direction](FIVE_STYLE_CHARACTER_PIPELINE.md). Not a production-approved visual direction or technical rendering specification.
+
+> **Decision boundary (2026-10-31):** Retain this document as a catalogue of visual ideas and environmental references, not as a set of approved rendering decisions. Do not treat a pixel-art sky, high-saturation transition, or hybrid painterly/pixel compositing as mandatory. The current leading hypothesis is sleek, cool, painterly stylized 3D with one shared character-rendering pipeline and creature-first mobile readability. Validate it with a six-combatant prototype before adding stylistic layers.
 
 ## Executive assessment
 
