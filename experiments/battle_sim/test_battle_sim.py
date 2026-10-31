@@ -109,7 +109,7 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertTrue(any(e.event_type == "ReserveDeployed" for e in result.events))
 
     def test_mutual_commander_knockout_is_a_draw(self):
-        moves = {"finisher": MoveDefinition("finisher", 120, 0)}
+        moves = {"strike": MoveDefinition("strike", 40, 0), "finisher": MoveDefinition("finisher", 120, 0)}
         targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
                    "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
         commands = [
