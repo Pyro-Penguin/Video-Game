@@ -181,6 +181,52 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertEqual(next(u for u in result.state.units if u.unit_id == "B-M1").status, DEFEATED)
         self.assertTrue(any(e.event_type == "ReserveDeployed" for e in result.events))
 
+    def test_multiple_reserves_require_and_honor_explicit_selection(self):
+        extra_reserve = replace(
+            next(u for u in self.state.units if u.unit_id == "B-R1"),
+            unit_id="B-R2",
+            roster_order=4,
+        )
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        ) + (extra_reserve,)
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M2", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(
+            state, commands, self.moves, reserve_selections={"B": ("B-R2",)}
+        )
+        final_units = {u.unit_id: u for u in result.state.units}
+        self.assertEqual(final_units["B-R2"].status, ACTIVE)
+        self.assertEqual(final_units["B-R1"].status, RESERVE)
+        deployed = [e.target_id for e in result.events if e.event_type == "ReserveDeployed"]
+        self.assertEqual(deployed, ["B-R2"])
+
+    def test_multiple_reserves_without_selection_are_rejected(self):
+        extra_reserve = replace(
+            next(u for u in self.state.units if u.unit_id == "B-R1"),
+            unit_id="B-R2",
+            roster_order=4,
+        )
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        ) + (extra_reserve,)
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M2", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
+            for command in commands_for(state, targets)
+        ]
+        with self.assertRaises(BattleValidationError):
+            self.resolver.resolve_turn(state, commands, self.moves)
+
     def test_commander_knockout_ends_battle_with_other_side_winning(self):
         moves = {"strike": MoveDefinition("strike", 40, 0),
                  "finisher": MoveDefinition("finisher", 120, 0)}
