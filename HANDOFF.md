@@ -25,7 +25,7 @@ The pure-Python harness under experiments/battle_sim/ now exercises:
 - Simultaneous command locking against the turn-start state.
 - Priority then Speed ordering, with a deterministic unit-ID tie fallback used only as a fixture.
 - Skipping an action if its actor or target is defeated before resolution.
-- Immediate knockout application, end-of-turn automatic reserve deployment, and commander-defeat / mutual-defeat draw handling.
+- Immediate knockout application, end-of-turn automatic reserve deployment, and commander-defeat outcomes. A pre-existing dual-commander-defeat state is classified as a draw, but sequential single-target actions cannot generate mutual KO while defeated actors lose queued actions.
 
 The fixture is one commander, two active monsters, and one reserve per side. Damage is fixed test data, not the damage formula. Automatic replacement, commander defeat, and unit-ID tie-breaking are explicit test assumptions. The harness does not implement five-to-three team preview, final target rules, types, RNG, status, switching, or Unity.
 
