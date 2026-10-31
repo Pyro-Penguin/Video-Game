@@ -134,6 +134,29 @@ jobs:
               assert all(battle["final_state"]["is_finished"] for battle in payload["battles"])
           print("Original creature draft pipeline smoke tests passed at c=100 and c=143; no balance conclusion is implied.")
           PY
+      - name: Generate original creature pairwise screens
+        working-directory: experiments/battle_sim
+        run: |
+          python draft_roster_screen.py --fixture ../../fixtures/original_creatures_draft.json --offset 100 --output /tmp/roster-screen-c100.json
+          python draft_roster_screen.py --fixture ../../fixtures/original_creatures_draft.json --offset 143 --output /tmp/roster-screen-c143.json
+          python - <<'PY'
+          import json
+          expected = {100: (192, 25), 143: (194, 25)}
+          for offset, (numerator, denominator) in expected.items():
+              payload = json.load(open(f"/tmp/roster-screen-c{offset}.json", encoding="utf-8"))
+              assert payload["pair_count"] == 25
+              assert payload["overall"]["average_hits_numerator"] == numerator
+              assert payload["overall"]["average_hits_denominator"] == denominator
+              assert "not actual match TTK" in payload["status"]
+          print("Original creature 25-matchup screens passed at c=100 and c=143; diagnostic only.")
+          PY
+      - name: Publish original creature pairwise screens
+        uses: actions/upload-artifact@v4
+        with:
+          name: provisional-original-creature-pairwise-screens
+          path: /tmp/roster-screen-c*.json
+          if-no-files-found: error
+          retention-days: 30
       - name: Publish original creature draft traces
         uses: actions/upload-artifact@v4
         with:
