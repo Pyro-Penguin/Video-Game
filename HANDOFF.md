@@ -24,7 +24,7 @@ The pure-Python harness under experiments/battle_sim/ now exercises:
 - Injectable pure DamageModel interface; fixed damage remains a test-only implementation.
 - Validation that every active unit submits exactly one legal command.
 - Simultaneous command locking against the turn-start state.
-- Priority then effective Speed ordering. The confirmed exact-Speed-tie hierarchy is ability tie advantage → greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat → greater Champion relationship → hardware/tap input-registration priority. The current unit-ID fallback remains fixture-only; the hierarchy is recorded in D-018 but is not yet implemented in the harness.
+- Priority then effective Speed ordering. The confirmed exact-Speed-tie hierarchy (D-021) is greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat. Ability tie advantage, Champion relationship, and hardware/tap input-registration priority are excluded. The current unit-ID fallback remains fixture-only; the hierarchy is recorded but is not yet implemented in the harness.
 - Skipping an action if its actor or target is defeated before resolution.
 - Immediate knockout application and end-of-turn reserve deployment. D-019 now requires auto-deploy when exactly one legal reserve exists and player selection when multiple legal reserves exist; the current fixture has exactly one reserve and therefore exercises only the automatic case. D-020 makes victory classification encounter-configurable; the current harness still implements only its commander-defeat fixture policy. A pre-existing dual-commander-defeat state is classified as a draw, but sequential single-target actions cannot generate mutual KO while defeated actors lose queued actions.
 
@@ -42,7 +42,7 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 1. Verify CI for the current battle-harness commits, including all battle simulation tests and documentation validation. Read back the exact files and inspect failures before proceeding.
 2. Fix any implementation/test issues found by CI. Add regression tests for state invariants or event-order edge cases if needed.
 3. Review the two-turn scenario trace artifact; expand into a longer scripted match only after the phase and outcome assumptions are reviewed.
-4. Implement the now-recorded rules without collapsing them into fixture assumptions: exact-Speed-tie hierarchy (D-018), multi-reserve player choice versus single-reserve auto-deploy (D-019), encounter-configurable victory policy (D-020), then explicit target categories and multi-target invalidation. Add end-of-turn phase markers before status/residual effects. Keep commander action/target rules open. True simultaneous damage remains unnecessary; sequential effects followed by a batched victory check remain the intended architecture.
+4. Implement the now-recorded rules without collapsing them into fixture assumptions: exact-Speed-tie hierarchy (D-021), multi-reserve player choice versus single-reserve auto-deploy (D-019), encounter-configurable victory policy (D-020), then explicit target categories and multi-target invalidation. Add end-of-turn phase markers before status/residual effects. Keep commander action/target rules open. True simultaneous damage remains unnecessary; sequential effects followed by a batched victory check remain the intended architecture.
 5. Continue the damage-equation review and shared experiment-configuration work as a parallel track. Do not block state-machine correctness on final formula selection, but keep damage behind a replaceable pure interface.
 6. Only after the rules contract is stable, port the agreed pure-domain contract to C# with differential test vectors. Do not create a Unity project until its baseline/version is explicitly established.
 
@@ -51,7 +51,7 @@ The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
-- Unit-ID ordering is an approved competitive Speed tie-break; it is fixture-only. D-018 is the confirmed user hierarchy.
+- Unit-ID ordering is an approved competitive Speed tie-break; it is fixture-only. D-021 is the confirmed user hierarchy.
 - The current automatic reserve implementation supports the one-reserve fixture only. D-019 governs multi-reserve selection.
 - Commander defeat is not the universal victory condition; D-020 requires encounter-specific policy.
 - Fixed fixture damage is the selected damage equation.
