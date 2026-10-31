@@ -37,7 +37,7 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 - Pokémon Generation IX remains an audit-only reference harness, not a selectable candidate.
 - No damage formula, stat range, RNG model, or final numeric acceptance gate has been approved.
 
-## Immediate Next Actions
+## Highest-Priority Next Work
 1. Verify CI for the current battle-harness commits, including all battle simulation tests and documentation validation. Read back the exact files and inspect failures before proceeding.
 2. Fix any implementation/test issues found by CI. Add regression tests for state invariants or event-order edge cases if needed.
 3. Add a small multi-turn scenario fixture and a deterministic trace artifact so the complete state progression can be reviewed, not just isolated turns.
@@ -47,6 +47,13 @@ Decision D-017 authorizes this bounded harness in parallel with the damage-equat
 
 ## Verification Boundary
 The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934461aad7299ff05 passed all seven CI jobs in run 41160522573. The later documentation refresh passed all seven jobs in run 41160615690. The newly added battle harness and its current documentation have not yet been tested by CI; verify the workflow run for the exact latest commit before describing them as Tested.
+
+## Do Not Assume
+- The fixture composition is the final interpretation of five registered monsters / three selected monsters.
+- Unit-ID ordering is an approved competitive Speed tie-break.
+- Automatic end-of-turn reserve entry or commander defeat is final for every encounter.
+- Fixed fixture damage is the selected damage equation.
+- A production C# runtime or Unity project exists.
 
 ## Guardrails
 - Repository is shared project memory; conversations are temporary.
