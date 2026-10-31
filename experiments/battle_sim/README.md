@@ -23,7 +23,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 | Action economy | Every active unit submits exactly one command | Current broad direction; detailed player action set unresolved |
 | Selection | All commands validate against the same turn-start state | Exercises simultaneous selection |
 | Resolution | Priority descending, then Speed descending | Broad direction; exact ties unresolved |
-| Exact tie | Greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat | Confirmed by D-021; ability, Champion relationship, and hardware/input priority excluded. Comparison details and all-equal fallback remain open. Unit ID ascending is fixture-only. |
+| Exact tie | Greater type effectiveness → greater % HP remaining → greater current HP → greater maximum HP stat | D-021 is implemented as an ordering comparator. Callers may supply an exact positive effectiveness ratio per action; when either value is undefined or values are equal, comparison advances to the next criterion. HP percentage uses exact cross-multiplication. Unit ID ascending is fixture-only. Multi-target action semantics remain unsupported. |
 | Targeting | One opposing active unit | Simplifies core sequencing; no ally/area/self targeting |
 | Damage | Positive integer supplied by an injected DamageModel; current FixedDamageFixture reads MoveDefinition fixture damage | Placeholder fixture value, not the damage formula |
 | Invalidated actor/target | Queued action is skipped; no retarget | Matches current D-006 direction for defeated actors/targets |
@@ -37,7 +37,7 @@ The test fixture contains a commander plus three selected monsters per side (two
 
 1. Validate the state, move definitions, and complete command set.
 2. Lock all commands against the same start-of-turn snapshot.
-3. Order commands by priority, Speed, then the explicit fixture tie-break.
+3. Order commands by priority, effective Speed, then D-021 criteria. Effectiveness is compared only when both commands provide a defined ratio; equal/undefined values advance to HP percentage, current HP, and maximum HP. Unit ID is the final fixture-only fallback.
 4. Resolve actions sequentially. A defeated actor cannot act; an unavailable target is not retargeted.
 5. Apply knockouts immediately to the working state.
 6. Deploy reserves into vacancies at end of turn.
