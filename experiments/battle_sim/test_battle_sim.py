@@ -328,6 +328,27 @@ class BattleSimulationTests(unittest.TestCase):
         with self.assertRaises(BattleValidationError):
             self.resolver.resolve_turn(self.state, commands[:-1], self.moves)
 
+    def test_turn_event_log_marks_phases_in_pipeline_order(self):
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        result = self.resolver.resolve_turn(
+            self.state, commands_for(self.state, targets), self.moves
+        )
+        phases = [
+            (event.event_type, event.detail)
+            for event in result.events
+            if event.event_type in ("PhaseStarted", "PhaseCompleted")
+        ]
+        self.assertEqual(phases, [
+            ("PhaseStarted", "action_resolution"),
+            ("PhaseCompleted", "action_resolution"),
+            ("PhaseStarted", "end_of_turn_replacement"),
+            ("PhaseCompleted", "end_of_turn_replacement"),
+            ("PhaseStarted", "victory_check"),
+            ("PhaseCompleted", "victory_check"),
+        ])
+        self.assertEqual(result.events[-1].event_type, "TurnCompleted")
+
     def test_two_turn_scenario_trace_records_reserve_and_invalidated_action(self):
         trace = run_demo_scenario()
         self.assertEqual([turn["turn"] for turn in trace["turns"]], [1, 2])
