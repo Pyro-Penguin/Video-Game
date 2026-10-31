@@ -1,6 +1,6 @@
 # Battle Format Decision Framework
 
-**Status:** Analysis and recommendation only. No format is approved by this document.
+**Status:** Historical decision framework. The competitive roster/field composition is now Confirmed in D-003; this document preserves the reasoning and tracks remaining encounter-format questions.
 
 ## Why This Decision Comes First
 The current notes mix roster size, active field size, player participation, and reserve count. These are separate variables. A prototype cannot be specified until each is explicit.
@@ -34,17 +34,18 @@ The current notes mix roster size, active field size, player participation, and 
 9. **Action economy:** Does the player receive one action, multiple actions, or issue commands to companions?
 10. **Terminology:** Does the format name count all active units or monsters only?
 
-## Recommendation for the First Local Rules Prototype
-Use a deliberately explicit test fixture, not a public-facing final format:
+## Confirmed Competitive Target (D-003)
 
-- Each side has one player character and a roster of three monsters.
-- Two monsters may be active alongside the player.
-- One monster is reserve.
-- The player is a combatant and match loss occurs when the player is defeated.
-- A monster knockout opens a replacement decision from the reserve.
-- All actions are selected before simultaneous resolution.
+The current competitive target is:
+- Register five monsters for team preview.
+- Select three monsters.
+- Field the commander/player character separately from the monster selection.
+- Field two of the three selected monsters at once.
+- Hold the third selected monster as reserve.
 
-This is a useful first test because it exercises player survival, monster survival, reserve replacement, targeting, and simultaneous resolution. It is consistent with the previously discussed commander + two active monsters + one reserve concept. It is **not** a final rules decision; it should be revised if the intended meaning of 3v3 is three monsters per side.
+Therefore, the per-side match composition is one commander, two active monsters, and one reserve monster. The commander is not counted among the three selected monsters. The shorthand "3v3" must not obscure these exact counts.
+
+This is a confirmed competitive target. It does not force every story encounter to use the same composition; the engine must accept configurable encounter compositions.
 
 ## Team Preview and Timer Notes
 The notes specify bringing five monsters and selecting three, with a 64-second preview. That can coexist with the prototype above only if the player is separate from the three selected monsters and the selected roster contains two active monsters plus one reserve. It does not naturally coexist with a three-monster active field plus player.
