@@ -33,7 +33,8 @@ After these, use the task-specific references below.
 - [Stat System Research Plan](docs/STAT_SYSTEM_RESEARCH_PLAN.md) — stat ownership, normalization questions, and next experiment.
 - [Mechanic Integration Review](docs/inspiration/MECHANIC_INTEGRATION_REVIEW.md) — synthesis of supplied Unciv, OpenRCT2, A Dark Room, Monument Valley, customization, Disco Elysium, Fable, and Shenmue research; reference analysis only.
 - [World and Story](docs/world/WORLD_AND_STORY.md) — narrative and setting concepts.
-- [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — drop visual reference images into this folder and document source, attribution, and the design qualities being studied.
+- [Art Direction Reference Library](docs/inspiration/art-direction-references/README.md) — visual research library and attribution guidance.
+- [Proposed Art Direction: Painterly Folklore with Diorama Skies](docs/inspiration/ART_DIRECTION_PROPOSAL.md) — provisional painterly-world / pixel-sky / travel-transition hypothesis and prototype tests.
   - [Character & NPC](docs/inspiration/art-direction-references/Character%20%26%20NPC/README.md)
   - [Creature](docs/inspiration/art-direction-references/Creature/README.md)
   - [Armor & Weapons](docs/inspiration/art-direction-references/Armor%20%26%20Weapons/README.md)

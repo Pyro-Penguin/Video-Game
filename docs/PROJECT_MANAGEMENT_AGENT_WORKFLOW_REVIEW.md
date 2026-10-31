@@ -124,3 +124,20 @@ The five-creature draft is a pipeline-ready input proposal, not a balance conclu
 ## Success metric
 
 Optimize for **verified, human-accepted milestone outcomes per unit of human attention**, not agent count, generated lines, number of commits, or raw request volume.
+
+
+## Implementation follow-through (2026-10-31)
+
+The next implementation is intentionally smaller than the supplied 24-file scaffold:
+
+- Keep the existing collaboration protocol as the process authority and extend the root `AGENTS.md` only with practical loop control, instruction-source hygiene, and quota-aware operating guidance.
+
+- Add one local `scripts/validate.sh` entry point for the exact current Python and documentation checks. Keep the existing GitHub Actions workflow as the CI authority; do not duplicate it with a second generic workflow.
+
+- Add documentation path-scoped guidance because `docs/` is an active area. The existing Python path-scoped instructions remain in place.
+
+- Do not add Copilot adapter generation, hooks, provider quota YAML, generic skills/prompts, Unity/domain instructions, or an oracle contract before a concrete client/runtime and stable damage contract require them.
+
+- The success criterion remains verified, human-accepted milestone progress per unit of human attention. A second model is useful for targeted independent review of high-risk work, not as a mandatory step for every edit.
+
+- Art-reference work is allowed as a bounded parallel workstream. The proposed painterly-world / pixel-sky direction is documented separately as a proposal and requires visual prototype comparison and human acceptance before becoming a production specification.
