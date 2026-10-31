@@ -17,11 +17,11 @@ The script writes `report.json` in this directory. Use `--output /path/to/report
 ## Candidate families
 
 - A: direct multiplicative attack/defense ratio.
-- B: offset ratio with synthetic offset c=100.
+- B: offset ratio with sampled synthetic offsets c=0, 25, 50, 71, 100, 143, 200, and 400. Each offset is independently calibrated to the experiment's own baseline.
 - C: level-scaled cartridge-style structure.
 - D: bounded offense-share ratio.
 
-Each candidate is calibrated to the same baseline (50 damage at Level 50, Power 100, Attack 100, Defense 100) so the sweep compares curve behavior rather than arbitrary starting scale. The calibration constants are experiment controls, not recommendations.
+Each candidate is calibrated to the same baseline (50 damage at Level 50, Power 100, Attack 100, Defense 100) so the sweep compares curve behavior rather than arbitrary starting scale. Raw candidate functions and the exact calibration helper are shared with the stat-range sensitivity experiment in experiments/common/damage_candidates.py; each experiment passes its own anchor explicitly. The calibration constants and offsets are experiment controls, not recommendations.
 
 ## Synthetic inputs
 
