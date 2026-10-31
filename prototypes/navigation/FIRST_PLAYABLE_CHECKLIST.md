@@ -113,7 +113,9 @@ Soft reset is out of scope. The supplied reset test is a candidate and depends o
 ## Additional implementation observations
 
 - PathWalker faces along movement direction. Node.Facing is currently unused at runtime; this is a schema observation, not a demonstrated failure.
-- The supplied PathWalker has a final-edge endpoint issue: it clears the graph and raises Arrived before assigning the exact final node position to transform.position. Correct this before scene use.
+- PathWalker now snaps transform.position to each completed edge's destination before advancing state; on final completion it snapshots the Arrived delegate, clears the graph, then invokes the callback. The source-level correction is committed but has not been compiled or verified in Unity.
+- Empty-path contract: SetPath with a zero-length span is a no-op (IsWalking false; Arrived does not fire). The controller must handle already-at-destination before calling SetPath.
+- Add a Play Mode regression test that subscribes to Arrived and asserts the observed transform equals the final destination position. Confirm it fails on the pre-fix implementation and passes on the corrected implementation. The proposed test sketch still needs a concrete BuildLinearGraph fixture matching the actual domain API.
 - The supplied PathWalker and ResetReloadTests have not been compiled against the actual Unity version/domain API.
 - No first-playable scene, prefab, debug controls, or condition-provider implementation is included in this repository update.
 
