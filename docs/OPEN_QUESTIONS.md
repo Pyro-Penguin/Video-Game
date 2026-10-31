@@ -11,21 +11,21 @@ Questions are grouped in the canonical project-wide priority order defined only 
 6. Which modifiers are additive versus multiplicative?
 7. Where exactly does integer truncation occur?
 8. What is the minimum non-immune damage, and how is immunity handled?
-9. Which RNG distribution is selected, and is it rolled per action, target, or hit? Keep this separate from the deterministic equation.
+9. D-027 confirms inclusive 85%–105% damage-roll bounds. Which distribution (uniform/weighted), sampling granularity (integer/continuous), draw cadence (per hit/action/target), normalization, and exact placement relative to modifiers/flooring are selected? Keep these separate from the deterministic base equation.
 10. How are multi-hit damage, recoil, drain, shields, and interruption handled?
 
-See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
+See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority. The 85%–105% bounds are confirmed by D-027, but the sampling distribution and damage-pipeline semantics remain unresolved.
 
 
 ### Current provisional damage decisions (2026-10-31)
 
-D-022 records the 4–6-hit neutral pacing gate, 1.40×–1.80× 2:1 specialization envelope (evaluated across the full tested Defense band), ordinary-power no-full-health-OHKO screen, monotonicity, floored pass/fail behavior, and the synthetic working envelope Attack 200–400 / Defense 200–350 / Vitality 250–500. D-023 records derived-stat/Vitality-only level treatment and Level-100 competitive normalization. D-024 records c=143 as the exact sampled Candidate B starting point for narrowing, not a locked gameplay constant, with c=100 retained as the stronger-specialization comparison. All three are **Provisional**; no final equation or offset is selected.
+D-022 retains provisional formula-family screens (1.40×–1.80× floored 2:1 specialization across the Defense band, no ordinary Power-100 full-health OHKO absent an explicit mechanic, monotonicity, and the synthetic Attack 200–400 / Defense 200–350 / Vitality 250–500 envelope). Its former 4–6-hit pacing clause is superseded by confirmed D-026: roughly 2–3-hit neutral offensive exchanges, with a guaranteed 2HKO against a representative defensive core as the wallbreaker benchmark, 3HKO acceptable with support, and unsupported guaranteed 4HKO indicating inadequate breaking pressure. D-027 confirms inclusive 85%–105% RNG bounds, while distribution, granularity, draw cadence, normalization, and floor order remain open. D-028 retains the 60-damage anchor for experiment parity only; it is not a gameplay calibration. D-023's level treatment and D-024's c=143 narrowing preference remain provisional. No final equation or offset is selected.
 
 Remaining Priority 1 work is deliberately narrow:
-1. **Resolved by D-025:** Candidate B c=400 fails the provisional specialization gate. The original report's 1.429× value was not the full-band minimum, and the gate now uses floored damage ratios across the registered Defense profiles.
-2. Narrow the next comparison to c=100 and c=143. Retain c=200 only if a softer-specialization comparison is still needed to distinguish the desired feel; no broad sweep.
-3. Build a small playable CLI fixture only after 3–5 actual creature stat spreads and 2–3 representative moves each are available. The current creature-design inventory contains no validated five-creature roster. The Light/Shadow stat draft is explicitly unverified and internally inconsistent, so it is not a valid substitute. Use the existing pure battle harness and injected DamageModel seam. This is not Unity/C# runtime work.
-4. Run a bounded set of manual battles and all-pairs creature matchup checks. Treat the 4–6-hit gate as a provisional hypothesis until playtest; synthetic ranges do not prove real roster representativeness.
+1. **Resolved by D-025:** Candidate B c=400 fails the provisional floored specialization gate across the corrected Defense band.
+2. Do not expand the formula or TTK matrix now. First obtain/approve 3–5 original creature stat spreads and 2–3 representative moves each; the current creature-design inventory contains no validated roster, and the Light/Shadow draft remains unverified.
+3. Define the RNG sampling semantics under the confirmed 85%–105% bounds before implementing it in the battle damage pipeline. The existing 85%–100% roll-pacing output is historical only.
+4. Use the existing pure battle harness and injected DamageModel seam for a bounded set of manual battles and matchup checks once valid original inputs and a candidate formula exist. Assess D-026's 2–3-hit pacing and wallbreaker benchmarks against the actual defensive core; do not impose a synthetic all-Defense guaranteed 2HKO gate. This is not Unity/C# runtime work.
 
 The 4,125 pairwise relation count is dimensionally reproducible as 75 matchup/Vitality coordinates × 55 candidate/offset pairs. The separate 2,775 figure is C(75,2) comparisons for one offset comparison. Log-space interaction residuals remain a mathematical diagnostic, not a formula-quality score.
 
