@@ -52,6 +52,11 @@ class ActionCommand:
     # Optional action-vs-target effectiveness supplied by the caller as an exact ratio.
     # None means the action has no defined effectiveness value for tie comparison.
     type_effectiveness: Optional[Tuple[int, int]] = None
+    additional_target_ids: Tuple[str, ...] = ()
+
+    @property
+    def target_ids(self) -> Tuple[str, ...]:
+        return (self.target_id,) + self.additional_target_ids
 
 
 @dataclass(frozen=True)
@@ -346,14 +351,17 @@ def _validate_commands(
             numerator, denominator = command.type_effectiveness
             if numerator <= 0 or denominator <= 0:
                 raise BattleValidationError("type effectiveness ratio must be positive")
-        target = by_id.get(command.target_id)
         actor = by_id[command.actor_id]
-        if target is None or target.status != ACTIVE:
-            raise BattleValidationError(
-                f"target {command.target_id} must be active at command lock"
-            )
-        if target.side_id == actor.side_id:
-            raise BattleValidationError("fixture attacks must target the opposing side")
+        if not command.target_ids or len(command.target_ids) != len(set(command.target_ids)):
+            raise BattleValidationError("an action must have unique target IDs")
+        for target_id in command.target_ids:
+            target = by_id.get(target_id)
+            if target is None or target.status != ACTIVE:
+                raise BattleValidationError(
+                    f"target {target_id} must be active at command lock"
+                )
+            if target.side_id == actor.side_id:
+                raise BattleValidationError("fixture attacks must target the opposing side")
     return command_tuple
 
 
@@ -430,39 +438,41 @@ class BattleResolver:
 
         for command in ordered:
             actor = units[command.actor_id]
-            target = units[command.target_id]
             if actor.status != ACTIVE:
                 events.append(BattleEvent(
-                    "ActionSkipped", actor_id=actor.unit_id, target_id=target.unit_id,
+                    "ActionSkipped", actor_id=actor.unit_id, target_id=command.target_id,
                     detail="actor_defeated_before_resolution",
-                ))
-                continue
-            if target.status != ACTIVE:
-                events.append(BattleEvent(
-                    "ActionSkipped", actor_id=actor.unit_id, target_id=target.unit_id,
-                    detail="target_not_active_at_resolution",
                 ))
                 continue
 
             move = moves[command.move_id]
-            calculated_damage = self._damage_model.calculate_damage(actor, target, move)
-            if not isinstance(calculated_damage, int) or calculated_damage <= 0:
-                raise BattleValidationError("damage model must return a positive integer")
-            actual_damage = min(calculated_damage, target.vitality)
-            remaining = target.vitality - actual_damage
-            units[target.unit_id] = replace(
-                target,
-                vitality=remaining,
-                status=DEFEATED if remaining == 0 else ACTIVE,
-            )
-            events.append(BattleEvent(
-                "DamageApplied", actor_id=actor.unit_id, target_id=target.unit_id,
-                amount=actual_damage, detail=command.move_id,
-            ))
-            if remaining == 0:
+            for target_id in command.target_ids:
+                target = units[target_id]
+                if target.status != ACTIVE:
+                    events.append(BattleEvent(
+                        "ActionSkipped", actor_id=actor.unit_id, target_id=target.unit_id,
+                        detail="target_not_active_at_resolution",
+                    ))
+                    continue
+
+                calculated_damage = self._damage_model.calculate_damage(actor, target, move)
+                if not isinstance(calculated_damage, int) or calculated_damage <= 0:
+                    raise BattleValidationError("damage model must return a positive integer")
+                actual_damage = min(calculated_damage, target.vitality)
+                remaining = target.vitality - actual_damage
+                units[target.unit_id] = replace(
+                    target,
+                    vitality=remaining,
+                    status=DEFEATED if remaining == 0 else ACTIVE,
+                )
                 events.append(BattleEvent(
-                    "UnitDefeated", actor_id=actor.unit_id, target_id=target.unit_id,
+                    "DamageApplied", actor_id=actor.unit_id, target_id=target.unit_id,
+                    amount=actual_damage, detail=command.move_id,
                 ))
+                if remaining == 0:
+                    events.append(BattleEvent(
+                        "UnitDefeated", actor_id=actor.unit_id, target_id=target.unit_id,
+                    ))
 
         events.append(BattleEvent("PhaseCompleted", detail="action_resolution"))
         events.append(BattleEvent("PhaseStarted", detail="end_of_turn_replacement"))
