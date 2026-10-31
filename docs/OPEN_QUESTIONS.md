@@ -17,10 +17,8 @@ Questions are grouped in the canonical project-wide priority order defined only 
 See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
 
 ## Priority 2 — Battle Structure and Resolution
-1. How are tie-granting abilities represented, stacked, and scoped (attacker, target, action, or side)?
-2. How is type effectiveness compared for exact-Speed ties when actions are non-damaging, multi-target, or target different units? What is the tie result when effectiveness is equal or undefined?
-3. How is Champion relationship quantified for battle ordering, and is the comparison per unit, commander, or pair?
-4. What trusted, deterministic representation replaces raw client tap timestamps for hardware/input-registration priority in online play? What is the final fallback if every user-defined criterion is equal?
+1. How is type effectiveness compared for exact-Speed ties when actions are non-damaging, multi-target, or target different units? What is the tie result when effectiveness is equal or undefined?
+4. What is the final fallback if every user-defined criterion is equal?
 5. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
 6. What are the exact rules for simultaneous player defeat?
 7. Which encounter rules make player-character defeat mandatory versus optional?
