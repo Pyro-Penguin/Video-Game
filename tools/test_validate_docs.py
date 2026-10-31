@@ -35,6 +35,28 @@ class DocumentationValidatorTests(unittest.TestCase):
             self.write_fixture(root, log, handoff)
             self.assertEqual(validate(root), [])
 
+    def test_accepts_percent_encoded_relative_link_with_spaces_and_ampersand(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            log = (
+                "| ID | Topic | Status | Date | Decision | Rationale | Dependencies | Supersession |\n"
+                "|---|---|---|---|---|---|---|---|\n"
+                "| D-001 | Example | Confirmed | 2026-10-30 | Accepted scope | Human | None | None |\n"
+            )
+            handoff = (
+                "## Mandatory Startup\n## Current Work State\n"
+                "## Highest-Priority Next Work\n## Do Not Assume\n"
+            )
+            self.write_fixture(root, log, handoff)
+            target = root / "docs" / "inspiration" / "Character & NPC" / "README.md"
+            target.parent.mkdir(parents=True)
+            target.write_text("# Art reference category\n", encoding="utf-8")
+            (root / "PROJECT_INDEX.md").write_text(
+                "[Character & NPC](docs/inspiration/Character%20%26%20NPC/README.md)\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(validate(root), [])
+
     def test_rejects_invalid_status_and_duplicate_id(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
