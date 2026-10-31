@@ -16,7 +16,7 @@ A local, PvP-style tactical battle in which one person controls both sides. The 
 | Turn resolution | Simultaneous | Confirmed prototype target |
 | Stats | Normalized | Confirmed direction; formula unresolved |
 | Elements | Elemental types included | Confirmed direction; chart unresolved |
-| Reserve behavior | Automatic | Provisional; trigger and timing unresolved |
+| Reserve behavior | End-of-turn replacement; auto if one legal reserve, player choice if multiple | Confirmed; no-reserve outcome is encounter-policy driven |
 | Victory | Test both sides | Unresolved exact condition |
 | Content target | 2 commanders, 2 main weapons, 6 monsters with movesets | Initial content target |
 
