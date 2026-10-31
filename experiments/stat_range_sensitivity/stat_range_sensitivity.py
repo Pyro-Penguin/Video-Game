@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from math import log
 from itertools import combinations
 from fractions import Fraction
 from pathlib import Path
@@ -159,7 +160,7 @@ def combined_perturbations() -> list[dict]:
     }
     for row in rows:
         if row["group"].startswith("single_") or row["requested_percent"] == 0:
-            row["interaction_damage_residual_pct"] = 0.0
+            row["interaction_log_residual"] = 0.0
             row["interaction_ttk_residual_hits"] = 0
             continue
         dimensions = {
@@ -173,9 +174,12 @@ def combined_perturbations() -> list[dict]:
             for group in dimensions
         ]
         baseline_ttk = lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]["floored_ttk"]
-        row["interaction_damage_residual_pct"] = round(
-            row["raw_damage_delta_percent"] - sum(x["raw_damage_delta_percent"] for x in controls), 6
+        combined_ratio = row["raw_damage"] / lookup[(row["profile"], row["candidate"], row["offset_c"], row["group"], 0)]["raw_damage"]
+        isolated_log_effects = sum(
+            log(x["raw_damage"] / lookup[(row["profile"], row["candidate"], row["offset_c"], group, 0)]["raw_damage"])
+            for group, x in zip(dimensions, controls)
         )
+        row["interaction_log_residual"] = round(log(combined_ratio) - isolated_log_effects, 9)
         row["interaction_ttk_residual_hits"] = (
             row["floored_ttk"] - baseline_ttk
             - sum(x["floored_ttk"] - baseline_ttk for x in controls)
@@ -377,7 +381,7 @@ def run_experiment() -> dict:
         "method": {
             "arithmetic": "Exact rational arithmetic for candidate equations; floor applied explicitly for gameplay damage.",
             "calibration": "A, B and D calibrated to 60 damage at Level 100, P100, A300, D275. Each B offset is separately calibrated to this same anchor. C direct-level path is calibrated to 60 at the same Level-100 anchor.",
-            "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, RNG, multi-hit, simultaneous resolution, or damage application.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression.", "The reported raw damage interaction residual subtracts isolated percentage deltas; because percentage deltas are not additive under multiplicative equations, it is a rough diagnostic and not a formal interaction term."],
+            "limitations": ["Synthetic profiles and ranges only.", "No type, STAB, criticals, weather, equipment, abilities, status, screens, shields, RNG, multi-hit, simultaneous resolution, or damage application.", "Generation IX harness includes only deterministic base damage with fixed 100% random factor; no external modifiers.", "The level-derived-only path holds derived stats constant across levels; this isolates direct level dependence and does not model actual stat progression.", "The damage interaction residual is computed in log space: log(combined damage ratio) minus the sum of isolated log ratios. Zero indicates multiplicatively independent effects; nonzero values measure interaction. The TTK residual remains a discrete, flooring-sensitive diagnostic."],
         },
         "sample_counts": {"all_vs_all_rows": len(matchups), "combined_perturbation_rows": len(combined), "level_rows": len(level_sweep())},
         "gates": calibration_and_gates(),
