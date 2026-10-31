@@ -13,6 +13,7 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 - Battle format decision framework added, including a provisional local-prototype candidate clearly marked as not approved.
 - Stat system research plan added; no stat formula has been selected.
 - Standalone Python damage RNG experiment and automated tests committed.
+- Navigation first-playable prototype artifacts committed under `prototypes/navigation/`: corrected six-node/four-edge fixture JSON, linker/Boolean gate JSON, scene-wiring and manual playtest checklist, supplied PathWalker Unity candidate, and scene-reload Unity test candidate. This is a scoped prototype exception authorized by the user; it does not create a Unity project, change the canonical priority order, or establish a production C# runtime.
 - Prior local test run recorded: 6 tests passed.
 - GitHub Actions workflow executed successfully on Python 3.10, 3.11, 3.12, and 3.13; automated tests and JSON report smoke test passed in all four jobs.
 - Collaboration protocol and Stage 1 governance changes committed and read back from GitHub; human review/acceptance is pending.
@@ -55,7 +56,7 @@ The human review has accepted a provisional working envelope (Attack 200–400, 
 No final equation or offset is selected. The follow-up audit corrected the duplicated Defense coordinate, and the independent sweep now covers 200/250/275/300/350. c=400 remains a provisional-gate failure at 1.351× worst case. Playtest A is complete: three deterministic CLI battles passed through the existing harness and DamageModel seam, with exact replay verification and a published trace artifact. This is pipeline evidence only. Playtest B still requires original game creature designs and is the only valid source for balance conclusions.
 
 ## Not Yet Implemented
-- Unity project, scenes, prefabs, or C# game systems.
+- No Unity project, scenes, or prefabs exist. A navigation-specific PathWalker.cs and ResetReloadTests.cs candidate are now stored under `prototypes/navigation/`; neither has been compiled or executed in Unity, and they depend on domain/scene types not included in this repository.
 - Production battle engine, final damage resolver, or Unity/C# runtime. The Python harness is a test instrument only.
 - Creature capture, progression, world traversal, puzzle, or story systems.
 - Online PvP, matchmaking, or server authority.
@@ -84,3 +85,12 @@ The Generation IX reference now spells out sequential integer floors. The claime
 Commit c2251a5a661c3895135389dd3f2c090086922805 passed all eight CI jobs in [run 41171803352](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352). The regenerated sensitivity report contains 825 matchup rows, 2,695 combined-stat rows, 990 isolated single-stat TTK-shift rows, and 35 level rows. Isolated shift summaries and interpretation are in experiments/stat_range_sensitivity/RESULTS.md.
 
 No damage formula, offset, RNG model, stat band, or other game rule was selected by this maintenance pass. The remaining declared POWERS dimension is still not swept by the sensitivity harness; the report treats Power 100 as its reference move power, so no full power-sensitivity claim is made.
+
+
+## 2026-10-31 Navigation Prototype Artifact Update
+
+A bounded first-playable navigation package was added under `prototypes/navigation/`. It contains the corrected six-node/four-edge `navigation.json`, `gates.json`, scene-wiring and acceptance checklist, a supplied Unity PathWalker candidate, and a scene-level reset/reload Unity test candidate. The checklist preserves the co-located floor/ladder context-switch edge case as an unresolved playtest observation; no pseudo-edge or context-switch rule was introduced.
+
+The JSON walkthrough is a recorded manual check against the previously reviewed NavigationGraphBuilder contract, not a reproduced build: the builder source is not present in this public repository. The C# files are uncompiled and untested. Review also identified that PathWalker returns on final-edge completion before snapping the transform to the exact destination node; correct this before scene use. Node.Facing is present in the schema but unused by the supplied walker.
+
+This scoped prototype update does not create a Unity project, promote a game rule, or reorder canonical project priorities. The project remains in its documented engine-independent stage; navigation is a bounded, explicitly authorized parallel prototype.
