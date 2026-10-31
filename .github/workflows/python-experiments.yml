@@ -90,6 +90,19 @@ jobs:
         working-directory: tools
         run: python validate_docs.py
 
+  battle-simulation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Run battle simulation tests
+        working-directory: experiments/battle_sim
+        run: python -m unittest -v
+
   damage-equation:
     runs-on: ubuntu-latest
     steps:
