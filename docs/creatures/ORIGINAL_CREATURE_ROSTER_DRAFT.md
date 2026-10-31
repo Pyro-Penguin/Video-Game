@@ -51,6 +51,26 @@ The JSON includes candidate affinity labels (Plant, Air, Fire, Water, Shadow) on
 
 The commander is assigned 380 Vitality and 300 in each other stat as a neutral pipeline placeholder. This is not a finalized player-character stat line or a competitive normalization decision.
 
+
+## Initial neutral Power-80 screen
+
+A reproducible pairwise diagnostic is available in [draft_roster_screen.py](../../experiments/battle_sim/draft_roster_screen.py). It uses each creature's actual Power-80 move against each of the five defenders (25 attacker/defender pairs), through the existing Candidate B adapter with neutral effectiveness and integer flooring.
+
+| Attacker | c=100 average repeated hits to KO | c=143 average repeated hits to KO |
+|---|---:|---:|
+| Thornback | 7.8 | 7.8 |
+| Zephyrkin | 7.0 | 7.2 |
+| Emberlynx | 7.0 | 7.2 |
+| Tideforged | 8.8 | 8.8 |
+| Gloamantis | 7.8 | 7.8 |
+| **All 25 pairs** | **7.68** | **7.76** |
+
+The overall range is 5–12 repeated hits to KO at both offsets. These are repeated single-attacker hits, not turns-to-KO or match duration. The calculation excludes return damage, target changes, type effectiveness, STAB, RNG, status, shields, switching, multi-target effects, and all other action interactions.
+
+**Interpretation:** c=100 and c=143 are nearly indistinguishable in this narrow Power-80 screen. That is not evidence that the offsets are equivalent across the full damage envelope; it means this small roster screen does not resolve the choice. Tideforged has the slowest offensive screen average, which is consistent with its defensive-anchor intent but should be reviewed for excessive passivity. No offset or creature stat is selected by this result.
+
+CI runs this screen at both offsets and publishes the JSON outputs. The expected aggregates are regression-tested. These checks protect reproducibility, not balance correctness.
+
 ## What this fixture can test
 
 - Whether five original concepts can be represented by the current CLI schema.
