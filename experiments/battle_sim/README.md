@@ -62,7 +62,8 @@ No third-party dependencies are required. The package is compatible with Python 
 - Injectable damage-model substitution without changing turn sequencing.
 - Two-turn trace generation, invalidated-action event, and reserve deployment.
 - Immutable input-state behavior.
-- Priority/Speed ordering.
+- Priority/Speed ordering and the explicit fixture-only exact-tie fallback.
+- Repeatable identical two-turn trace for deterministic replay.
 - Defeated actor loses its queued action.
 - Defeated target is not automatically retargeted.
 - Reserve deployment occurs only after all locked actions resolve.
