@@ -58,9 +58,9 @@ A bounded navigation prototype package is now committed under `prototypes/naviga
 - `ResetReloadTests.cs`: supplied scene-reload Unity test candidate.
 - `README.md`: scope, ownership/lifetime/communication boundaries, and verification limits.
 
-This is a user-authorized, bounded parallel prototype, not a change to the canonical priority order. No Unity project or navigation domain source was added. The JSON walkthrough has not been reproduced against builder source in this repository. The C# files have not been compiled or run. Code review found a final-edge issue in PathWalker: it clears the graph and raises Arrived before assigning the exact final destination position. Fix that before using the walker in a scene. The dual-node context-switch behavior remains deliberately unresolved; the resolver can select a co-located alternate node for which no graph edge exists.
+This is a user-authorized, bounded parallel prototype, not a change to the canonical priority order. No Unity project or navigation domain source was added. The JSON walkthrough has not been reproduced against builder source in this repository. The C# files have not been compiled or run. PathWalker's final-arrival ordering fix is now committed: each completed edge snaps transform.position to its destination before state advancement; final completion snapshots Arrived, clears the graph, then invokes the callback. Empty paths are documented as a no-op; the controller handles already-at-destination before calling SetPath. The dual-node context-switch behavior remains deliberately unresolved; the resolver can select a co-located alternate node for which no graph edge exists.
 
-**Navigation next action:** only after the actual domain source and a Unity test scene/project are available and authorized, compile the candidate, correct the final-edge snap, then execute the checklist. The reset test also requires a real FirstPlayable scene, NavigationHost, NodeId/domain API, and FakeQuestProvider.SetOpen(bool). Do not claim Unity verification until those checks are run.
+**Navigation next action:** obtain the actual domain source and a Unity test scene/project, compile the candidate, and add/run a Play Mode regression test that observes transform.position inside Arrived. The test must be demonstrated to fail against the pre-fix implementation and pass against the corrected one, then execute the remaining checklist. The reset test also requires a real FirstPlayable scene, NavigationHost, NodeId/domain API, and FakeQuestProvider.SetOpen(bool). Do not claim Unity verification until those checks are run.
 
 ## Highest-Priority Next Work
 1. Keep Playtest A's JSON fixture and CLI runner stable as an engineering scaffold. Replace the fixture's creature section only when original game creature data is approved; preserve the schema and runner contract.
@@ -88,3 +88,12 @@ The latest verified code commit remains 33b352cac82520f2c6bfc0a3b151ae1b815b9e90
 - Test fixtures are not game rules. Do not add Decision Log entries for unaccepted mechanics.
 - No Unity/C# implementation, online authority, matchmaking, or production content work is implied by this Python harness.
 - Keep the battle domain independent of presentation, persistence, networking, and engine APIs.
+
+
+### PathWalker arrival fix — source committed, verification pending
+
+Commit `fdbae4a7f8e3e2982ff45f97e97e4bb7a96efc1f` applies the minimal snap fix. The walker now sets transform.position to the completed edge's destination before updating its cursor; final completion captures the Arrived delegate, clears the graph reference, and invokes the captured delegate. The XML contract documents that zero-length paths are a no-op and must be handled by the controller as already-at-destination.
+
+Required falsification test: subscribe to Arrived, capture the transform inside the callback, and assert it equals the final node position. Show that the test fails against the pre-fix source and passes against the corrected source. The supplied test sketch still needs a graph fixture implemented against the real domain API. No Unity compile or Play Mode execution has been performed.
+
+**Domain source remains absent.** The manifest in the user-provided handoff lists approved domain, Unity integration, and test files, but their complete source contents are not available in this repository. Do not recreate them from names or review summaries and label them approved source. Add them only from the complete reviewed source artifact.
