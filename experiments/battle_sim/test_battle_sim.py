@@ -15,6 +15,11 @@ def commands_for(state, targets):
     )
 
 
+class DoubleDamageFixture:
+    def calculate_damage(self, actor, target, move):
+        return move.fixture_damage * 2
+
+
 class BattleSimulationTests(unittest.TestCase):
     def setUp(self):
         self.state = make_test_battle()
@@ -35,6 +40,22 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertEqual(self.state.turn_number, 1)
         self.assertEqual(next(u for u in self.state.units if u.unit_id == "B-C").vitality, 120)
         self.assertEqual(result.state.turn_number, 2)
+
+    def test_damage_model_is_injected_without_changing_turn_resolution(self):
+        resolver = BattleResolver(damage_model=DoubleDamageFixture())
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        result = resolver.resolve_turn(
+            self.state, commands_for(self.state, targets), self.moves
+        )
+        self.assertEqual(
+            next(u for u in result.state.units if u.unit_id == "B-C").vitality,
+            40,
+        )
+        self.assertEqual(
+            next(u for u in result.state.units if u.unit_id == "A-C").vitality,
+            40,
+        )
 
     def test_priority_then_speed_orders_actions(self):
         moves = dict(self.moves)
