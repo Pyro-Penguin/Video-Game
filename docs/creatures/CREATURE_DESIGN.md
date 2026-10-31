@@ -24,3 +24,7 @@ Supplied notes contain base-stat-like values, Mega values, and final Level 100 v
 
 ## Future Data Needs
 A creature definition may eventually need stable identity, typing, base stats, abilities, learnset, form/transform data, visual references, and traversal eligibility. Define the schema after battle rules and progression.
+
+## Provisional Original Creature Test Roster
+
+A five-creature original roster draft now exists in [ORIGINAL_CREATURE_ROSTER_DRAFT.md](ORIGINAL_CREATURE_ROSTER_DRAFT.md), with machine-readable inputs in [fixtures/original_creatures_draft.json](../../fixtures/original_creatures_draft.json). These are provisional test concepts only. They do not establish the final species catalogue, seven-type chart, stat normalization, or balanced competitive roster. The earlier Light/Shadow appendix remains unverified and is not used by this fixture.
