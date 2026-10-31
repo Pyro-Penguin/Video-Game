@@ -17,7 +17,7 @@ Questions are grouped in the canonical project-wide priority order defined only 
 See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
 
 ## Priority 2 — Battle Structure and Resolution
-1. D-021 comparator currently compares supplied effectiveness ratios when both are defined; equal or undefined values advance to HP percentage. What should the rule be for non-damaging actions, multi-target actions, or actions targeting different units? Should these cases use one representative target, a defined aggregate, or skip effectiveness entirely?
+1. D-021's current effectiveness field is caller-supplied and only models a single action/target ratio. Its semantics remain unresolved for non-damaging actions, multi-target actions (single value vs per-target vs aggregate), and actions targeting different units (whether cross-target comparison is meaningful). Decide whether effectiveness applies only to single-target damaging actions or define another explicit comparison contract. Do not change the comparator until decided.
 4. What is the final fallback if every user-defined criterion is equal?
 5. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
 6. What are the exact rules for simultaneous player defeat?
