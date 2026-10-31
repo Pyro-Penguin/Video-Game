@@ -5,7 +5,8 @@ from demo_scenario import run_demo_scenario
 
 from battle_sim import (
     ACTIVE, DEFEATED, RESERVE, ActionCommand, BattleResolver,
-    BattleValidationError, MoveDefinition, make_test_battle, make_test_moves,
+    BattleValidationError, ConfiguredVictoryPolicy, MoveDefinition,
+    build_battle_facts, make_test_battle, make_test_moves,
     _finish_if_commander_defeated,
 )
 
@@ -245,6 +246,40 @@ class BattleSimulationTests(unittest.TestCase):
             and event.target_id == "B-C"
             for event in result.events
         ))
+
+    def test_team_wipe_policy_uses_reserves_as_remaining_monsters(self):
+        units = tuple(
+            replace(u, vitality=0, status=DEFEATED)
+            if u.side_id == "B" and u.kind == "monster" else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        facts = build_battle_facts(state)
+        side_b = next(side for side in facts.sides if side.side_id == "B")
+        self.assertEqual(side_b.active_monster_count, 0)
+        self.assertEqual(side_b.reserve_monster_count, 0)
+        self.assertFalse(side_b.commander_defeated)
+
+        outcome = ConfiguredVictoryPolicy(
+            commander_defeat=False, monster_team_wipe=True
+        ).evaluate(facts)
+        self.assertTrue(outcome.is_finished)
+        self.assertEqual(outcome.winner_side_id, "A")
+        self.assertFalse(outcome.is_draw)
+
+    def test_both_victory_flags_mean_either_condition_can_end_encounter(self):
+        units = tuple(
+            replace(u, vitality=0, status=DEFEATED)
+            if u.unit_id == "B-C" else u
+            for u in self.state.units
+        )
+        facts = build_battle_facts(replace(self.state, units=units))
+        outcome = ConfiguredVictoryPolicy(
+            commander_defeat=True, monster_team_wipe=True
+        ).evaluate(facts)
+        self.assertTrue(outcome.is_finished)
+        self.assertEqual(outcome.winner_side_id, "A")
+        self.assertIn("commander_defeated", outcome.reason)
 
     def test_preexisting_dual_commander_defeat_state_classifies_as_draw(self):
         units = tuple(
