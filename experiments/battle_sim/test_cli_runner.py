@@ -3,6 +3,8 @@ from fractions import Fraction
 from battle_sim import COMMANDER, MoveDefinition, UnitState
 from cli_runner import CandidateBDamageModel, DEFAULT_FIXTURE, format_trace, load_fixture, run_pipeline
 
+DRAFT_FIXTURE = DEFAULT_FIXTURE.with_name("original_creatures_draft.json")
+
 
 class PipelineFixtureTests(unittest.TestCase):
     @classmethod
@@ -21,6 +23,36 @@ class PipelineFixtureTests(unittest.TestCase):
     def test_each_creature_has_three_moves_at_40_80_120_power(self):
         for creature in self.fixture["creatures"]:
             self.assertEqual(sorted(move["power"] for move in creature["moves"]), [40, 80, 120])
+
+    def test_original_roster_draft_has_five_distinct_roles_inside_screening_envelope(self):
+        draft = load_fixture(DRAFT_FIXTURE)
+        self.assertEqual(draft["display_name"], "ORIGINAL ROSTER DRAFT")
+        self.assertEqual(
+            {creature["id"] for creature in draft["creatures"]},
+            {"thornback", "zephyrkin", "emberlynx", "tideforged", "gloamantis"},
+        )
+        self.assertEqual(len({creature["archetype"] for creature in draft["creatures"]}), 5)
+        for creature in draft["creatures"]:
+            stats = creature["stats"]
+            self.assertGreaterEqual(stats["hp"], 250)
+            self.assertLessEqual(stats["hp"], 500)
+            self.assertGreaterEqual(stats["attack"], 200)
+            self.assertLessEqual(stats["attack"], 400)
+            self.assertGreaterEqual(stats["defense"], 200)
+            self.assertLessEqual(stats["defense"], 350)
+            self.assertEqual(sorted(move["power"] for move in creature["moves"]), [40, 80, 120])
+
+    def test_original_roster_draft_runs_through_both_narrowing_offsets(self):
+        for offset in (100, 143):
+            with self.subTest(offset=offset):
+                payload = run_pipeline(DRAFT_FIXTURE, offset_c=offset)
+                self.assertEqual(payload["fixture_name"], "ORIGINAL ROSTER DRAFT")
+                self.assertIn("not balance evidence", payload["status"])
+                self.assertEqual(len(payload["battles"]), 3)
+                self.assertTrue(all(battle["final_state"]["is_finished"] for battle in payload["battles"]))
+                trace = format_trace(payload)
+                self.assertIn("ORIGINAL ROSTER DRAFT", trace)
+                self.assertIn("NOT A BALANCE PLAYTEST", trace)
 
     def test_damage_adapter_uses_physical_and_special_stat_pairs_and_floors(self):
         actor = UnitState("A", "A", COMMANDER, 100, 100, 80, 0)
