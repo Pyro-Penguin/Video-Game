@@ -60,7 +60,6 @@ class BattleRules:
     active_monster_slots: int = 2
     automatic_end_turn_replacement: bool = True
     replacement_order: str = "roster_order"
-    victory_policy: str = "commander_defeat"
     exact_tie_break: str = "unit_id_ascending"
 
 
@@ -77,6 +76,93 @@ class BattleEvent:
 class TurnResult:
     state: BattleState
     events: Tuple[BattleEvent, ...]
+
+
+@dataclass(frozen=True)
+class SideBattleFacts:
+    side_id: str
+    commander_defeated: bool
+    active_monster_count: int
+    reserve_monster_count: int
+
+    @property
+    def monster_team_wiped(self) -> bool:
+        return self.active_monster_count + self.reserve_monster_count == 0
+
+
+@dataclass(frozen=True)
+class BattleFacts:
+    sides: Tuple[SideBattleFacts, ...]
+
+
+@dataclass(frozen=True)
+class VictoryOutcome:
+    is_finished: bool
+    winner_side_id: Optional[str] = None
+    is_draw: bool = False
+    reason: str = ""
+
+
+class VictoryPolicy(Protocol):
+    """Pure encounter policy: classify derived battle facts, never mutate state."""
+
+    def evaluate(self, facts: BattleFacts) -> VictoryOutcome:
+        ...
+
+
+@dataclass(frozen=True)
+class ConfiguredVictoryPolicy:
+    """Any enabled terminal condition can eliminate a side.
+
+    Both flags enabled means commander defeat OR monster team wipe ends that
+    side's encounter. Set both false to disable terminal classification.
+    """
+
+    commander_defeat: bool = True
+    monster_team_wipe: bool = False
+
+    def evaluate(self, facts: BattleFacts) -> VictoryOutcome:
+        eliminated = []
+        for side in facts.sides:
+            reasons = []
+            if self.commander_defeat and side.commander_defeated:
+                reasons.append("commander_defeated")
+            if self.monster_team_wipe and side.monster_team_wiped:
+                reasons.append("monster_team_wiped")
+            if reasons:
+                eliminated.append((side.side_id, tuple(reasons)))
+
+        if not eliminated:
+            return VictoryOutcome(False)
+        if len(eliminated) == len(facts.sides):
+            reason = "; ".join(
+                f"{side_id}:{'+'.join(reasons)}" for side_id, reasons in eliminated
+            )
+            return VictoryOutcome(True, None, True, f"draw:{reason}")
+
+        eliminated_side = eliminated[0][0]
+        winner = next(side.side_id for side in facts.sides if side.side_id != eliminated_side)
+        reason = "+".join(eliminated[0][1])
+        return VictoryOutcome(True, winner, False, f"winner:{winner};loser:{eliminated_side};reason:{reason}")
+
+
+def build_battle_facts(state: BattleState) -> BattleFacts:
+    side_ids = sorted({unit.side_id for unit in state.units})
+    facts = []
+    for side_id in side_ids:
+        side_units = tuple(unit for unit in state.units if unit.side_id == side_id)
+        commander = next(unit for unit in side_units if unit.kind == COMMANDER)
+        facts.append(SideBattleFacts(
+            side_id=side_id,
+            commander_defeated=commander.status == DEFEATED,
+            active_monster_count=sum(
+                unit.kind == MONSTER and unit.status == ACTIVE for unit in side_units
+            ),
+            reserve_monster_count=sum(
+                unit.kind == MONSTER and unit.status == RESERVE for unit in side_units
+            ),
+        ))
+    return BattleFacts(tuple(facts))
 
 
 class BattleValidationError(ValueError):
@@ -156,8 +242,6 @@ def validate_state(state: BattleState, rules: BattleRules) -> None:
         raise BattleValidationError("active_monster_slots must be at least one")
     if rules.replacement_order != "roster_order":
         raise BattleValidationError("unsupported fixture replacement order")
-    if rules.victory_policy != "commander_defeat":
-        raise BattleValidationError("unsupported fixture victory policy")
     if rules.exact_tie_break != "unit_id_ascending":
         raise BattleValidationError("unsupported fixture tie-break policy")
 
@@ -273,23 +357,27 @@ def _validate_commands(
     return command_tuple
 
 
+def _apply_victory_policy(
+    state: BattleState,
+    policy: VictoryPolicy,
+) -> Tuple[BattleState, Tuple[BattleEvent, ...]]:
+    outcome = policy.evaluate(build_battle_facts(state))
+    if not outcome.is_finished:
+        return state, ()
+    finished = replace(
+        state,
+        is_finished=True,
+        winner_side_id=outcome.winner_side_id,
+        is_draw=outcome.is_draw,
+    )
+    return finished, (BattleEvent("BattleFinished", detail=outcome.reason),)
+
+
 def _finish_if_commander_defeated(
     state: BattleState,
 ) -> Tuple[BattleState, Tuple[BattleEvent, ...]]:
-    commanders = {u.side_id: u for u in state.units if u.kind == COMMANDER}
-    defeated_sides = sorted(
-        side_id for side_id, unit in commanders.items() if unit.status == DEFEATED
-    )
-    if not defeated_sides:
-        return state, ()
-    if len(defeated_sides) == 2:
-        finished = replace(state, is_finished=True, winner_side_id=None, is_draw=True)
-        return finished, (
-            BattleEvent("BattleFinished", detail="draw: both commanders defeated"),
-        )
-    winner = next(side_id for side_id in commanders if side_id not in defeated_sides)
-    finished = replace(state, is_finished=True, winner_side_id=winner, is_draw=False)
-    return finished, (BattleEvent("BattleFinished", detail=f"winner:{winner}"),)
+    """Compatibility helper for tests of the default fixture policy."""
+    return _apply_victory_policy(state, ConfiguredVictoryPolicy(commander_defeat=True))
 
 
 class BattleResolver:
@@ -300,10 +388,12 @@ class BattleResolver:
         rules: BattleRules = BattleRules(),
         damage_model: Optional[DamageModel] = None,
         reserve_selector: Optional[ReserveSelector] = None,
+        victory_policy: Optional[VictoryPolicy] = None,
     ) -> None:
         self._rules = rules
         self._damage_model = damage_model if damage_model is not None else FixedDamageFixture()
         self._reserve_selector = reserve_selector if reserve_selector is not None else CommandReserveSelector()
+        self._victory_policy = victory_policy if victory_policy is not None else ConfiguredVictoryPolicy()
 
     def resolve_turn(
         self,
@@ -404,7 +494,7 @@ class BattleResolver:
             )),
             turn_number=state.turn_number + 1,
         )
-        next_state, finish_events = _finish_if_commander_defeated(next_state)
+        next_state, finish_events = _apply_victory_policy(next_state, self._victory_policy)
         events.extend(finish_events)
         if not next_state.is_finished:
             events.append(BattleEvent("TurnCompleted", detail=str(state.turn_number)))
