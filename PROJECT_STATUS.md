@@ -91,6 +91,13 @@ No damage formula, offset, RNG model, stat band, or other game rule was selected
 
 A bounded first-playable navigation package was added under `prototypes/navigation/`. It contains the corrected six-node/four-edge `navigation.json`, `gates.json`, scene-wiring and acceptance checklist, a supplied Unity PathWalker candidate, and a scene-level reset/reload Unity test candidate. The checklist preserves the co-located floor/ladder context-switch edge case as an unresolved playtest observation; no pseudo-edge or context-switch rule was introduced.
 
-The JSON walkthrough is a recorded manual check against the previously reviewed NavigationGraphBuilder contract, not a reproduced build: the builder source is not present in this public repository. The C# files are uncompiled and untested. Review also identified that PathWalker returns on final-edge completion before snapping the transform to the exact destination node; correct this before scene use. Node.Facing is present in the schema but unused by the supplied walker.
+The JSON walkthrough is a recorded manual check against the previously reviewed NavigationGraphBuilder contract, not a reproduced build: the builder source is not present in this public repository. The C# files are uncompiled and untested. A follow-up source fix now snaps PathWalker to each completed edge's destination before state advancement and before Arrived callbacks. The empty-path no-op contract is documented: the controller handles already-at-destination before calling SetPath. A Play Mode regression test is still required, including confirmation that it fails against the pre-fix implementation. Node.Facing is present in the schema but unused by the supplied walker.
 
 This scoped prototype update does not create a Unity project, promote a game rule, or reorder canonical project priorities. The project remains in its documented engine-independent stage; navigation is a bounded, explicitly authorized parallel prototype.
+
+
+## 2026-10-31 PathWalker Arrival Fix
+
+PathWalker.cs was updated in commit `fdbae4a7f8e3e2982ff45f97e97e4bb7a96efc1f`. On every completed edge, the transform is snapped to the destination node before the traversal cursor advances. On final completion, the Arrived delegate is copied locally, the graph reference is cleared, and the callback is invoked only after the transform is at the destination. The empty-path contract is documented: an empty SetPath is a no-op; the controller owns the already-at-destination case.
+
+The README and first-playable checklist now reflect this correction and specify a Play Mode regression test that must observe the final transform from inside Arrived and be shown to fail against the pre-fix source. The code remains uncompiled and unverified in Unity. No navigation domain files were reconstructed or added in this update.
