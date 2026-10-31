@@ -17,12 +17,12 @@ Questions are grouped in the canonical project-wide priority order defined only 
 See [Damage Model](battle/DAMAGE_MODEL.md) and [Damage RNG Experiment](../experiments/damage_rng/README.md). This is the first design priority; it does not authorize selecting a final RNG model.
 
 ## Priority 2 — Battle Structure and Resolution
-2. What is the complete tie-break hierarchy after priority and Speed?
-3. Which abilities can win Speed ties, and do they override or modify the normal tie hierarchy?
-4. Is type effectiveness a valid tie-break only when two tied entities target each other, or under another precisely defined condition?
-5. What is the authoritative online fallback for exact ties? Client tap timestamps are not suitable as a trusted server rule.
-6. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
-7. What are the exact rules for simultaneous player defeat?
+1. How are tie-granting abilities represented, stacked, and scoped (attacker, target, action, or side)?
+2. How is type effectiveness compared for exact-Speed ties when actions are non-damaging, multi-target, or target different units? What is the tie result when effectiveness is equal or undefined?
+3. How is Champion relationship quantified for battle ordering, and is the comparison per unit, commander, or pair?
+4. What trusted, deterministic representation replaces raw client tap timestamps for hardware/input-registration priority in online play? What is the final fallback if every user-defined criterion is equal?
+5. Can a queued action be interrupted after it begins resolving, and what action types can be redirected?
+6. What are the exact rules for simultaneous player defeat?
 7. Which encounter rules make player-character defeat mandatory versus optional?
 8. Which story encounter compositions differ from the confirmed competitive structure (one commander, two active monsters, one reserve)?
 
