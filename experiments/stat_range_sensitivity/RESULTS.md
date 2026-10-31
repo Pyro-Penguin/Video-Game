@@ -1,3 +1,5 @@
+> **Historical status (2026-10-31):** This report's 4–6-hit target and hypothetical 85%–100% roll diagnostic predate D-026/D-027. Current pacing references are competitive 2–3-hit offensive exchanges and the wallbreaker benchmarks in D-026; the confirmed RNG bounds are 85%–105% inclusive. The report is retained for provenance and comparison only. Its old gate results are not current balance pass/fail results.
+
 # Expanded Damage Sensitivity — Results
 
 **Evidence:** Code commit c2251a5a661c3895135389dd3f2c090086922805 passed all eight CI jobs in [run 41171803352](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352). The regenerated expanded-damage-sensitivity-report artifact is [13031008966](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41171803352/artifacts/13031008966). Artifact digests are immutable snapshot metadata for that exact artifact and commit, not live assertions; refresh them whenever the artifact changes.
