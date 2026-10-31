@@ -1,0 +1,173 @@
+import unittest
+from dataclasses import replace
+
+from battle_sim import (
+    ACTIVE, DEFEATED, RESERVE, ActionCommand, BattleResolver,
+    BattleValidationError, MoveDefinition, make_test_battle, make_test_moves,
+)
+
+
+def commands_for(state, targets):
+    return tuple(
+        ActionCommand(unit.unit_id, "strike", targets[unit.unit_id])
+        for unit in state.units if unit.status == ACTIVE
+    )
+
+
+class BattleSimulationTests(unittest.TestCase):
+    def setUp(self):
+        self.state = make_test_battle()
+        self.moves = make_test_moves()
+        self.resolver = BattleResolver()
+
+    def test_fixture_has_commander_two_active_monsters_and_one_reserve(self):
+        for side in ("A", "B"):
+            side_units = [u for u in self.state.units if u.side_id == side]
+            self.assertEqual(sum(u.kind == "commander" for u in side_units), 1)
+            self.assertEqual(sum(u.kind == "monster" and u.status == ACTIVE for u in side_units), 2)
+            self.assertEqual(sum(u.kind == "monster" and u.status == RESERVE for u in side_units), 1)
+
+    def test_resolver_does_not_mutate_input_state(self):
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        result = self.resolver.resolve_turn(self.state, commands_for(self.state, targets), self.moves)
+        self.assertEqual(self.state.turn_number, 1)
+        self.assertEqual(next(u for u in self.state.units if u.unit_id == "B-C").vitality, 120)
+        self.assertEqual(result.state.turn_number, 2)
+
+    def test_priority_then_speed_orders_actions(self):
+        moves = dict(self.moves)
+        moves["quick_strike"] = MoveDefinition("quick_strike", 25, 1)
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        commands = [
+            replace(command, move_id="quick_strike") if command.actor_id == "B-M2" else command
+            for command in commands_for(self.state, targets)
+        ]
+        result = self.resolver.resolve_turn(self.state, commands, moves)
+        damage_events = [e for e in result.events if e.event_type == "DamageApplied"]
+        self.assertEqual(damage_events[0].actor_id, "B-M2")
+        self.assertEqual(damage_events[1].actor_id, "A-C")
+
+    def test_defeated_actor_loses_its_queued_action(self):
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M2", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(state, commands, self.moves)
+        skipped = [e for e in result.events if e.event_type == "ActionSkipped"]
+        self.assertTrue(any(
+            e.actor_id == "B-M1" and e.detail == "actor_defeated_before_resolution"
+            for e in skipped
+        ))
+        self.assertFalse(any(
+            e.actor_id == "B-M1" and e.event_type == "DamageApplied"
+            for e in result.events
+        ))
+
+    def test_target_defeated_before_action_is_not_retargeted(self):
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M1", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(state, commands, self.moves)
+        self.assertTrue(any(
+            e.actor_id == "A-M1" and e.detail == "target_not_active_at_resolution"
+            for e in result.events if e.event_type == "ActionSkipped"
+        ))
+
+    def test_reserve_deploys_only_after_all_locked_actions_resolve(self):
+        units = tuple(
+            replace(u, vitality=20) if u.unit_id == "B-M1" else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        targets = {"A-C": "B-M1", "A-M1": "B-M2", "A-M2": "B-C",
+                   "B-C": "A-C", "B-M1": "A-C", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(state, commands, self.moves)
+        reserve = next(u for u in result.state.units if u.unit_id == "B-R1")
+        self.assertEqual(reserve.status, ACTIVE)
+        self.assertEqual(next(u for u in result.state.units if u.unit_id == "B-M1").status, DEFEATED)
+        self.assertTrue(any(e.event_type == "ReserveDeployed" for e in result.events))
+
+    def test_mutual_commander_knockout_is_a_draw(self):
+        moves = {"finisher": MoveDefinition("finisher", 120, 0)}
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        commands = [
+            replace(command, move_id="finisher")
+            if command.actor_id in ("A-C", "B-C") else command
+            for command in commands_for(self.state, targets)
+        ]
+        result = self.resolver.resolve_turn(self.state, commands, moves)
+        self.assertTrue(result.state.is_finished)
+        self.assertTrue(result.state.is_draw)
+        self.assertIsNone(result.state.winner_side_id)
+
+    def test_monster_knockouts_alone_do_not_end_battle(self):
+        units = tuple(
+            replace(u, vitality=1) if u.kind == "monster" and u.status == ACTIVE else u
+            for u in self.state.units
+        )
+        state = replace(self.state, units=units)
+        moves = {"finisher": MoveDefinition("finisher", 1, 0)}
+        targets = {"A-C": "B-M1", "A-M1": "B-M2", "A-M2": "B-M1",
+                   "B-C": "A-M1", "B-M1": "A-M2", "B-M2": "A-M1"}
+        commands = [
+            replace(command, move_id="finisher")
+            for command in commands_for(state, targets)
+        ]
+        result = self.resolver.resolve_turn(state, commands, moves)
+        self.assertFalse(result.state.is_finished)
+        self.assertEqual(
+            sum(u.side_id == "A" and u.kind == "monster" and u.status == ACTIVE for u in result.state.units),
+            2,
+        )
+        self.assertEqual(
+            sum(u.side_id == "B" and u.kind == "monster" and u.status == ACTIVE for u in result.state.units),
+            2,
+        )
+
+    def test_invalid_command_set_is_rejected_before_resolution(self):
+        commands = commands_for(
+            self.state,
+            {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+             "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"},
+        )
+        with self.assertRaises(BattleValidationError):
+            self.resolver.resolve_turn(self.state, commands[:-1], self.moves)
+
+    def test_finished_battle_rejects_more_turns(self):
+        moves = {"finisher": MoveDefinition("finisher", 120, 0)}
+        targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
+                   "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
+        commands = [
+            replace(command, move_id="finisher")
+            if command.actor_id in ("A-C", "B-C") else command
+            for command in commands_for(self.state, targets)
+        ]
+        finished = self.resolver.resolve_turn(self.state, commands, moves).state
+        with self.assertRaises(BattleValidationError):
+            self.resolver.resolve_turn(finished, (), moves)
+
+
+if __name__ == "__main__":
+    unittest.main()
