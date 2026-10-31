@@ -21,7 +21,7 @@ The initial expanded run's 50-damage anchor produced 7 hits against Vitality 350
 
 ## Candidate screening
 
-Clean 2:1 specialization compares Attack 600 / Defense 300 against equal Attack 300 / Defense 300 at Power 100, Level 100. All TTK values use integer-floored damage.
+Corrected gate: 2:1 specialization is evaluated for each of the five pre-registered defender profiles. For each profile Defense D, the specialized coordinate is Attack 2D / Defense D and the equal-stat coordinate is Attack D / Defense D, at Power 100 / Level 100. Both the minimum and maximum ratio across the profile band must remain within 1.4×–1.8×. This replaces the earlier single-point Defense=300 check. All TTK values use integer-floored damage.
 
 | Candidate | Neutral floored TTK | 2:1 damage ratio | Combined numeric gates |
 |---|---:|---:|---|
@@ -91,7 +91,7 @@ c=143 is the most stable alternative to c=100 in floored matchup ordering. c=400
 
 The earlier screening language's ±1-hit concept must be scoped carefully. The experiment specification required any ±1-hit tolerance to use floored TTK, but did not establish ±1 as a numeric acceptance gate. The expanded combined-stat residuals reach 2 hits. A blanket ±1 rule across combined perturbations would therefore be exceeded; whether ±1 is adopted for isolated-stat screening, and what separate tolerance governs combined interactions, are design-review decisions.
 
-The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates raw-damage and floored-TTK interaction residuals against the corresponding single-stat controls.
+The 2,695 rows include single-stat controls plus Attack×Defense, Attack×Vitality, Defense×Vitality, and Attack×Defense×Vitality combinations. Each participating stat receives −20%, −10%, −5%, +5%, +10%, or +20%, with integer stat values floored. The report calculates a raw-damage percentage residual and floored-TTK residual against corresponding single-stat controls. The raw percentage residual is a rough diagnostic only: percent deltas are not additive under multiplicative formulas, so it is not a formal interaction term.
 
 Across the combined-stat portion, **1,320 interaction residuals** were evaluated (5 profiles × 11 candidate/offset variants × 4 combined groups × 6 nonzero perturbations). **660/1,320 raw-damage residuals were nonzero**; the largest absolute residual was **5 percentage points**. **721/1,320 floored-TTK residuals were nonzero**; the largest absolute residual was **2 hits**. By interaction: Attack×Defense max 5 pp / 2 hits; Attack×Vitality 0 pp / 1 hit; Defense×Vitality 0 pp / 1 hit; Attack×Defense×Vitality 5 pp / 2 hits. The raw-damage maximum (5 pp) alongside a floored-TTK maximum (2 hits) is a threshold-sensitive pattern: integer flooring can amplify modest response differences when they cross KO breakpoints, rather than representing two unrelated effects. These are descriptive findings, not a pass/fail result: the pre-registration required reporting but did **not** define a numeric residual tolerance. The design review must set or explicitly decline such a tolerance before using it as a gate.
 
