@@ -1,0 +1,6 @@
+{
+  "Items": [
+    { "Id": 1, "Type": "linker", "MinAngle": 85, "MaxAngle": 95 },
+    { "Id": 2, "Type": "bool", "MinAngle": 0, "MaxAngle": 0 }
+  ]
+}
