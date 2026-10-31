@@ -38,6 +38,10 @@ Read [COLLABORATION_PROTOCOL.md](COLLABORATION_PROTOCOL.md) first, then follow i
 
 **Review-package verification:** CI run [41099538231](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41099538231) tested commit `a4656a11ca326d2328cfaf97d6254c27a3008784` and passed all seven jobs, including documentation validation, damage equation, stat-range sensitivity, and the four-version damage RNG matrix. This handoff refresh is documentation-only and triggers a follow-up CI run; check that run before marking this exact handoff commit Tested.
 
+## Pokémon baseline data audit
+
+The Gen I–IX CSV audit isolates 546 final-stage entries (mean BST 509.2) and 456 after excluding sublegendary/legendary/mythical entries (mean BST 491.2). On the simplified Level-100 transform, ordinary-cohort medians are Attack 216, Defense 194, Vitality 293; 90th percentiles are 286, 274, and 359. This suggests the synthetic bands Attack 200–400 / Defense 200–350 / Vitality 250–500 are elevated relative to an ordinary final-stage baseline, but may be appropriate for a deliberately normalized competitive roster. The CSV includes Mega names, not transformed stat lines. See [audit](docs/creatures/POKEMON_BASELINE_DATA_AUDIT.md). Research only; no rule selected.
+
 ## Expanded experiment findings
 
 - The Level-100 comparison uses a shared 60-damage calibration at Power 100 / Attack 300 / Defense 275. The first 50-damage anchor yielded 7 hits against Vitality 350 and conflicted with the provisional 4–6 target; D-016 records the corrected 60 anchor as Provisional, with explicit revisit conditions.
