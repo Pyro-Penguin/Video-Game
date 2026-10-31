@@ -21,7 +21,7 @@ The competitive target's roster accounting is confirmed by D-003: register five 
 | A4 | Active field | Commander plus two active monsters per side. | Confirmed |
 | A5 | Player role | Commander/player character is a field combatant. | Confirmed |
 | A6 | Reserve | One of the three selected monsters is reserve. | Confirmed |
-| A7 | Replacement | Automatic replacement is a provisional prototype behavior; trigger, exact timing, and handling of multiple vacancies remain unresolved. | Provisional |
+| A7 | Replacement | Knockout replacement occurs at end of turn. Auto-deploy when exactly one legal reserve can fill a vacancy; player selects when multiple legal reserves exist; no reserve leaves the vacancy empty for the configured victory policy to evaluate. | Confirmed |
 | A8 | Defeat | Broad direction: monster knockouts alone do not defeat a side; commander/player defeat is required, subject to encounter-specific rules. Exact simultaneous and no-reserve outcomes remain unresolved. | Confirmed |
 | A9 | Preview | Choose three monsters from the five registered monsters; the three comprise two active and one reserve. | Confirmed |
 
