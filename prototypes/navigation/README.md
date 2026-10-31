@@ -29,7 +29,7 @@ The JSON was manually checked against the previously reviewed NavigationGraphBui
 
 PathWalker final-arrival snap fix is now applied: on every edge completion it assigns the destination node position before advancing state; on final completion it snapshots the Arrived delegate, clears the graph, then invokes the callback. This fixes the reviewed ordering defect in source, but remains uncompiled and unverified in Unity. Do not treat this source snapshot as ready-to-ship code.
 
-Empty-path contract: SetPath with a zero-length span is a no-op; IsWalking remains false and Arrived does not fire. The controller must handle the already-at-destination case before calling SetPath. This is documented rather than duplicated in the walker state machine.
+Empty-path contract: SetPath with a zero-length span is a no-op; IsWalking remains false and Arrived does not fire. The controller must handle the already-at-destination case before calling SetPath. This is documented rather than duplicated in the walker state machine. An empty call also leaves any currently active path untouched.
 
 ## Known design questions
 
