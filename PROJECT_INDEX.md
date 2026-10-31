@@ -41,6 +41,7 @@ After these, use the task-specific references below.
 - [Player Character and Classes](docs/player/PLAYER_CHARACTER_AND_CLASSES.md) — player combat role and class concepts.
 - [Exploration and Capture](docs/world/EXPLORATION_AND_CAPTURE.md) — Portal Gauntlet, traversal, puzzles, and capture ideas.
 - [Implementation Plan](docs/IMPLEMENTATION_PLAN.md) — milestones and exit criteria.
+- [Navigation First Playable Prototype](prototypes/navigation/README.md) — hand-authored navigation JSON, Unity-side PathWalker candidate, reset test candidate, and first-playable acceptance checklist; not compiled or playtested.
 
 ## Documentation Rules
 1. Treat this repository as the shared, durable project memory; conversations are temporary workspaces.
@@ -57,6 +58,7 @@ After these, use the task-specific references below.
 - `docs/creatures/` — creature concepts and stat records.
 - `docs/inspiration/` — visual, audio, and gameplay references.
 - `experiments/` — isolated executable mechanics investigations, including the pure-Python battle simulation harness.
+- `prototypes/` — explicitly scoped system prototypes and integration artifacts; not production runtime by default.
 - `tools/` — standard-library documentation validator and its tests.
 - `.github/workflows/` — automated validation for Python experiments and project documentation.
 - A Unity `Assets/`, `Packages/`, and `ProjectSettings/` structure will be added only after an engine project is deliberately created.
