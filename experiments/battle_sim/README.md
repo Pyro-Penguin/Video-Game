@@ -11,7 +11,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 - BattleState is the authoritative immutable snapshot returned by each turn.
 - UnitState, MoveDefinition, and BattleRules are immutable input data.
 - Callers own the current snapshot and submit a complete tuple of ActionCommand values.
-- BattleResolver owns no persistent match state. It validates commands, resolves one turn, and returns a new BattleState plus an ordered event tuple.
+- BattleResolver owns no persistent match state. It validates commands, resolves one turn, and returns a new BattleState plus an ordered event tuple. Damage is injected through the pure DamageModel protocol; FixedDamageFixture is only the current test implementation.
 - Presentation, replay storage, UI, networking, and persistence are outside the package. They may consume snapshots/events later; they must not mutate battle state.
 - Communication is command-in / state-and-events-out. No global service locator, callbacks, or bidirectional references.
 
@@ -25,7 +25,7 @@ Exercise the battle-domain contract before Unity exists and before the final dam
 | Resolution | Priority descending, then Speed descending | Broad direction; exact ties unresolved |
 | Exact tie | Unit ID ascending | Deterministic fixture fallback only; not a competitive fairness rule |
 | Targeting | One opposing active unit | Simplifies core sequencing; no ally/area/self targeting |
-| Damage | Positive fixed integer from MoveDefinition | Placeholder fixture value, not the damage formula |
+| Damage | Positive integer supplied by an injected DamageModel; current FixedDamageFixture reads MoveDefinition fixture damage | Placeholder fixture value, not the damage formula |
 | Invalidated actor/target | Queued action is skipped; no retarget | Matches current D-006 direction for defeated actors/targets |
 | Replacement | Automatically deploy reserve at end of turn, roster order | Provisional behavior under test |
 | Victory | Commander defeat; mutual commander defeat is a draw | Uses D-007 broad commander-survival principle; exact encounter conditions remain open |
@@ -68,6 +68,6 @@ No third-party dependencies are required. The package is compatible with Python 
 
 ## Deliberately not implemented
 
-Final damage math, type effectiveness, RNG, status, shields, switching, protection, interruption/redirection, move targeting patterns, turn clocks, preview, online authority, Unity integration, and content progression.
+Final damage math (the interface seam exists, but no production implementation), type effectiveness, RNG, status, shields, switching, protection, interruption/redirection, move targeting patterns, turn clocks, preview, online authority, Unity integration, and content progression.
 
 Passing tests means the encoded fixture behaves consistently; it does not mean the fixture has been accepted as the game rules.
