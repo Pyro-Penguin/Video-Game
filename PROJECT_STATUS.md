@@ -44,7 +44,7 @@ This is the single authoritative project-wide priority list. [Open Questions](do
 6. **Audit existing balance inputs.** Audit Light/Shadow stat drafts before using them as balance inputs.
 7. **Story and feature scope.** Revisit broader campaign/world systems after the battle foundations are coherent.
 
-The combined-stat experiment's interaction residual has been corrected from additive percentage subtraction to a log-space multiplicative residual, retaining exact Fraction ratios until logarithm evaluation. Its prior numeric summary is marked superseded pending a regenerated CI artifact. The damage-equation-first ordering is a project sequencing decision, not a claim that all damage details are already specified. It is recorded in [Decision D-014](docs/DECISION_LOG.md).
+The combined-stat experiment's interaction residual has been corrected from additive percentage subtraction to a log-space multiplicative residual, retaining exact Fraction ratios until logarithm evaluation. Regenerated artifact in [run 41165870453](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41165870453) reports 120/1,320 nonzero log residuals (max 0.012399 natural-log units) and 724/1,320 nonzero floored-TTK residuals (max 2 hits). The pairwise rank audit now uses `itertools.combinations` and derives comparison counts from actual subset sizes; its 4,125 comparisons and 439 tie/order changes match the report. The damage-equation-first ordering is a project sequencing decision, not a claim that all damage details are already specified. It is recorded in [Decision D-014](docs/DECISION_LOG.md).
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
