@@ -35,14 +35,14 @@ The test fixture contains a commander plus three selected monsters per side (two
 
 ## Turn pipeline
 
-1. Validate the state, move definitions, and complete command set.
+1. Validate the state, move definitions, complete command set, and caller-supplied reserve choices.
 2. Lock all commands against the same start-of-turn snapshot.
-3. Order commands by priority, effective Speed, then D-021 criteria. Effectiveness is compared only when both commands provide a defined ratio; equal/undefined values advance to HP percentage, current HP, and maximum HP. Unit ID is the final fixture-only fallback.
+3. Emit `PhaseStarted(action_resolution)`; order commands by priority, effective Speed, then D-021 criteria. Effectiveness is compared only when both commands provide a defined ratio; equal/undefined values advance to HP percentage, current HP, and maximum HP. Unit ID is the final fixture-only fallback.
 4. Resolve actions sequentially. A defeated actor cannot act; an unavailable target is not retargeted.
 5. Apply knockouts immediately to the working state.
-6. Resolve reserve choices at end of turn. Automatically deploy when there is no meaningful choice; require explicit caller selection when multiple eligible reserves compete for fewer vacancies.
-7. Derive immutable `BattleFacts` (commander status and active/reserve monster counts) and pass them to the injected `VictoryPolicy`. The default fixture policy ends on commander defeat; team-wipe and combined-condition configurations are available. A state in which both sides meet an enabled terminal condition is a draw. The sequential single-target action loop cannot itself create mutual damage knockout because a defeated actor loses its queued action.
-8. Return a new immutable state and ordered events.
+6. Emit `PhaseCompleted(action_resolution)` and `PhaseStarted(end_of_turn_replacement)`. Resolve reserve choices at end of turn. Automatically deploy when there is no meaningful choice; require explicit caller selection when multiple eligible reserves compete for fewer vacancies. Then emit `PhaseCompleted(end_of_turn_replacement)`.
+7. Emit `PhaseStarted(victory_check)`, derive immutable `BattleFacts` (commander status and active/reserve monster counts) and pass them to the injected `VictoryPolicy`. The default fixture policy ends on commander defeat; team-wipe and combined-condition configurations are available. A state in which both sides meet an enabled terminal condition is a draw. The sequential single-target action loop cannot itself create mutual damage knockout because a defeated actor loses its queued action.
+8. Emit `PhaseCompleted(victory_check)` and return a new immutable state and ordered events. A non-terminal turn ends with `TurnCompleted`.
 
 ## Deterministic scenario trace
 
@@ -61,6 +61,7 @@ No third-party dependencies are required. The package is compatible with Python 
 - Fixture composition and validation.
 - Injectable damage-model substitution without changing turn sequencing.
 - Two-turn trace generation, invalidated-action event, and reserve deployment.
+- Ordered action-resolution, end-of-turn-replacement, and victory-check phase markers.
 - Immutable input-state behavior.
 - Priority/Speed ordering and the explicit fixture-only exact-tie fallback.
 - Repeatable identical two-turn trace for deterministic replay.
