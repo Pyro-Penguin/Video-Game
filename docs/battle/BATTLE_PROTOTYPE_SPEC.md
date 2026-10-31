@@ -45,7 +45,7 @@ The command-in / state-and-events-out contract is implemented in [the battle sim
 - The resolver produces a new immutable state and ordered event log.
 - Presentation is not part of the package and cannot mutate battle state.
 
-This is an engine-independent rules-discovery harness, not the production C# implementation. Fixed damage, exact-tie fallback, automatic replacement, and commander-defeat outcomes are fixture assumptions. The harness does not resolve the five-to-three preview ambiguity or select a final format.
+This is an engine-independent rules-discovery harness, not the production C# implementation. Fixed damage, exact-tie fallback, automatic replacement, and commander-defeat outcomes are fixture assumptions. A pre-existing state with both commanders defeated is classified as a draw; the sequential single-target action loop cannot generate mutual KO while defeated actors lose their queued actions. The harness does not resolve the five-to-three preview ambiguity or select a final format.
 
 ## Non-Goals for This Prototype
 - Online multiplayer, matchmaking, ranking, and server authority.
