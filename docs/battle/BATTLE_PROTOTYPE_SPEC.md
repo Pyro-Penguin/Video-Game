@@ -8,11 +8,11 @@ A local, PvP-style tactical battle in which one person controls both sides. The 
 ## Current Scope
 | Area | Current target | Status |
 |---|---|---|
-| Battle format | 3 selected combatants per side | Confirmed prototype target |
+| Battle format | 1 commander + 2 active monsters per side; 1 selected monster reserve | Confirmed prototype target |
 | Commander | 1 commander per side | Confirmed prototype target |
 | Active monsters | 2 per side | Confirmed prototype target |
-| Reserve | 1 reserve per side | Confirmed prototype target |
-| Team preview | Bring 5, select 3 | Needs clarification against roster composition |
+| Reserve | 1 of the 3 selected monsters is held in reserve; the other 2 are active | Confirmed competitive target |
+| Team preview | Register 5 monsters; select 3 monsters; commander is separate | Confirmed competitive target |
 | Turn resolution | Simultaneous | Confirmed prototype target |
 | Stats | Normalized | Confirmed direction; formula unresolved |
 | Elements | Elemental types included | Confirmed direction; chart unresolved |
@@ -20,12 +20,11 @@ A local, PvP-style tactical battle in which one person controls both sides. The 
 | Victory | Test both sides | Unresolved exact condition |
 | Content target | 2 commanders, 2 main weapons, 6 monsters with movesets | Initial content target |
 
-## Critical Roster Ambiguity
-The current notes say each side has one commander, two active monsters, and one reserve, while team preview says bring five monsters and select three. These may describe different layers (for example, commander plus three selected monsters, with two active and one reserve), but that interpretation is **not confirmed**. Do not encode it as a rule until resolved.
+## Roster Accounting — Resolved
+The confirmed competitive target is five registered monsters at preview, three selected monsters, two active monsters plus one reserve, and one commander/player combatant separate from those three monsters. This is recorded in D-003 and the Battle Overview. The phrase 3v3 is shorthand only; implementation must use the explicit counts above. Story encounters may use different compositions.
 
 ## Rules That Must Be Specified
 1. **Commander defeat:** Does commander knockout immediately end the match? Can the commander be protected, revived, or replaced?
-2. **Roster accounting:** Does the commander count toward the selected three, or are three monsters selected in addition to the commander?
 3. **Reserve deployment:** What event triggers reserve entry? Is entry automatic, immediate, or at the next turn boundary? Can a player choose its position?
 4. **Turn commands:** Which actions can each unit take? Can a commander and both active monsters all act in one turn?
 5. **Simultaneity:** Are actions selected from the start-of-turn state and then resolved in a deterministic priority order? What happens if a target is removed before a later action resolves?
