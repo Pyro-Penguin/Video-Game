@@ -1,0 +1,16 @@
+{
+  "Nodes": [
+    { "X": 0, "Y": 0, "Z": 0, "Facing": 1, "Animation": 0 },
+    { "X": 2, "Y": 0, "Z": 0, "Facing": 1, "Animation": 0 },
+    { "X": 4, "Y": 0, "Z": 0, "Facing": 1, "Animation": 0 },
+    { "X": 6, "Y": 0, "Z": 0, "Facing": 1, "Animation": 0 },
+    { "X": 0, "Y": 0, "Z": 0, "Facing": 1, "Animation": 1 },
+    { "X": 0, "Y": 2, "Z": 0, "Facing": 4, "Animation": 0 }
+  ],
+  "Edges": [
+    { "FromNodeIndex": 0, "ToNodeIndex": 1, "IsDirected": false, "Animation": 0, "GateIds": [] },
+    { "FromNodeIndex": 1, "ToNodeIndex": 2, "IsDirected": false, "Animation": 3, "GateIds": [ 1 ] },
+    { "FromNodeIndex": 2, "ToNodeIndex": 3, "IsDirected": false, "Animation": 0, "GateIds": [ 2 ] },
+    { "FromNodeIndex": 4, "ToNodeIndex": 5, "IsDirected": false, "Animation": 1, "GateIds": [] }
+  ]
+}
