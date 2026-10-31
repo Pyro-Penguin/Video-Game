@@ -2,6 +2,7 @@ import unittest
 from fractions import Fraction
 from battle_sim import COMMANDER, MoveDefinition, UnitState
 from cli_runner import CandidateBDamageModel, DEFAULT_FIXTURE, format_trace, load_fixture, run_pipeline
+from draft_roster_screen import analyze_fixture
 
 DRAFT_FIXTURE = DEFAULT_FIXTURE.with_name("original_creatures_draft.json")
 
@@ -41,6 +42,26 @@ class PipelineFixtureTests(unittest.TestCase):
             self.assertGreaterEqual(stats["defense"], 200)
             self.assertLessEqual(stats["defense"], 350)
             self.assertEqual(sorted(move["power"] for move in creature["moves"]), [40, 80, 120])
+
+    def test_original_roster_pairwise_screen_is_25_neutral_power_80_matchups(self):
+        expected = {
+            100: (192, 25, (39, 35, 35, 44, 39)),
+            143: (194, 25, (39, 36, 36, 44, 39)),
+        }
+        for offset, (numerator, denominator, attacker_totals) in expected.items():
+            with self.subTest(offset=offset):
+                report = analyze_fixture(DRAFT_FIXTURE, offset)
+                self.assertEqual(report["pair_count"], 25)
+                self.assertEqual(report["overall"]["average_hits_numerator"], numerator)
+                self.assertEqual(report["overall"]["average_hits_denominator"], denominator)
+                self.assertEqual(
+                    tuple(row["average_hits_numerator"] for row in report["by_attacker"]),
+                    attacker_totals,
+                )
+                self.assertTrue(all(row["average_hits_denominator"] == 5 for row in report["by_attacker"]))
+                self.assertGreaterEqual(report["overall"]["minimum_hits"], 5)
+                self.assertLessEqual(report["overall"]["maximum_hits"], 12)
+                self.assertIn("not actual match TTK", report["status"])
 
     def test_original_roster_draft_runs_through_both_narrowing_offsets(self):
         for offset in (100, 143):
