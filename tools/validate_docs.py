@@ -6,6 +6,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
+from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED_FILES = (
@@ -102,6 +103,8 @@ def validate(root: Path = ROOT) -> list[str]:
             destination = destination.split("#", 1)[0].split("?", 1)[0]
             if not destination:
                 continue
+            # Markdown link destinations are URI paths; decode before filesystem lookup.
+            destination = unquote(destination)
             target = (markdown_path.parent / destination).resolve()
             try:
                 target.relative_to(root.resolve())
