@@ -36,14 +36,16 @@ The current notes say each side has one commander, two active monsters, and one 
 10. **Elements:** Define the type list and complete matchup matrix, including neutral interactions.
 11. **Victory/draw:** Define simultaneous commander knockouts, simultaneous last-unit knockouts, timeouts, and no-legal-action states.
 
-## Simulation Contract (proposed)
-- A battle starts from validated setup data and a deterministic seed.
-- Player input is expressed as commands; commands do not directly mutate battle state.
-- The resolver validates commands against the same turn-start snapshot.
-- The resolver produces the next authoritative state and a result/event log.
-- Presentation reads state and events; it does not own or alter battle rules.
+## Simulation Contract (implemented as a Python fixture harness)
 
-This contract is an architectural proposal, not yet an implemented system.
+The command-in / state-and-events-out contract is implemented in [the battle simulation harness](../../experiments/battle_sim/README.md):
+- A battle starts from a validated immutable state and explicit fixture definitions.
+- Player input is expressed as commands; commands do not directly mutate battle state.
+- The resolver validates the complete command set against the same turn-start snapshot.
+- The resolver produces a new immutable state and ordered event log.
+- Presentation is not part of the package and cannot mutate battle state.
+
+This is an engine-independent rules-discovery harness, not the production C# implementation. Fixed damage, exact-tie fallback, automatic replacement, and commander-defeat outcomes are fixture assumptions. The harness does not resolve the five-to-three preview ambiguity or select a final format.
 
 ## Non-Goals for This Prototype
 - Online multiplayer, matchmaking, ranking, and server authority.
