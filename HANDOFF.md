@@ -21,6 +21,7 @@ Read COLLABORATION_PROTOCOL.md, then PROJECT_INDEX.md, PROJECT_STATUS.md, this h
 ### Battle simulation harness — first vertical slice committed
 The pure-Python harness under experiments/battle_sim/ now exercises:
 - Immutable battle-state snapshots and command-in / state-and-events-out ownership.
+- Injectable pure DamageModel interface; fixed damage remains a test-only implementation.
 - Validation that every active unit submits exactly one legal command.
 - Simultaneous command locking against the turn-start state.
 - Priority then Speed ordering, with a deterministic unit-ID tie fallback used only as a fixture.
