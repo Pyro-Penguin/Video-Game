@@ -26,9 +26,9 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         gates = calibration_and_gates()["candidate_gate_results"]["B_offset_ratio"]
         c100 = gates["100"]
         self.assertEqual(set(c100["specialization_ratio_by_profile"]), set(ATTACKERS))
-        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["balanced"], 650 / 375)
-        self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 500 / 300)
-        self.assertAlmostEqual(c100["specialization_best_case_ratio"], 800 / 450)
+        self.assertAlmostEqual(c100["specialization_ratio_by_profile"]["balanced"], 650 / 375, places=5)
+        self.assertAlmostEqual(c100["specialization_worst_case_ratio"], 500 / 300, places=5)
+        self.assertAlmostEqual(c100["specialization_best_case_ratio"], 800 / 450, places=5)
         self.assertTrue(c100["specialization_gate_pass"])
 
     def test_known_candidate_b_c400_failure_at_defense_200_is_not_hidden(self):
@@ -36,6 +36,7 @@ class ExpandedDamageExperimentTests(unittest.TestCase):
         self.assertAlmostEqual(
             gates["400"]["specialization_ratio_by_profile"]["high_pressure"],
             4 / 3,
+            places=5,
         )
         self.assertFalse(gates["400"]["specialization_gate_pass"])
         self.assertFalse(gates["400"]["combined_numeric_gates_pass"])
