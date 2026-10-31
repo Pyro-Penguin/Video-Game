@@ -21,7 +21,8 @@ Reach a coherent, deterministic local battle prototype before broad world/conten
 - [ ] Review the five original creature concepts, roles, direct stat spreads, and placeholder move categories in [ORIGINAL_CREATURE_ROSTER_DRAFT.md](creatures/ORIGINAL_CREATURE_ROSTER_DRAFT.md).
 - [ ] Revise/accept the provisional input data before drawing balance conclusions.
 - [ ] Compare Candidate B c=100 and c=143 using the same original-creature fixture and existing full-band integer-floored gates.
-- [ ] Run bounded neutral matchup and pacing analysis; clearly separate formula diagnostics from player-facing feel.
+- [x] Add a reproducible neutral Power-80 single-attacker screen across all 25 creature pairings at c=100 and c=143. This is a diagnostic only, not match TTK.
+- [ ] After human review, run bounded manual battles and broader matchup/pacing analysis; clearly separate formula diagnostics from player-facing feel.
 - [ ] Specify effective-stat ownership, physical/special stat pairs, modifier order, floor points, minimum damage, immunity, and RNG boundaries.
 - [ ] Record a recommendation and limitations. Do not auto-select a formula or offset.
 
