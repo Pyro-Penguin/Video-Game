@@ -4,6 +4,7 @@ from dataclasses import replace
 from battle_sim import (
     ACTIVE, DEFEATED, RESERVE, ActionCommand, BattleResolver,
     BattleValidationError, MoveDefinition, make_test_battle, make_test_moves,
+    _finish_if_commander_defeated,
 )
 
 
@@ -108,19 +109,38 @@ class BattleSimulationTests(unittest.TestCase):
         self.assertEqual(next(u for u in result.state.units if u.unit_id == "B-M1").status, DEFEATED)
         self.assertTrue(any(e.event_type == "ReserveDeployed" for e in result.events))
 
-    def test_mutual_commander_knockout_is_a_draw(self):
-        moves = {"strike": MoveDefinition("strike", 40, 0), "finisher": MoveDefinition("finisher", 120, 0)}
+    def test_commander_knockout_ends_battle_with_other_side_winning(self):
+        moves = {"strike": MoveDefinition("strike", 40, 0),
+                 "finisher": MoveDefinition("finisher", 120, 0)}
         targets = {"A-C": "B-C", "A-M1": "B-M1", "A-M2": "B-M2",
                    "B-C": "A-C", "B-M1": "A-M1", "B-M2": "A-M2"}
         commands = [
-            replace(command, move_id="finisher")
-            if command.actor_id in ("A-C", "B-C") else command
+            replace(command, move_id="finisher") if command.actor_id == "A-C" else command
             for command in commands_for(self.state, targets)
         ]
         result = self.resolver.resolve_turn(self.state, commands, moves)
         self.assertTrue(result.state.is_finished)
-        self.assertTrue(result.state.is_draw)
-        self.assertIsNone(result.state.winner_side_id)
+        self.assertFalse(result.state.is_draw)
+        self.assertEqual(result.state.winner_side_id, "A")
+        self.assertTrue(any(
+            event.actor_id == "A-C" and event.event_type == "DamageApplied"
+            and event.target_id == "B-C"
+            for event in result.events
+        ))
+
+    def test_preexisting_dual_commander_defeat_state_classifies_as_draw(self):
+        units = tuple(
+            replace(u, vitality=0, status=DEFEATED)
+            if u.kind == "commander" else u
+            for u in self.state.units
+        )
+        terminal_state, events = _finish_if_commander_defeated(
+            replace(self.state, units=units)
+        )
+        self.assertTrue(terminal_state.is_finished)
+        self.assertTrue(terminal_state.is_draw)
+        self.assertIsNone(terminal_state.winner_side_id)
+        self.assertEqual(events[0].detail, "draw: both commanders defeated")
 
     def test_monster_knockouts_alone_do_not_end_battle(self):
         units = tuple(
