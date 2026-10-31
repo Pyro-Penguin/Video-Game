@@ -114,3 +114,24 @@ The review must end in one of two states:
 - **Evidence gap identified:** The team rejects a gate or cannot choose an offset/level path on the available evidence. Record the exact disputed criterion or missing data. Any next experiment is scoped only to that rejection or gap; no general sensitivity pass is authorized. If the team accepts the gates but leaves the offset undecided without naming a concrete evidence gap, the review is not complete and must resolve the design preference rather than defaulting to another experiment.
 
 No formula, Candidate B offset, stat band, level path, Speed cap, or new numeric residual tolerance is selected by this document. The experiment remains held. A third damage experiment requires a documented rejection or specific gap and a narrowly scoped plan.
+
+
+## 10. Human review update — 2026-10-31
+
+The following provisional directions are now recorded in the Decision Log; they supersede earlier statements in this review that no gate or level preference had yet been accepted. They remain provisional and do not select a final equation.
+
+- **D-022 — screening gates and working envelope:** neutral reference A300 / D275, Power 100, Vitality 350, Level 100; 4–6 floored hits; no ordinary Power-100 full-health one-hit KO absent an explicit mechanic; 1.40×–1.80× clean 2:1 specialization response evaluated across the full tested Defense band; monotonicity; floored results govern pass/fail. Attack 200–400, Defense 200–350, Vitality 250–500 are accepted as a synthetic working envelope for formula-family comparison only.
+- **D-023 — level treatment:** Level affects derived combat stats and Vitality only; no direct Level term in the base damage equation. Competitive normalization is Level 100. Candidate C and the Generation IX reference remain audit/reference-only and are not selectable game equations. Progression curves remain open.
+- **D-024 — Candidate B preference:** narrow first around c=143, retaining c=100 as the stronger-specialization comparison. c=200 is a possible softer comparison; the exact comparison set remains open. No final offset is selected.
+
+### Required reconciliation before any pruning
+
+The supplied 2026-10-31 review states that c=400 fails the lower specialization bound at Defense 200 (1.333×) and Defense 250 (1.385×). The currently committed regenerated [results report](../../experiments/stat_range_sensitivity/RESULTS.md), however, reports a 1.429× minimum across the tested band and marks c=400 as passing. These claims cannot both describe the same formula, ratio definition, and stat coordinates. Determine whether the discrepancy comes from a changed formula/calibration, a different interpretation of the 2:1 comparison, or stale external analysis. Until reconciled, c=400 is not silently classified as either pass or fail, and no candidate pruning is authorized on that basis.
+
+The pairwise-count arithmetic is consistent with the report dimensions: 75 matchup/Vitality coordinates × 55 candidate/offset pairs = 4,125 relations; one offset comparison uses C(75,2) = 2,775 coordinate pairs. The log-space interaction residual remains a diagnostic of multiplicative interaction, not a quality or balance score.
+
+### Evidence required to close the remaining design questions
+
+The synthetic envelope is accepted for formula-family topology and mathematical screening, not as a substitute for actual creature distributions. A bounded next validation should use 3–5 actual creature stat spreads (fast/frail, slow/tanky, balanced, high-offense, and utility-oriented where available), each with 2–3 representative moves. A text-only CLI playtest runner may reuse the existing pure-Python battle harness and injected DamageModel seam; it does not authorize Unity or C# runtime work. Use a small manual battle set to assess whether 4–6-hit neutral pacing produces meaningful decisions, and all-pairs creature matchups to identify degenerate TTK outcomes. If real creature data is not yet authored, that is the input dependency—not a reason to run another broad synthetic sweep.
+
+No final equation, offset, RNG model, modifier order, or story progression curve is selected by this update.
