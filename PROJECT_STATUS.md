@@ -36,7 +36,7 @@ Original creature-collecting RPG with tactical PvP ambitions. Long-term target p
 ## Canonical Project Priorities
 This is the single authoritative project-wide priority list. [Open Questions](docs/OPEN_QUESTIONS.md) groups unresolved questions in this order; it does not establish a separate priority hierarchy.
 
-1. **Damage equation design resolution.** The corrected profile-wide gate is verified. Consolidate experiment parameters and inspect the regenerated report, then complete the damage design review: deterministic base equation, stat inputs, modifier order, immunity, and rounding boundaries. RNG distribution/placement remains a separate decision. A bounded turn-resolution harness is now authorized in parallel as a rules-discovery tool; it must not embed a selected formula or promote fixture assumptions to rules.
+1. **Damage equation design resolution.** Provisional gates and level treatment are now recorded in D-022/D-023; Candidate B c≈143 is the provisional narrowing preference in D-024. Reconcile the c=400 Defense-band discrepancy before pruning. Do not run another broad sensitivity sweep. Next evidence should come from 3–5 actual creature stat spreads and a small text-only CLI playtest using the existing pure-Python battle harness; no Unity/C# runtime work is authorized.
 2. **Battle structure and resolution.** Competitive roster accounting is confirmed in D-003: five registered monsters, select three, two active plus one reserve, with commander separate. Resolve turn phases, action economy, legal actions/targeting, priority/Speed/ties, invalidated actions, and knockout timing. The Python harness is a rules-discovery fixture, not final implementation.
 3. **Replacement and victory.** Define reserve replacement choice/timing, no-reserve behavior, and victory conditions, including simultaneous defeat and encounter-specific player defeat.
 4. **Stats and progression.** Define stat ownership, Level 100 normalization, allocation, and relationship-effect boundaries.
@@ -45,6 +45,13 @@ This is the single authoritative project-wide priority list. [Open Questions](do
 7. **Story and feature scope.** Revisit broader campaign/world systems after the battle foundations are coherent.
 
 The combined-stat experiment's interaction residual has been corrected from additive percentage subtraction to a log-space multiplicative residual, retaining exact Fraction ratios until logarithm evaluation. Regenerated artifact in [run 41165870453](https://github.com/Pyro-Penguin/Video-Game/actions/runs/41165870453) reports 120/1,320 nonzero log residuals (max 0.012399 natural-log units) and 724/1,320 nonzero floored-TTK residuals (max 2 hits). The pairwise rank audit now uses `itertools.combinations` and derives comparison counts from actual subset sizes; its 4,125 comparisons and 439 tie/order changes match the report. The damage-equation-first ordering is a project sequencing decision, not a claim that all damage details are already specified. It is recorded in [Decision D-014](docs/DECISION_LOG.md).
+
+
+## 2026-10-31 Damage Design Review Update
+
+The human review has accepted a provisional working envelope (Attack 200–400, Defense 200–350, Vitality 250–500) for formula-family comparison and provisional gates of 4–6 floored neutral hits, 1.40×–1.80× 2:1 specialization across the Defense band, no ordinary-power full-health OHKO absent an explicit mechanic, and monotonicity. Level is provisionally excluded from the base damage equation and affects derived stats/Vitality only; competitive normalization is Level 100. Candidate B c≈143 is the provisional preferred narrowing point, with c=100 retained as the stronger-specialization comparison. See D-022–D-024 in the Decision Log.
+
+No final equation or offset is selected. A discrepancy between the supplied c=400 failure figures and the committed report's 1.429× minimum must be reconciled before pruning. The next useful evidence is real creature stat/move data and bounded CLI playtesting, not another broad synthetic sweep. These are provisional design decisions, not CI-verified balance conclusions.
 
 ## Not Yet Implemented
 - Unity project, scenes, prefabs, or C# game systems.
