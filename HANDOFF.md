@@ -51,8 +51,9 @@ The latest verified corrected-damage code/test commit e2201bc831b38a6d2ee175c934
 
 ## Do Not Assume
 - The fixture composition is the final interpretation of five registered monsters / three selected monsters.
-- Unit-ID ordering is an approved competitive Speed tie-break.
-- Automatic end-of-turn reserve entry or commander defeat is final for every encounter.
+- Unit-ID ordering is an approved competitive Speed tie-break; it is fixture-only. D-018 is the confirmed user hierarchy.
+- The current automatic reserve implementation supports the one-reserve fixture only. D-019 governs multi-reserve selection.
+- Commander defeat is not the universal victory condition; D-020 requires encounter-specific policy.
 - Fixed fixture damage is the selected damage equation.
 - A production C# runtime or Unity project exists.
 
